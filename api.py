@@ -1,5 +1,3 @@
-import urllib.parse
-
 from fake_useragent import UserAgent
 
 
@@ -10,12 +8,28 @@ def keyword(msg, uid, gid):
         re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                           'group_id={0}&'
                           'message=[CQ:at,qq={1}] '
-                          '{2}'.format(gid, uid, '你说啥？我没听清'))
+                          '{2}'.format(gid, uid, '嘿！这里是菜单\n'
+                                                 '[1] 咕咕咕\n'
+                                                 '（部分群可用，无需@）\n'
+                                                 '[2] 黑名单\n'
+                                                 '语法1：@机器人 黑名单 @...（直接@）\n'
+                                                 '语法2：@机器人 黑名单 ...（QQ号）\n'
+                                                 '[3] 加群自动同意\n'
+                                                 '（部分群可用，无需@，自动检测）\n'
+                                                 '[4] 特定关键词复读\n'
+                                                 '（无需@，一条消息必须只包含关键词）\n'
+                                                 '支持的关键词（“ | ”分割）：\n'
+                                                 'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] '
+                                                 '| [CQ:face,id=277] | [CQ:face,id=178]\n'
+                                                 '[5] 聊天'
+                                                 '（必须@，不要加回复，尽量不要加表情，直接说内容）\n'
+                                                 '使用青云客API，很智障\n'
+                                                 '[6] 随机圣诞树（圣诞特供）\n'
+                                                 '开发中，敬请期待！'))
     else:
         if "admin set 咕咕咕 " in msg and (uid == 183713750 or uid == 2443818489):
             with open('gugu.txt', 'w') as file:
                 file.write(str(int(msg.strip("admin set 咕咕咕 "))))
-
             re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                               'group_id={0}&'
                               'message=鸽子'
