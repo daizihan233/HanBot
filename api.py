@@ -1,3 +1,5 @@
+import random
+
 from fake_useragent import UserAgent
 
 
@@ -25,7 +27,8 @@ def keyword(msg, uid, gid):
                                                  '（必须@，不要加回复，尽量不要加表情，直接说内容）\n'
                                                  '使用青云客API，很智障\n'
                                                  '[6] 随机圣诞树（圣诞特供）\n'
-                                                 '开发中，敬请期待！'))
+                                                 '@机器人 随机圣诞树\n'
+                                                 '像上面这样，你就能随机获得一颗圣诞树！'))
     else:
         if "admin set 咕咕咕 " in msg and (uid == 183713750 or uid == 2443818489):
             with open('gugu.txt', 'w') as file:
@@ -39,6 +42,26 @@ def keyword(msg, uid, gid):
                               'group_id={0}&'
                               'message=[CQ:at,qq={1}]' 
                               '{2}'.format(gid, uid, '你不是机器人的开发者/管理，权限不足，无法完成此操作'))
+        elif msg == '随机圣诞树':  # 如果机器人被戳
+            list = [
+                '你在买圣诞树回来的路上下雨了，圣诞树滴着一氧化二氢，但你把它用吹风机烘干了',  # 一氧化二氢 = 水
+                '不知道为什么，圣诞树上出现了许多的氰化钾，幸运的是好像被一氧化二氢冲没了',  # 氰化钾：剧毒，白色粉末
+                '一颗很正常的圣诞树',
+                'wow，你手气真好，这是一颗幸运值100%的圣诞树，你的幸运值++！',
+                '嗯...这是一颗...114514形状的圣诞树',
+                '哇！金色的圣诞树',
+                '这个圣诞树很特殊，会在1s内化成氧',  # 氧：氧气
+                'NB的圣诞树',
+                '转移！这课圣诞树可以将你的厄运转移到你最讨厌的人身上',
+                '净化！这课圣诞树可以净化掉所有的厄运',
+                '芜湖~ 起飞！这课圣诞树可以完成你最想完成的愿望',
+                '这课圣诞树会变成你最想要的东西',
+            ]
+            re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                              'group_id={0}&'
+                              'message='
+                              '{1}'.format(gid,
+                                           random.choice(list)))
         elif "黑名单 [CQ:at,qq=" in msg:
             f = str(msg)[len('黑名单 [CQ:at,qq='):].strip(']')
             fuck = open('fucklist', 'r').readlines()

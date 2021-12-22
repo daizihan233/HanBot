@@ -24,6 +24,11 @@ def post_data():
             print(message)
             if test(message):
                 api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
+        elif '[CQ:at,qq=748029973]' in message:
+            message = str(message)[len('[CQ:at,qq=748029973]'):]
+            print(message)
+            if test(message):
+                api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         else:
             if '咕' in message:
                 api.keyword(message, uid, gid)
