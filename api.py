@@ -1,4 +1,5 @@
 import random
+import urllib.parse
 
 from fake_useragent import UserAgent
 
@@ -23,9 +24,9 @@ def keyword(msg, uid, gid):
                                                  '支持的关键词（“ | ”分割）：\n'
                                                  'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] '
                                                  '| [CQ:face,id=277] | [CQ:face,id=178]\n'
-                                                 '[5] 聊天'
+                                                 '[5] 聊天\n'
                                                  '（必须@，不要加回复，尽量不要加表情，直接说内容）\n'
-                                                 '使用青云客API，很智障\n'
+                                                 '使用如意机器人API\n'
                                                  '[6] 随机圣诞树（圣诞特供）\n'
                                                  '@机器人 随机圣诞树\n'
                                                  '像上面这样，你就能随机获得一棵圣诞树！'))
@@ -40,7 +41,7 @@ def keyword(msg, uid, gid):
         elif "admin set 咕咕咕 " in msg and (uid != 183713750 and uid != 2443818489):
             re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                               'group_id={0}&'
-                              'message=[CQ:at,qq={1}]' 
+                              'message=[CQ:at,qq={1}]'
                               '{2}'.format(gid, uid, '你不是机器人的开发者/管理，权限不足，无法完成此操作'))
         elif msg == '随机圣诞树':  # 如果机器人被戳
             list = [
@@ -85,7 +86,7 @@ def keyword(msg, uid, gid):
         elif "黑名单 " in msg:
             f = str(msg).strip('黑名单 ')
             fuck = open('fucklist', 'r').readlines()
-            open('fucklist', 'a').write(f+'\n')
+            open('fucklist', 'a').write(f + '\n')
             if f in fuck:
                 re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                                   'group_id={0}&'
@@ -121,8 +122,8 @@ def keyword(msg, uid, gid):
                               'message=鸽子'
                               '{1}'.format(gid, '您可以咕 {0} 天了').format(gu))
         elif "e" == msg or "额" == msg or "呃" == msg or "。" == msg or "w" == msg or \
-                    "www" == msg or msg == "114514" or msg == "1145141919810" or \
-                    msg == '[CQ:face,id=298]' or msg == '[CQ:face,id=178]' or msg == '[CQ:face,id=277]' or\
+                "www" == msg or msg == "114514" or msg == "1145141919810" or \
+                msg == '[CQ:face,id=298]' or msg == '[CQ:face,id=178]' or msg == '[CQ:face,id=277]' or \
                 msg == '？' or msg == '?' or msg == '草':
             re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                               'group_id={0}&'
@@ -136,18 +137,25 @@ def keyword(msg, uid, gid):
             print('request:', re)
 
         else:
-            headers = {
-                'User-Agent': UserAgent().rget
+            d = {
+                "app_key": "95d332c4-5f0e-4cd2-b4f1-31187cfd846d",
+                "q": msg,
+                "reset_session": True,
+                "user_id": "ruyi-test-d6af16e2-55b1-4a3e-992c-b793c99b70d4"
             }
-            for i in range(999):
-                msg = str(msg).strip("[CQ:face,id="+str(i)+"]")
-            a = requests.get("http://api.qingyunke.com/api.php?key=free&appid=0&msg="+msg.replace("+", "加"),
-                             headers=headers)
+            headers = {
+                'User-Agent': UserAgent().rget,
+                'Content-Type': 'application/json'
+            }
+            print('msg: {0}'.format(msg))
+            a = requests.post("https://api.ruyi.ai/v1/message",
+                              headers=headers,
+                              data=json.dumps(d))
             a = json.loads(a.text)
             print(a)
-            a = a['content'].replace("{br}", "\n").replace("菲菲", "我").replace("{face:1}", "[CQ:face,id=1]")
+            a = a['result']['intents'][0]['result']['text']
             for i in range(999):
-                msg = str(a).replace('{face:'+str(i)+'}', "[CQ:face,id="+str(i)+"]")
+                msg = str(a).replace('{face:' + str(i) + '}', "[CQ:face,id=" + str(i) + "]")
             print('msg: {0}'.format(msg))
             print('uid: {0}'.format(uid))
             print('gid: {0}'.format(gid))
