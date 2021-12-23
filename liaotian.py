@@ -45,7 +45,13 @@ def post_data():
             .strip('问题：群主的B站UID/抖音号是？')\
             .strip('\n答案：')\
             .strip('答案：')\
-            .strip('\n')\
+            .strip('\n') \
+            .strip('问题：Galaxy是什麼？ 答案：') \
+            .strip('问题：Galaxy是什麼？\n答案：') \
+            .strip('问题：Galaxy是什麼？') \
+            .strip('\n答案：') \
+            .strip('答案：') \
+            .strip('\n') \
             .upper()
         t = request.get_json().get('sub_type')
         flag = request.get_json().get('flag')
@@ -56,6 +62,46 @@ def post_data():
         if gid == 907112053 and t == 'add':
             print('发现 907112053 的加群请求！')
             if comment == 'MEMZ123' or comment == '1511907771' or comment == 'UID1511907771':
+                fuck = open('fucklist', 'r').readlines()
+                for i in range(len(fuck)):
+                    fuck[i] = fuck[i].strip('\n')
+                if str(uid) in fuck:
+                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                      'group_id={0}&'
+                                      'message='
+                                      '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                                        '[Robot][Event] 加群事件\n'
+                                                        'UID：{0}\n'
+                                                        'Comment：{1}\n'
+                                                        '机器人一次审核通过，但此人在黑名单内\n'
+                                                        '请管理员尽快进行二次审核！'.format(uid, comment)))
+                else:
+                    re = requests.get('http://127.0.0.1:5700/set_group_add_request?'
+                                      'flag={0}&'
+                                      'sub_type={1}&'
+                                      'approve=true'.format(flag, t))
+                    with open('233.log', 'w') as f:
+                        f.write(str(re.text))
+                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                      'group_id={0}&'
+                                      'message='
+                                      '{1}'.format(gid, '[Robot][Event] 加群事件\n'
+                                                        'UID：{0}\n'
+                                                        'Comment：{1}\n'
+                                                        '机器人一次审核通过！'.format(uid, comment)))
+            else:
+                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                  'group_id={0}&'
+                                  'message='
+                                  '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                                    '[Robot][Event] 加群事件\n'
+                                                    'UID：{0}\n'
+                                                    'Comment：{1}\n'
+                                                    '机器人一次审核未通过\n'
+                                                    '请管理员尽快进行二次审核！'.format(uid, comment)))
+        elif gid == 833645046 and t == 'add':
+            print('发现 833645046 的加群请求！')
+            if comment == '三星':
                 fuck = open('fucklist', 'r').readlines()
                 for i in range(len(fuck)):
                     fuck[i] = fuck[i].strip('\n')
