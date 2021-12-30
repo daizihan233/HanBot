@@ -27,9 +27,8 @@ def keyword(msg, uid, gid):
                                                  '[5] 聊天\n'
                                                  '（必须@，不要加回复，尽量不要加表情，直接说内容）\n'
                                                  '使用如意机器人API\n'
-                                                 '[6] 随机圣诞树（圣诞特供）\n'
-                                                 '@机器人 随机圣诞树\n'
-                                                 '像上面这样，你就能随机获得一棵圣诞树！'))
+                                                 '[6] 祖安戳一戳\n'
+                                                 '当你戳一戳机器人的时候他会说一句祖安话'))
     else:
         if "admin set 咕咕咕 " in msg and (uid == 183713750 or uid == 2443818489):
             with open('gugu.txt', 'w') as file:
@@ -43,26 +42,26 @@ def keyword(msg, uid, gid):
                               'group_id={0}&'
                               'message=[CQ:at,qq={1}]'
                               '{2}'.format(gid, uid, '你不是机器人的开发者/管理，权限不足，无法完成此操作'))
-        elif msg == '随机圣诞树':  # 如果机器人被戳
-            list = [
-                '你在买圣诞树回来的路上下雨了，圣诞树滴着一氧化二氢，但你把它用吹风机烘干了',  # 一氧化二氢 = 水
-                '不知道为什么，圣诞树上出现了许多的氰化钾，幸运的是好像被一氧化二氢冲没了',  # 氰化钾：剧毒，白色粉末
-                '一棵很正常的圣诞树',
-                'wow，你手气真好，这是一棵幸运值100%的圣诞树，你的幸运值%2B%2B！',
-                '嗯...这是一棵...114514形状的圣诞树',
-                '哇！金色的圣诞树',
-                '这个圣诞树很特殊，会在1s内化成氧',  # 氧：氧气
-                'NB的圣诞树',
-                '转移！这棵圣诞树可以将你的厄运转移到你最讨厌的人身上',
-                '净化！这棵圣诞树可以净化掉所有的厄运',
-                '芜湖~ 起飞！这棵圣诞树可以完成你最想完成的愿望',
-                '这棵圣诞树会变成你最想要的东西',
-            ]
-            re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                              'group_id={0}&'
-                              'message='
-                              '{1}'.format(gid,
-                                           random.choice(list)))
+        # elif msg == '随机圣诞树':  # 如果机器人被戳
+        #     list = [
+        #         '你在买圣诞树回来的路上下雨了，圣诞树滴着一氧化二氢，但你把它用吹风机烘干了',  # 一氧化二氢 = 水
+        #         '不知道为什么，圣诞树上出现了许多的氰化钾，幸运的是好像被一氧化二氢冲没了',  # 氰化钾：剧毒，白色粉末
+        #         '一棵很正常的圣诞树',
+        #         'wow，你手气真好，这是一棵幸运值100%的圣诞树，你的幸运值%2B%2B！',
+        #         '嗯...这是一棵...114514形状的圣诞树',
+        #         '哇！金色的圣诞树',
+        #         '这个圣诞树很特殊，会在1s内化成氧',  # 氧：氧气
+        #         'NB的圣诞树',
+        #         '转移！这棵圣诞树可以将你的厄运转移到你最讨厌的人身上',
+        #         '净化！这棵圣诞树可以净化掉所有的厄运',
+        #         '芜湖~ 起飞！这棵圣诞树可以完成你最想完成的愿望',
+        #         '这棵圣诞树会变成你最想要的东西',
+        #     ]
+        #     re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+        #                       'group_id={0}&'
+        #                       'message='
+        #                       '{1}'.format(gid,
+        #                                    random.choice(list)))
         elif "黑名单 [CQ:at,qq=" in msg:
             f = str(msg)[len('黑名单 [CQ:at,qq='):].strip(']')
             fuck = open('fucklist', 'r').readlines()
@@ -140,7 +139,7 @@ def keyword(msg, uid, gid):
             d = {
                 "app_key": "95d332c4-5f0e-4cd2-b4f1-31187cfd846d",
                 "q": msg,
-                "reset_session": True,
+                #  "reset_session": True,
                 "user_id": "ruyi-test-d6af16e2-55b1-4a3e-992c-b793c99b70d4"
             }
             headers = {
@@ -154,6 +153,11 @@ def keyword(msg, uid, gid):
             a = json.loads(a.text)
             print(a)
             a = a['result']['intents'][0]['result']['text']
+            if msg[-1] == '气' and msg[-2] == '天':
+                a = requests.post("https://api.ruyi.ai/v1/message")
+                a = json.loads(a.text)
+                print(a)
+            a = a['result']['intents'][0]['result']['text']
             for i in range(999):
                 msg = str(a).replace('{face:' + str(i) + '}', "[CQ:face,id=" + str(i) + "]")
             print('msg: {0}'.format(msg))
@@ -164,6 +168,9 @@ def keyword(msg, uid, gid):
                               'message=[CQ:at,qq={1}] '
                               '{2}'.format(gid, uid, a))
             re = re.text
+            re = json.loads(re)
+            re = re['content']
+            re = str(re).replace('{br}', '\n').replace('')
             print('requests_get: {0}'.format(re))
             print('send: {0}'.format(a))
 
