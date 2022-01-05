@@ -153,11 +153,6 @@ def keyword(msg, uid, gid):
             a = json.loads(a.text)
             print(a)
             a = a['result']['intents'][0]['result']['text']
-            if msg[-1] == '气' and msg[-2] == '天':
-                a = requests.post("https://api.ruyi.ai/v1/message")
-                a = json.loads(a.text)
-                print(a)
-            a = a['result']['intents'][0]['result']['text']
             for i in range(999):
                 msg = str(a).replace('{face:' + str(i) + '}', "[CQ:face,id=" + str(i) + "]")
             print('msg: {0}'.format(msg))
