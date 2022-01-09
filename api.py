@@ -1,9 +1,11 @@
 import random
 import urllib.parse
 
+from functools import lru_cache
 from fake_useragent import UserAgent
 
 
+@lru_cache()
 def keyword(msg, uid, gid):
     import requests
     import json
