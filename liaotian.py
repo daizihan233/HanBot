@@ -8,10 +8,6 @@ import api
 app = Flask(__name__)
 
 
-def test(send_text):
-    return True
-
-
 @app.route('/', methods=["POST"])
 def post_data():
     if request.get_json().get('message_type') == 'group':  # 如果是群聊信息
@@ -22,29 +18,27 @@ def post_data():
         if '[CQ:at,qq=748029973] ' in message:
             message = str(message)[len('[CQ:at,qq=748029973] '):]
             print(message)
-            if test(message):
-                api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
+            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         elif '[CQ:at,qq=748029973]' in message:
             message = str(message)[len('[CQ:at,qq=748029973]'):]
             print(message)
-            if test(message):
-                api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
+            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         else:
             if '咕' in message:
                 api.keyword(message, uid, gid)
             elif "e" == message or "额" == message or "呃" == message or "。" == message or "w" == message or \
                     "www" == message or message == "114514" or message == "1145141919810" or \
-                    message == '[CQ:face,id=298]' or message == '[CQ:face,id=178]' or message == '[CQ:face,id=277]' or\
-                message == '？' or message == '?' or message == '草':
+                    message == '[CQ:face,id=298]' or message == '[CQ:face,id=178]' or message == '[CQ:face,id=277]' or \
+                    message == '？' or message == '?' or message == '草':
                 api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
         comment = str(request.get_json().get('comment')) \
             .strip('问题：群主的B站UID/抖音号是？ 答案：') \
             .strip('问题：群主的B站UID/抖音号是？\n答案：') \
-            .strip('问题：群主的B站UID/抖音号是？')\
-            .strip('\n答案：')\
-            .strip('答案：')\
+            .strip('问题：群主的B站UID/抖音号是？') \
+            .strip('\n答案：') \
+            .strip('答案：') \
             .strip('\n') \
             .strip('问题：Galaxy是什麼？ 答案：') \
             .strip('问题：Galaxy是什麼？\n答案：') \
@@ -66,15 +60,15 @@ def post_data():
                 for i in range(len(fuck)):
                     fuck[i] = fuck[i].strip('\n')
                 if str(uid) in fuck:
-                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                      'group_id={0}&'
-                                      'message='
-                                      '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                        '[Robot][Event] 加群事件\n'
-                                                        'UID：{0}\n'
-                                                        'Comment：{1}\n'
-                                                        '机器人一次审核通过，但此人在黑名单内\n'
-                                                        '请管理员尽快进行二次审核！'.format(uid, comment)))
+                    requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                 'group_id={0}&'
+                                 'message='
+                                 '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                                   '[Robot][Event] 加群事件\n'
+                                                   'UID：{0}\n'
+                                                   'Comment：{1}\n'
+                                                   '机器人一次审核通过，但此人在黑名单内\n'
+                                                   '请管理员尽快进行二次审核！'.format(uid, comment)))
                 else:
                     re = requests.get('http://127.0.0.1:5700/set_group_add_request?'
                                       'flag={0}&'
@@ -82,23 +76,23 @@ def post_data():
                                       'approve=true'.format(flag, t))
                     with open('233.log', 'w') as f:
                         f.write(str(re.text))
-                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                      'group_id={0}&'
-                                      'message='
-                                      '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                        'UID：{0}\n'
-                                                        'Comment：{1}\n'
-                                                        '机器人一次审核通过！'.format(uid, comment)))
+                    requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                 'group_id={0}&'
+                                 'message='
+                                 '{1}'.format(gid, '[Robot][Event] 加群事件\n'
+                                                   'UID：{0}\n'
+                                                   'Comment：{1}\n'
+                                                   '机器人一次审核通过！'.format(uid, comment)))
             else:
-                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                  'group_id={0}&'
-                                  'message='
-                                  '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                    '[Robot][Event] 加群事件\n'
-                                                    'UID：{0}\n'
-                                                    'Comment：{1}\n'
-                                                    '机器人一次审核未通过\n'
-                                                    '请管理员尽快进行二次审核！'.format(uid, comment)))
+                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                             'group_id={0}&'
+                             'message='
+                             '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                               '[Robot][Event] 加群事件\n'
+                                               'UID：{0}\n'
+                                               'Comment：{1}\n'
+                                               '机器人一次审核未通过\n'
+                                               '请管理员尽快进行二次审核！'.format(uid, comment)))
         elif gid == 833645046 and t == 'add':
             print('发现 833645046 的加群请求！')
             if comment == '三星':
@@ -106,15 +100,15 @@ def post_data():
                 for i in range(len(fuck)):
                     fuck[i] = fuck[i].strip('\n')
                 if str(uid) in fuck:
-                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                      'group_id={0}&'
-                                      'message='
-                                      '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                        '[Robot][Event] 加群事件\n'
-                                                        'UID：{0}\n'
-                                                        'Comment：{1}\n'
-                                                        '机器人一次审核通过，但此人在黑名单内\n'
-                                                        '请管理员尽快进行二次审核！'.format(uid, comment)))
+                    requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                 'group_id={0}&'
+                                 'message='
+                                 '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                                   '[Robot][Event] 加群事件\n'
+                                                   'UID：{0}\n'
+                                                   'Comment：{1}\n'
+                                                   '机器人一次审核通过，但此人在黑名单内\n'
+                                                   '请管理员尽快进行二次审核！'.format(uid, comment)))
                 else:
                     re = requests.get('http://127.0.0.1:5700/set_group_add_request?'
                                       'flag={0}&'
@@ -122,23 +116,23 @@ def post_data():
                                       'approve=true'.format(flag, t))
                     with open('233.log', 'w') as f:
                         f.write(str(re.text))
-                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                      'group_id={0}&'
-                                      'message='
-                                      '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                        'UID：{0}\n'
-                                                        'Comment：{1}\n'
-                                                        '机器人一次审核通过！'.format(uid, comment)))
+                    requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                 'group_id={0}&'
+                                 'message='
+                                 '{1}'.format(gid, '[Robot][Event] 加群事件\n'
+                                                   'UID：{0}\n'
+                                                   'Comment：{1}\n'
+                                                   '机器人一次审核通过！'.format(uid, comment)))
             else:
-                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                  'group_id={0}&'
-                                  'message='
-                                  '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                    '[Robot][Event] 加群事件\n'
-                                                    'UID：{0}\n'
-                                                    'Comment：{1}\n'
-                                                    '机器人一次审核未通过\n'
-                                                    '请管理员尽快进行二次审核！'.format(uid, comment)))
+                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                             'group_id={0}&'
+                             'message='
+                             '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                               '[Robot][Event] 加群事件\n'
+                                               'UID：{0}\n'
+                                               'Comment：{1}\n'
+                                               '机器人一次审核未通过\n'
+                                               '请管理员尽快进行二次审核！'.format(uid, comment)))
         elif gid == 623377914 and t == 'add':
             print('发现 623377914 的加群请求！')
             if comment == 'UID589370259' or comment == '589370259':
@@ -146,15 +140,15 @@ def post_data():
                 for i in range(len(fuck)):
                     fuck[i] = fuck[i].strip('\n')
                 if str(uid) in fuck:
-                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                      'group_id={0}&'
-                                      'message='
-                                      '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                        '[Robot][Event] 加群事件\n'
-                                                        'UID：{0}\n'
-                                                        'Comment：{1}\n'
-                                                        '机器人一次审核通过，但此人在黑名单内\n'
-                                                        '请管理员尽快进行二次审核！'.format(uid, comment)))
+                    requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                 'group_id={0}&'
+                                 'message='
+                                 '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                                   '[Robot][Event] 加群事件\n'
+                                                   'UID：{0}\n'
+                                                   'Comment：{1}\n'
+                                                   '机器人一次审核通过，但此人在黑名单内\n'
+                                                   '请管理员尽快进行二次审核！'.format(uid, comment)))
                 else:
                     re = requests.get('http://127.0.0.1:5700/set_group_add_request?'
                                       'flag={0}&'
@@ -162,27 +156,27 @@ def post_data():
                                       'approve=true'.format(flag, t))
                     with open('233.log', 'w') as f:
                         f.write(str(re.text))
-                    re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                      'group_id={0}&'
-                                      'message='
-                                      '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                        'UID：{0}\n'
-                                                        'Comment：{1}\n'
-                                                        '机器人一次审核通过！'.format(uid, comment)))
+                    requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                 'group_id={0}&'
+                                 'message='
+                                 '{1}'.format(gid, '[Robot][Event] 加群事件\n'
+                                                   'UID：{0}\n'
+                                                   'Comment：{1}\n'
+                                                   '机器人一次审核通过！'.format(uid, comment)))
             else:
-                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                  'group_id={0}&'
-                                  'message='
-                                  '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                    '[Robot][Event] 加群事件\n'
-                                                    'UID：{0}\n'
-                                                    'Comment：{1}\n'
-                                                    '机器人一次审核未通过\n'
-                                                    '请管理员尽快进行二次审核！'.format(uid, comment)))
+                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                             'group_id={0}&'
+                             'message='
+                             '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                               '[Robot][Event] 加群事件\n'
+                                               'UID：{0}\n'
+                                               'Comment：{1}\n'
+                                               '机器人一次审核未通过\n'
+                                               '请管理员尽快进行二次审核！'.format(uid, comment)))
         else:
             print(gid, t, flush=True)
     elif request.get_json().get('target_id') == 748029973:  # 如果机器人被戳
-        herbalist = [             # 祖安语录
+        herbalist = [  # 祖安语录
             'nmd再戳我一下试试！',
             '滚',
             '哎wcnmlgbd鬼！',
@@ -226,11 +220,11 @@ def post_data():
             '250',
             '我屮艸芔茻你妈的'
         ]
-        re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                          'group_id={0}&'
-                          'message='
-                          '{1}'.format(request.get_json().get('group_id'),  # （群号）发送到对应的群里
-                                       random.choice(herbalist)))           # （消息内容）在祖安语录里随机选一条
+        requests.get('http://127.0.0.1:5700/send_group_msg?'
+                     'group_id={0}&'
+                     'message='
+                     '{1}'.format(request.get_json().get('group_id'),  # （群号）发送到对应的群里
+                                  random.choice(herbalist)))
     # 这里是正在开发的代码，碰这里的代码的人死马（除了开发）
     elif request.get_json().get('notice_type') == 'group_decrease':
         sub_type = request.get_json().get('sub_type')
@@ -243,18 +237,18 @@ def post_data():
             sub_type = '被操作者踢出'
         elif sub_type == 'kick_me':
             sub_type = '机器人账号被踢'
-        re = requests.get('http://127.0.0.1:5700/send_private_msg?'
-                          'user_id={0}&'
-                          'message='
-                          '{1}'.format(183713750, '[Robot][Log-WARN] 群成员减少\n'
-                                                  '[类　型]: {0}\n'
-                                                  '[群　号]: {1}\n'
-                                                  '[操作者]: {2}\n'
-                                                  '[用　户]: {3}'
-                                       .format(sub_type,
-                                               gid,
-                                               opid,
-                                               uid)))
+        requests.get('http://127.0.0.1:5700/send_private_msg?'
+                     'user_id={0}&'
+                     'message='
+                     '{1}'.format(183713750, '[Robot][Log-WARN] 群成员减少\n'
+                                             '[类　型]: {0}\n'
+                                             '[群　号]: {1}\n'
+                                             '[操作者]: {2}\n'
+                                             '[用　户]: {3}'
+                                  .format(sub_type,
+                                          gid,
+                                          opid,
+                                          uid)))
     elif request.get_json().get('notice_type') == 'group_increase':
         sub_type = request.get_json().get('sub_type')
         gid = request.get_json().get('group_id')
@@ -264,18 +258,18 @@ def post_data():
             sub_type = '管理员同意入群'
         elif sub_type == 'invite':
             sub_type = '管理员邀请入群'
-        re = requests.get('http://127.0.0.1:5700/send_private_msg?'
-                          'user_id={0}&'
-                          'message='
-                          '{1}'.format(183713750, '[Robot][Log-WARN] 群成员增加\n'
-                                                  '[类　型]: {0}\n'
-                                                  '[群　号]: {1}\n'
-                                                  '[操作者]: {2}\n'
-                                                  '[用　户]: {3}'
-                                       .format(sub_type,
-                                               gid,
-                                               opid,
-                                               uid)))
+        requests.get('http://127.0.0.1:5700/send_private_msg?'
+                     'user_id={0}&'
+                     'message='
+                     '{1}'.format(183713750, '[Robot][Log-WARN] 群成员增加\n'
+                                             '[类　型]: {0}\n'
+                                             '[群　号]: {1}\n'
+                                             '[操作者]: {2}\n'
+                                             '[用　户]: {3}'
+                                  .format(sub_type,
+                                          gid,
+                                          opid,
+                                          uid)))
     elif request.get_json().get('notice_type') == 'group_ban':
         sub_type = request.get_json().get('sub_type')
         gid = request.get_json().get('group_id')
@@ -285,18 +279,18 @@ def post_data():
             sub_type = '进行禁言'
         elif sub_type == 'lift_ban':
             sub_type = '解除禁言'
-        re = requests.get('http://127.0.0.1:5700/send_private_msg?'
-                          'user_id={0}&'
-                          'message='
-                          '{1}'.format(183713750, '[Robot][Log-WARN] 禁言\n'
-                                                  '[类　型]: {0}\n'
-                                                  '[群　号]: {1}\n'
-                                                  '[操作者]: {2}\n'
-                                                  '[用　户]: {3}'
-                                       .format(sub_type,
-                                               gid,
-                                               opid,
-                                               uid)))
+        requests.get('http://127.0.0.1:5700/send_private_msg?'
+                     'user_id={0}&'
+                     'message='
+                     '{1}'.format(183713750, '[Robot][Log-WARN] 禁言\n'
+                                             '[类　型]: {0}\n'
+                                             '[群　号]: {1}\n'
+                                             '[操作者]: {2}\n'
+                                             '[用　户]: {3}'
+                                  .format(sub_type,
+                                          gid,
+                                          opid,
+                                          uid)))
     return 'OK'
 
 
