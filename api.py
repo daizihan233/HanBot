@@ -107,6 +107,17 @@ def keyword(msg, uid, gid):
                          'group_id={0}&'
                          'message='
                          '{1}'.format(gid, msg))
+        elif gid == 623377914 and uid == 2443818489:
+            if msg == '吃了:)':
+                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                             'group_id={0}&'
+                             'message='
+                             '{1}'.format(gid, ':)'))
+            elif msg == '没吃:(':
+                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                             'group_id={0}&'
+                             'message='
+                             '{1}'.format(gid, ':('))
         elif msg == '粉丝监测':
             re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                               'group_id={0}&'

@@ -8,7 +8,7 @@ import api
 app = Flask(__name__)
 
 
-@app.route('/', methods=["POST"])
+@app.route('/', methods=["POST", 'WebSocket'])
 def post_data():
     if request.get_json().get('message_type') == 'group':  # 如果是群聊信息
         gid = request.get_json().get('group_id')  # 获取群号
@@ -20,7 +20,7 @@ def post_data():
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         elif '[CQ:at,qq=748029973]' in message:
-            message = str(message)[len('[CQ:at,qq=748029973]'):]
+            message = str(message)[len('[CQ:at,qqs=748029973]'):]
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         else:
@@ -30,6 +30,8 @@ def post_data():
                     "www" == message or message == "114514" or message == "1145141919810" or \
                     message == '[CQ:face,id=298]' or message == '[CQ:face,id=178]' or message == '[CQ:face,id=277]' or \
                     message == '？' or message == '?' or message == '草':
+                api.keyword(message, uid, gid)
+            elif '吃了:)' == message or '没吃:(' == message:
                 api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
@@ -46,6 +48,12 @@ def post_data():
             .strip('\n答案：') \
             .strip('答案：') \
             .strip('\n') \
+            .strip('问题：群主的B站UID为？ 答案：') \
+            .strip('问题：群主的B站UID为？\n答案：') \
+            .strip('问题：群主的B站UID为？') \
+            .strip('\n答案：') \
+            .strip('答案：') \
+            .strip('\n') \
             .upper()
         t = request.get_json().get('sub_type')
         flag = request.get_json().get('flag')
@@ -55,7 +63,7 @@ def post_data():
             f.write(str(requests))
         if gid == 907112053 and t == 'add':
             print('发现 907112053 的加群请求！')
-            if comment == 'MEMZ123' or comment == '1511907771' or comment == 'UID1511907771':
+            if comment == 'MEMZ123' or comment == '1511907771' or comment == 'UID1511907771' or comment == 'WindowsSetup2010':
                 fuck = open('fucklist', 'r').readlines()
                 for i in range(len(fuck)):
                     fuck[i] = fuck[i].strip('\n')
@@ -225,7 +233,6 @@ def post_data():
                      'message='
                      '{1}'.format(request.get_json().get('group_id'),  # （群号）发送到对应的群里
                                   random.choice(herbalist)))
-    # 这里是正在开发的代码，碰这里的代码的人死马（除了开发）
     elif request.get_json().get('notice_type') == 'group_decrease':
         sub_type = request.get_json().get('sub_type')
         gid = request.get_json().get('group_id')
