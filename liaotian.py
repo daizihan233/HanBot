@@ -2,10 +2,39 @@ import random
 
 import requests
 from flask import Flask, request
-
+import aiohttp
+import asyncio
 import api
 
 app = Flask(__name__)
+
+
+
+def send(msg, gid, uid=None):
+    async def is_at(msg, gid, uid):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'send_group_msg', 'params': {
+                    'group_id': gid,  # 往这个群发条消息
+                    'message': '[CQ:at,qq=' + uid + ']' + msg  # 消息内容
+                }})
+                data = await ws.receive_json()
+        return data
+
+    async def no_at(msg, gid):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'send_group_msg', 'params': {
+                    'group_id': gid,  # 往这个群发条消息
+                    'message': msg  # 消息内容
+                }})
+                data = await ws.receive_json()
+        return data
+
+    if uid is not None:
+        asyncio.run(is_at(msg, gid, uid))
+    else:
+        asyncio.run(no_at(msg, gid))
 
 
 @app.route('/', methods=["POST", 'WebSocket'])
@@ -228,11 +257,7 @@ def post_data():
             '250',
             '我屮艸芔茻你妈的'
         ]
-        requests.get('http://127.0.0.1:5700/send_group_msg?'
-                     'group_id={0}&'
-                     'message='
-                     '{1}'.format(request.get_json().get('group_id'),  # （群号）发送到对应的群里
-                                  random.choice(herbalist)))
+        send(random.choice(herbalist), request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_decrease':
         sub_type = request.get_json().get('sub_type')
         gid = request.get_json().get('group_id')
