@@ -52,7 +52,9 @@ def keyword(msg, uid, gid):
              '（必须@，不要加回复，尽量不要加表情，直接说内容）\n'
              '使用青云客机器人API\n'
              '[6] 祖安戳一戳 / 祖安我\n'
-             '当你戳一戳机器人或at机器人说“祖安我”的时候他会说一句祖安话',
+             '当你戳一戳机器人或at机器人说“祖安我”的时候他会说一句祖安话\n'
+             '========绚丽的分割线========\n'
+             'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！',
              gid, uid)
     else:
         if "admin set 咕咕咕 " in msg and (uid == 183713750 or uid == 2443818489):
@@ -63,7 +65,7 @@ def keyword(msg, uid, gid):
                  gid)
         elif "祖安我" in msg:
             herbalist = [  # 祖安语录
-                'nmd再戳我一下试试！',
+                'nmd再@我一下试试！',
                 '滚',
                 '哎wcnmlgbd鬼！',
                 'fuck you',
