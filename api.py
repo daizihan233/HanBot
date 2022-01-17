@@ -1,3 +1,5 @@
+import random
+
 import aiohttp
 import asyncio
 
@@ -8,7 +10,7 @@ def send(msg, gid, uid=None):
             async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
                 await ws.send_json({'action': 'send_group_msg', 'params': {
                     'group_id': gid,  # 往这个群发条消息
-                    'message': '[CQ:at,qq=' + uid + ']' + msg  # 消息内容
+                    'message': '[CQ:at,qq=' + str(uid) + ']' + msg  # 消息内容
                 }})
                 data = await ws.receive_json()
         return data
@@ -49,8 +51,8 @@ def keyword(msg, uid, gid):
              '[5] 聊天\n'
              '（必须@，不要加回复，尽量不要加表情，直接说内容）\n'
              '使用青云客机器人API\n'
-             '[6] 祖安戳一戳\n'
-             '当你戳一戳机器人的时候他会说一句祖安话',
+             '[6] 祖安戳一戳 / 祖安我\n'
+             '当你戳一戳机器人或at机器人说“祖安我”的时候他会说一句祖安话',
              gid, uid)
     else:
         if "admin set 咕咕咕 " in msg and (uid == 183713750 or uid == 2443818489):
@@ -59,6 +61,52 @@ def keyword(msg, uid, gid):
 
             send('您可以咕 {0} 天了'.format(str(int(msg.strip("admin set 咕咕咕 ")))),
                  gid)
+        elif "祖安我" in msg:
+            herbalist = [  # 祖安语录
+                'nmd再戳我一下试试！',
+                '滚',
+                '哎wcnmlgbd鬼！',
+                'fuck you',
+                '哎我cnmd谁tmd叫你m的让你个sb@我的？！！！',
+                # 从这一行开始，均为 苏孝泽 提供
+                'gun，傻逼',
+                '你礼貌吗？',
+                '脑残',
+                '操你妈',
+                '艹',
+                '我日你先人',
+                '我他娘的谢谢你啊',
+                '我********************',
+                '你是来吃屎的吧',
+                '一路走好，SB',
+                '你是啥玩意',
+                '你妈补天',
+                'TMD',
+                'CAO',
+                '大雨治水',
+                '你没妈',
+                '你没妈',
+                '马牛逼刚吃屎，你个马怂逼',
+                'SB',
+                '你死的好惨啊',
+                '孝出强大',
+                '宁真是个大孝子啊',
+                '你好骚啊',
+                '骚年，你爷爷在这',
+                '试试就逝世',
+                '全场目光向我看齐，我宣布一件事：你是傻逼',
+                '傻逼一号SB的你准备趋势',
+                '我操你妈',
+                '我不是人，但你绝对是狗',
+                '人家走到女生面前是夸好帅，而你走过去，会被骂变态',
+                '你好甩啊',  # 甩在南京话里指250
+                '去你妈',
+                '学校是我家，文明去你妈',
+                '学校是我家，文明靠大家',
+                '250',
+                '我屮艸芔茻你妈的'
+            ]
+            send(random.choice(herbalist), gid)
         elif "admin set 咕咕咕 " in msg and (uid != 183713750 and uid != 2443818489):
             requests.get('http://127.0.0.1:5700/send_group_msg?'
                          'group_id={0}&'
