@@ -53,7 +53,7 @@ def keyword(msg, uid, gid):
              '使用青云客机器人API\n'
              '[6] 祖安戳一戳 / 祖安我\n'
              '当你戳一戳机器人或at机器人说“祖安我”的时候他会说一句祖安话\n'
-             '========绚丽的分割线========\n'
+             '========\n'
              'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！',
              gid, uid)
     else:

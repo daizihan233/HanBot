@@ -52,7 +52,7 @@ def post_data():
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         elif '[CQ:at,qq=748029973]' in message:
-            message = str(message)[len('[CQ:at,qqs=748029973]'):]
+            message = str(message)[len('[CQ:at,qq=748029973]'):]
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         else:
