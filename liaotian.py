@@ -9,7 +9,6 @@ import api
 app = Flask(__name__)
 
 
-
 def send(msg, gid, uid=None):
     async def is_at(msg, gid, uid):
         async with aiohttp.ClientSession() as session:
@@ -42,7 +41,8 @@ def post_data():
     blacklist = [
         2854196310
     ]
-    if request.get_json().get('message_type') == 'group' and not (request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
+    if request.get_json().get('message_type') == 'group' and not (
+            request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
         gid = request.get_json().get('group_id')  # 获取群号
         uid = request.get_json().get('sender').get('user_id')  # 获取信息发送者的 QQ号码
         message = request.get_json().get('raw_message')  # 获取原始信息
@@ -64,6 +64,8 @@ def post_data():
                     message == '？' or message == '?' or message == '草':
                 api.keyword(message, uid, gid)
             elif '吃了:)' == message or '没吃:(' == message:
+                api.keyword(message, uid, gid)
+            elif ("病毒库" == message or "群文件" == message) and gid == 764869658:
                 api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
@@ -270,6 +272,7 @@ def post_data():
             '250',
             '我屮艸芔茻你妈的'
         ]
+        random.shuffle(herbalist)
         send(random.choice(herbalist), request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_decrease':
         sub_type = request.get_json().get('sub_type')
@@ -315,6 +318,20 @@ def post_data():
                                           gid,
                                           opid,
                                           uid)))
+        if gid == 764869658:
+            send(msg='\nCN-xzf：https://xzfyyds.lanzoui.com/\n'
+                     'OS相关:b02omemwh\n'
+                     '浏览器(不经常更新):b02ok1xof\n'
+                     '病毒库：b02ojc61a\n'
+                     'OS激活相关：b02ojcf0d\n'
+                     '驱动相关：b02ojckud\n'
+                     '远程控制：b02ojcr4j\n'
+                     '杀菌相关：b02ojnape\n'
+                     '技术资料：b02ojnaxc\n'
+                     '其他：b02ojj7kh\n'
+                     '工具支持：蓝奏云\n'
+                     'PS：密码均为 666',
+                 gid=gid, uid=uid)
     elif request.get_json().get('notice_type') == 'group_ban':
         sub_type = request.get_json().get('sub_type')
         gid = request.get_json().get('group_id')

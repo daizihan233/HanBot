@@ -63,6 +63,20 @@ def keyword(msg, uid, gid):
 
             send('您可以咕 {0} 天了'.format(str(int(msg.strip("admin set 咕咕咕 ")))),
                  gid)
+        elif ("群文件" == msg or "病毒库" == msg) and gid == 764869658:
+            send(msg='\nCN-xzf：https://xzfyyds.lanzoui.com/\n'
+                     'OS相关:b02omemwh\n'
+                     '浏览器(不经常更新):b02ok1xof\n'
+                     '病毒库：b02ojc61a\n'
+                     'OS激活相关：b02ojcf0d\n'
+                     '驱动相关：b02ojckud\n'
+                     '远程控制：b02ojcr4j\n'
+                     '杀菌相关：b02ojnape\n'
+                     '技术资料：b02ojnaxc\n'
+                     '其他：b02ojj7kh\n'
+                     '工具支持：蓝奏云\n'
+                     'PS：密码均为 666',
+                 gid=gid, uid=uid)
         elif "祖安我" in msg:
             herbalist = [  # 祖安语录
                 'nmd再@我一下试试！',
