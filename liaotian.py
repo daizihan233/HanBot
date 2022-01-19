@@ -222,7 +222,6 @@ def post_data():
             '哎wcnmlgbd鬼！',
             'fuck you',
             '哎我cnmd谁tmd叫你m的让你sb戳我的？！！！',
-            # 从这一行开始，均为 苏孝泽 提供
             'gun，傻逼',
             '你礼貌吗？',
             '脑残',
