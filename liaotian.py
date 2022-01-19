@@ -106,7 +106,7 @@ def post_data():
                                  'message='
                                  '{1}'.format(gid, '各位管理员请注意！！！\n'
                                                    '[Robot][Event] 加群事件\n'
-                                                   'UID：{0}\n'
+                                                   'QQ：{0}\n'
                                                    'Comment：{1}\n'
                                                    '机器人一次审核通过，但此人在黑名单内\n'
                                                    '请管理员尽快进行二次审核！'.format(uid, comment)))
@@ -121,7 +121,7 @@ def post_data():
                                  'group_id={0}&'
                                  'message='
                                  '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                   'UID：{0}\n'
+                                                   'QQ号：{0}\n'
                                                    'Comment：{1}\n'
                                                    '机器人一次审核通过！'.format(uid, comment)))
             else:
@@ -130,7 +130,7 @@ def post_data():
                              'message='
                              '{1}'.format(gid, '各位管理员请注意！！！\n'
                                                '[Robot][Event] 加群事件\n'
-                                               'UID：{0}\n'
+                                               'QQ号：{0}\n'
                                                'Comment：{1}\n'
                                                '机器人一次审核未通过\n'
                                                '请管理员尽快进行二次审核！'.format(uid, comment)))
@@ -146,7 +146,7 @@ def post_data():
                                  'message='
                                  '{1}'.format(gid, '各位管理员请注意！！！\n'
                                                    '[Robot][Event] 加群事件\n'
-                                                   'UID：{0}\n'
+                                                   'QQ号：{0}\n'
                                                    'Comment：{1}\n'
                                                    '机器人一次审核通过，但此人在黑名单内\n'
                                                    '请管理员尽快进行二次审核！'.format(uid, comment)))
@@ -161,7 +161,7 @@ def post_data():
                                  'group_id={0}&'
                                  'message='
                                  '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                   'UID：{0}\n'
+                                                   'QQ号：{0}\n'
                                                    'Comment：{1}\n'
                                                    '机器人一次审核通过！'.format(uid, comment)))
             else:
@@ -170,7 +170,7 @@ def post_data():
                              'message='
                              '{1}'.format(gid, '各位管理员请注意！！！\n'
                                                '[Robot][Event] 加群事件\n'
-                                               'UID：{0}\n'
+                                               'QQ号：{0}\n'
                                                'Comment：{1}\n'
                                                '机器人一次审核未通过\n'
                                                '请管理员尽快进行二次审核！'.format(uid, comment)))
@@ -186,7 +186,7 @@ def post_data():
                                  'message='
                                  '{1}'.format(gid, '各位管理员请注意！！！\n'
                                                    '[Robot][Event] 加群事件\n'
-                                                   'UID：{0}\n'
+                                                   'QQ号：{0}\n'
                                                    'Comment：{1}\n'
                                                    '机器人一次审核通过，但此人在黑名单内\n'
                                                    '请管理员尽快进行二次审核！'.format(uid, comment)))
@@ -201,7 +201,7 @@ def post_data():
                                  'group_id={0}&'
                                  'message='
                                  '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                   'UID：{0}\n'
+                                                   'QQ号：{0}\n'
                                                    'Comment：{1}\n'
                                                    '机器人一次审核通过！'.format(uid, comment)))
             else:
@@ -210,7 +210,7 @@ def post_data():
                              'message='
                              '{1}'.format(gid, '各位管理员请注意！！！\n'
                                                '[Robot][Event] 加群事件\n'
-                                               'UID：{0}\n'
+                                               'QQ号：{0}\n'
                                                'Comment：{1}\n'
                                                '机器人一次审核未通过\n'
                                                '请管理员尽快进行二次审核！'.format(uid, comment)))
