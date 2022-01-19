@@ -95,7 +95,8 @@ def post_data():
             f.write(str(requests))
         if gid == 907112053 and t == 'add':
             print('发现 907112053 的加群请求！')
-            if comment == 'MEMZ123' or comment == '1511907771' or comment == 'UID1511907771' or comment == 'WindowsSetup2010':
+            if comment == 'MEMZ123' or comment == '1511907771' or comment == 'UID1511907771' or \
+                    comment == 'WINDOWSSETUP2010':
                 fuck = open('fucklist', 'r').readlines()
                 for i in range(len(fuck)):
                     fuck[i] = fuck[i].strip('\n')
