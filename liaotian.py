@@ -68,9 +68,9 @@ def post_data():
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
         comment = str(request.get_json().get('comment')) \
-            .strip('问题：群主的B站UID/抖音号是？ 答案：') \
-            .strip('问题：群主的B站UID/抖音号是？\n答案：') \
-            .strip('问题：群主的B站UID/抖音号是？') \
+            .strip('问题：群主的UID/抖音号/快手 答案：') \
+            .strip('问题：群主的UID/抖音号/快手\n答案：') \
+            .strip('问题：群主的UID/抖音号/快手') \
             .strip('\n答案：') \
             .strip('答案：') \
             .strip('\n') \
