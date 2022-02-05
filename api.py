@@ -1,7 +1,13 @@
+import os
 import random
 
 import aiohttp
 import asyncio
+
+
+def isexists_dir_create(path):
+    if not os.path.exists(path):
+        open(path, 'w', encoding='utf-8').close()
 
 
 def send(msg, gid, uid=None):
@@ -37,10 +43,12 @@ def keyword(msg, uid, gid):
     if msg == '' or msg == ' ':
         send('嘿！这里是菜单\n'
              '[1] 咕咕咕\n'
-             '（部分群可用，无需@）\n'
+             '请说：咕咕咕（当然可以是任何数量个咕）\n'
              '[2] 黑名单\n'
-             '语法1：@机器人 黑名单 @...（直接@）\n'
-             '语法2：@机器人 黑名单 ...（QQ号）\n'
+             '注意：此程序对空格尤为敏感\n'
+             '注意：您必须有机器人管理员权限才能执行此功能\n'
+             '语法1：@机器人【空格】黑名单【空格】@...（直接@）\n'
+             '语法2：@机器人【空格】黑名单【空格】...（QQ号）\n'
              '[3] 加群自动同意\n'
              '（部分群可用，无需@，自动检测）\n'
              '[4] 特定关键词复读\n'
@@ -49,42 +57,57 @@ def keyword(msg, uid, gid):
              'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] '
              '| [CQ:face,id=277] | [CQ:face,id=178]\n'
              '[5] 聊天\n'
-             '（必须@，不要加回复，尽量不要加表情，直接说内容）\n'
+             '（必须@，@尽量置前，不要加回复，尽量不要加表情，直接说内容）\n'
              '使用青云客机器人API\n'
              '[6] 祖安戳一戳 / 祖安我\n'
              '当你戳一戳机器人或at机器人说“祖安我”的时候他会说一句祖安话\n'
+             '[7] 申请管理员\n'
+             '注：是机器人管理员，不是群管理员'
              '========\n'
              'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！',
              gid, uid)
     else:
-        if "admin set 咕咕咕 " in msg and (uid == 183713750 or uid == 2443818489):
-            with open('gugu.txt', 'w') as file:
-                file.write(str(int(msg.strip("admin set 咕咕咕 "))))
-
-            send('您可以咕 {0} 天了'.format(str(int(msg.strip("admin set 咕咕咕 ")))),
-                 gid)
+        if msg == '申请管理员':
+            requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
+                         '【机器人管理员申请】\n'
+                         '[GID]: {}\n'
+                         '[UID]: {}'.format(gid, uid))
+            send('申请成功！ヾ(≧▽≦*)o请不要短时间内重复申请哦！开发能在后台看见哒~重复申请的话不会更快处理！！！（超大声）', gid, uid)
         elif ("群文件" == msg or "病毒库" == msg) and gid == 764869658:
-            send(msg='\nCN-xzf：https://xzfyyds.lanzoui.com/\n'
-                     'OS相关:b02omemwh\n'
-                     '浏览器(不经常更新):b02ok1xof\n'
-                     '病毒库：b02ojc61a\n'
-                     'OS激活相关：b02ojcf0d\n'
-                     '驱动相关：b02ojckud\n'
-                     '远程控制：b02ojcr4j\n'
-                     '杀菌相关：b02ojnape\n'
-                     '技术资料：b02ojnaxc\n'
-                     '其他：b02ojj7kh\n'
-                     '工具支持：蓝奏云\n'
-                     'PS：密码均为 666',
+            send(msg=
+                 '''\nCN-xzf：https://xzfyyds.lanzoui.com/
+            OS相关:b02omemwh
+ 浏览器(不经常更新):b02ok1xof
+           病毒库：b02ojc61a
+           OS激活相关：b02ojcf0d
+           驱动相关：b02ojckud
+           远程控制：b02ojcr4j
+           杀菌相关：b02ojnape
+           技术资料：b02ojnaxc
+           其他：b02ojj7kh
+    工具支持：蓝奏云   
+     PS：密码均为 666
+群文件
+https://share.weiyun.com/VglthxSV
+    工具支持：腾讯微云''',
                  gid=gid, uid=uid)
         elif "祖安我" in msg:
             herbalist = [  # 祖安语录
+                '你妈死了',
+                '爪巴',
+                '傻逼一个',
+                '114514',
+                '1919810',
+                '1145141919810',
+                '1919810114514',
+                '1145141919810HOM',
+                '和你聊天真开心,送你一朵玫瑰花',
+                '先辈送福,新年快乐',
                 'nmd再@我一下试试！',
                 '滚',
                 '哎wcnmlgbd鬼！',
                 'fuck you',
                 '哎我cnmd谁tmd叫你m的让你个sb@我的？！！！',
-                # 从这一行开始，均为 苏孝泽 提供
                 'gun，傻逼',
                 '你礼貌吗？',
                 '脑残',
@@ -123,58 +146,82 @@ def keyword(msg, uid, gid):
                 '我屮艸芔茻你妈的'
             ]
             send(random.choice(herbalist), gid)
-        elif "admin set 咕咕咕 " in msg and (uid != 183713750 and uid != 2443818489):
-            requests.get('http://127.0.0.1:5700/send_group_msg?'
-                         'group_id={0}&'
-                         'message=[CQ:at,qq={1}]'
-                         '{2}'.format(gid, uid, '你不是机器人的开发者/管理，权限不足，无法完成此操作'))
-        elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
-            f = str(str(msg).split(' ')[-1])[len('[CQ:at,qq='):-1]
-            fuck = open('fucklist', 'r').readlines()
-            for i in range(len(fuck)):
-                fuck[i] = fuck[i].strip('\n')
+        elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg) and ((str(uid) + '\n') in
+                                                           open('admin.txt', 'r', encoding='UTF-8').readlines()):
+            if len(str(msg).split(' ')) != 2:
+                send('error: 语法错误！应该至少有2个空格', gid, uid)
+            else:
+                tmp = str(msg).split(' ')
+                try:
+                    tmp = tmp[-1][len('[CQ:at,qq='):-1]
+                    tmp = int(tmp)
+                    if tmp < 10000:
+                        send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                    else:
+                        f = str(str(msg).split(' ')[-1])[len('[CQ:at,qq='):-1]
+                        fuck = open('fucklist', 'r').readlines()
+                        for i in range(len(fuck)):
+                            fuck[i] = fuck[i].strip('\n')
 
-            if f in fuck:
-                requests.get('http://127.0.0.1:5700/send_group_msg?'
-                             'group_id={0}&'
-                             'message=[CQ:at,qq={1}] '
-                             '{2}'.format(gid, uid, '{} 已在黑名单\n'
-                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                        if f in fuck:
+                            requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                         'group_id={0}&'
+                                         'message=[CQ:at,qq={1}] '
+                                         '{2}'.format(gid, uid, '{} 已在黑名单\n'
+                                                                '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                        else:
+                            if f != 183713750 and f != 898140027:
+                                open('fucklist', 'a').write(f + '\n')
+                                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                             'group_id={0}&'
+                                             'message=[CQ:at,qq={1}] '
+                                             '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
+                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                except:
+                    send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
+
+
+        elif "黑名单" in msg and ((str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines()):
+            if len(str(msg).split(' ')) != 2:
+                send('error: 语法错误！应该至少有2个空格', gid, uid)
             else:
-                if f != 183713750 and f != 898140027:
-                    open('fucklist', 'a').write(f + '\n')
-                    requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                 'group_id={0}&'
-                                 'message=[CQ:at,qq={1}] '
-                                 '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
-                                                        '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
-        elif "黑名单" in msg:
-            f = str(str(msg).split(' ')[-1])
-            fuck = open('fucklist', 'r').readlines()
-            open('fucklist', 'a').write(f + '\n')
-            if f in fuck:
-                requests.get('http://127.0.0.1:5700/send_group_msg?'
-                             'group_id={0}&'
-                             'message=[CQ:at,qq={1}] '
-                             '{2}'.format(gid, uid, '{} 已在黑名单\n'
-                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
-            else:
-                requests.get('http://127.0.0.1:5700/send_group_msg?'
-                             'group_id={0}&'
-                             'message=[CQ:at,qq={1}] '
-                             '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
-                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
-        elif gid == 623377914 and ('咕' in msg):
+                tmp = str(msg).split(' ')
+                try:
+                    tmp = tmp[-1]
+                    tmp = int(tmp)
+                    if tmp < 10000:
+                        send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                    else:
+                        f = str(str(msg).split(' ')[-1])
+                        fuck = open('fucklist', 'r').readlines()
+                        open('fucklist', 'a').write(f + '\n')
+                        if f in fuck:
+                            requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                         'group_id={0}&'
+                                         'message=[CQ:at,qq={1}] '
+                                         '{2}'.format(gid, uid, '{} 已在黑名单\n'
+                                                                '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                        else:
+                            requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                         'group_id={0}&'
+                                         'message=[CQ:at,qq={1}] '
+                                         '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
+                                                                '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                except:
+                    send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
+
+        elif '咕' in msg:
             msg = str(msg).count('咕')
-            with open('gugu.txt', 'r') as file:
-                gu = int(file.readlines()[0])
-            gu = gu + msg
-            with open('gugu.txt', 'w') as file:
-                file.write(str(gu))
+            isexists_dir_create('gugu{}.txt'.format(gid))
+            with open('gugu{}.txt'.format(gid), 'r+', encoding='utf-8') as f:
+                t = f.read()
+                if t == '':
+                    t = 0
+                f.write(str(int(t) + msg))
             requests.get('http://127.0.0.1:5700/send_group_msg?'
                          'group_id={0}&'
                          'message=鸽子'
-                         '{1}'.format(gid, '您可以咕 {0} 天了').format(gu))
+                         '{1}'.format(gid, '您可以咕 {0} 天了').format(str(int(t) + msg)))
         elif gid == 623377914 and ('咕' in msg):
             msg = str(msg).count('咕')
             with open('gugu.txt', 'r') as file:
