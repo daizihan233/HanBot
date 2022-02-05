@@ -1,6 +1,5 @@
 import os
 import random
-
 import aiohttp
 import asyncio
 
@@ -218,11 +217,15 @@ https://share.weiyun.com/VglthxSV
                 t = f.read()
                 if t == '':
                     t = 0
-                f.write(str(int(t) + msg))
+                print('t: {}, msg: {}'.format(t, msg))
+                import re
+                t = int(re.findall(r'\d+', str(t))[0]) + msg
+                open('gugu{}.txt'.format(gid), 'w').close()
+                f.write(str(t))
             requests.get('http://127.0.0.1:5700/send_group_msg?'
                          'group_id={0}&'
                          'message=鸽子'
-                         '{1}'.format(gid, '您可以咕 {0} 天了').format(str(int(t) + msg)))
+                         '{1}'.format(gid, '您可以咕 {0} 天了').format(t))
         elif gid == 623377914 and ('咕' in msg):
             msg = str(msg).count('咕')
             with open('gugu.txt', 'r') as file:
