@@ -64,7 +64,12 @@ def keyword(msg, uid, gid):
              '注：是机器人管理员，不是群管理员\n'
              '语法：@机器人 申请管理员\n'
              '========\n'
-             'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！',
+             'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！\n'
+             '========\n'
+             '总有人问：“GitHub上不去怎么办？”\n'
+             '请下载：https://gitee.com/docmirror/dev-sidecar\n'
+             '注意：请仔细阅读文档，否则可能会出现意想不到的问题\n'
+             '其它问题请联系作者QQ：183713750',
              gid, uid)
     else:
         if msg == '申请管理员':
