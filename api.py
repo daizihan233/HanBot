@@ -1,5 +1,7 @@
 import os
 import random
+from urllib import parse
+
 import aiohttp
 import asyncio
 
@@ -63,6 +65,11 @@ def keyword(msg, uid, gid):
              '[7] 申请管理员\n'
              '注：是机器人管理员，不是群管理员\n'
              '语法：@机器人 申请管理员\n'
+             '[8] 百度\n'
+             '让我帮你百度一下 :)\n'
+             '百度对面您来讲就这么难吗？？？\n'
+             '语法：@机器人【空格】百度【空格】...（要搜的东西）\n'
+             '把最后机器人发出来的网址发给你爱提问的朋友 :)'
              '========\n'
              'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！\n'
              '========\n'
@@ -96,6 +103,9 @@ def keyword(msg, uid, gid):
 https://share.weiyun.com/VglthxSV
     工具支持：腾讯微云''',
                  gid=gid, uid=uid)
+        elif msg[:3] == '百度 ':
+            url = 'https://baidu.physton.com/?q=' + parse.quote(msg[3:])
+            send(url, gid, uid)
         elif "祖安我" in msg:
             herbalist = [  # 祖安语录
                 '你刚出生就被你父母抛弃不得不去乞讨结果乞讨到了一盆屎然后尼玛你爹被杀你又被人贩子带去解剖这就是你的傻逼一生',
