@@ -152,69 +152,141 @@ https://share.weiyun.com/VglthxSV
                 '我屮艸芔茻你妈的'
             ]
             send(random.choice(herbalist), gid)
-        elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg) and ((str(uid) + '\n') in
-                                                           open('admin.txt', 'r', encoding='UTF-8').readlines()):
-            if len(str(msg).split(' ')) != 2:
-                send('error: 语法错误！应该至少有2个空格', gid, uid)
-            else:
-                tmp = str(msg).split(' ')
-                try:
-                    tmp = tmp[-1][len('[CQ:at,qq='):-1]
-                    tmp = int(tmp)
-                    if tmp < 10000:
-                        send('error: 参数错误！QQ号最小应该是10000', gid, uid)
-                    else:
-                        f = str(str(msg).split(' ')[-1])[len('[CQ:at,qq='):-1]
-                        fuck = open('fucklist', 'r').readlines()
-                        for i in range(len(fuck)):
-                            fuck[i] = fuck[i].strip('\n')
-
-                        if f in fuck:
-                            requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                         'group_id={0}&'
-                                         'message=[CQ:at,qq={1}] '
-                                         '{2}'.format(gid, uid, '{} 已在黑名单\n'
-                                                                '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+        elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
+            if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
+                if len(str(msg).split(' ')) != 2:
+                    send('error: 语法错误！应该至少有2个空格', gid, uid)
+                else:
+                    tmp = str(msg).split(' ')
+                    try:
+                        tmp = tmp[-1][len('[CQ:at,qq='):-1]
+                        tmp = int(tmp)
+                        if tmp < 10000:
+                            send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                        elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
+                            send('error: 参数错误！无法添加此人', gid, uid)
                         else:
-                            if f != 183713750 and f != 898140027:
+                            f = str(str(msg).split(' ')[-1])[len('[CQ:at,qq='):-1]
+                            fuck = open('fucklist', 'r').readlines()
+                            for i in range(len(fuck)):
+                                fuck[i] = fuck[i].strip('\n')
+
+                            if f in fuck:
+                                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                             'group_id={0}&'
+                                             'message=[CQ:at,qq={1}] '
+                                             '{2}'.format(gid, uid, '{} 已在黑名单\n'
+                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                            else:
                                 open('fucklist', 'a').write(f + '\n')
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
                                              '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
                                                                     '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
-                except:
-                    send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
-
-
-        elif "黑名单" in msg and ((str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines()):
-            if len(str(msg).split(' ')) != 2:
-                send('error: 语法错误！应该至少有2个空格', gid, uid)
+                    except:
+                        send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
             else:
-                tmp = str(msg).split(' ')
-                try:
-                    tmp = tmp[-1]
-                    tmp = int(tmp)
-                    if tmp < 10000:
-                        send('error: 参数错误！QQ号最小应该是10000', gid, uid)
-                    else:
-                        f = str(str(msg).split(' ')[-1])
-                        fuck = open('fucklist', 'r').readlines()
-                        open('fucklist', 'a').write(f + '\n')
-                        if f in fuck:
-                            requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                         'group_id={0}&'
-                                         'message=[CQ:at,qq={1}] '
-                                         '{2}'.format(gid, uid, '{} 已在黑名单\n'
-                                                                '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                if len(str(msg).split(' ')) != 3:
+                    send('error: 语法错误！您不是机器人的管理员，需要填写理由（将语法更改为@机器人【空格】黑名单【空格】@...【空格】您的理由）应该至少有3个空格', gid, uid)
+                else:
+                    tmp = str(msg).split(' ')
+                    try:
+                        tmp = tmp[-2][len('[CQ:at,qq='):-1]
+                        tmp = int(tmp)
+                        if tmp < 10000:
+                            send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                        elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
+                            send('error: 参数错误！无法添加此人', gid, uid)
                         else:
-                            requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                         'group_id={0}&'
-                                         'message=[CQ:at,qq={1}] '
-                                         '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
-                                                                '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
-                except:
-                    send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
+                            f = str(str(msg).split(' ')[-2])[len('[CQ:at,qq='):-1]
+                            r = str(str(msg).split(' ')[-1])
+                            fuck = open('fucklist', 'r').readlines()
+                            for i in range(len(fuck)):
+                                fuck[i] = fuck[i].strip('\n')
+
+                            if f in fuck:
+                                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                             'group_id={0}&'
+                                             'message=[CQ:at,qq={1}] '
+                                             '{2}'.format(gid, uid, '{} 已在黑名单\n'
+                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                            else:
+                                requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
+                                             '【黑名单】\n'
+                                             '[GID]: {}\n'
+                                             '[UID]: {}\n'
+                                             '[Black]: {}\n'
+                                             '[Reason]: {}'.format(gid, uid, f, r))
+                                send('已发送至后台，等待人工审核', gid, uid)
+                    except:
+                        send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
+
+
+        elif "黑名单" in msg:
+            if ((str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines()):
+                if len(str(msg).split(' ')) != 2:
+                    send('error: 语法错误！应该至少有2个空格', gid, uid)
+                else:
+                    tmp = str(msg).split(' ')
+                    try:
+                        tmp = tmp[-1]
+                        tmp = int(tmp)
+                        if tmp < 10000:
+                            send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                        else:
+                            f = str(str(msg).split(' ')[-1])
+                            fuck = open('fucklist', 'r').readlines()
+                            open('fucklist', 'a').write(f + '\n')
+                            if f in fuck:
+                                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                             'group_id={0}&'
+                                             'message=[CQ:at,qq={1}] '
+                                             '{2}'.format(gid, uid, '{} 已在黑名单\n'
+                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                            else:
+                                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                             'group_id={0}&'
+                                             'message=[CQ:at,qq={1}] '
+                                             '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
+                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                    except:
+                        send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
+            else:
+                if len(str(msg).split(' ')) != 3:
+                    send('error: 语法错误！您不是机器人的管理员，需要填写理由（将语法更改为@机器人【空格】黑名单【空格】...【空格】您的理由）应该至少有3个空格', gid, uid)
+                else:
+                    tmp = str(msg).split(' ')
+                    try:
+                        tmp = tmp[-2][len('[CQ:at,qq='):-1]
+                        tmp = int(tmp)
+                        if tmp < 10000:
+                            send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                        elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
+                            send('error: 参数错误！无法添加此人', gid, uid)
+                        else:
+                            f = str(str(msg).split(' ')[-2])[len('[CQ:at,qq='):-1]
+                            r = str(str(msg).split(' ')[-1])
+                            fuck = open('fucklist', 'r').readlines()
+                            for i in range(len(fuck)):
+                                fuck[i] = fuck[i].strip('\n')
+
+                            if f in fuck:
+                                requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                             'group_id={0}&'
+                                             'message=[CQ:at,qq={1}] '
+                                             '{2}'.format(gid, uid, '{} 已在黑名单\n'
+                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                            else:
+                                requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
+                                             '【黑名单】\n'
+                                             '[GID]: {}\n'
+                                             '[UID]: {}\n'
+                                             '[Black]: {}\n'
+                                             '[Reason]: {}'.format(gid, uid, f, r))
+                                send('已发送至后台，等待人工审核', gid, uid)
+                    except:
+                        send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
 
         elif '咕' in msg:
             msg = str(msg).count('咕')
