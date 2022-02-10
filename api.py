@@ -5,7 +5,6 @@ from urllib import parse
 import aiohttp
 import asyncio
 
-
 def isexists_dir_create(path):
     if not os.path.exists(path):
         open(path, 'w', encoding='utf-8').close()
