@@ -39,7 +39,8 @@ def send(msg, gid, uid=None):
 @app.route('/', methods=["POST", 'WebSocket'])
 def post_data():
     blacklist = [
-        2854196310
+        2854196310,
+        3578255926
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
