@@ -110,6 +110,7 @@ https://share.weiyun.com/VglthxSV
         elif "祖安我" in msg:
             herbalist = [  # 祖安语录
                 '你刚出生就被你父母抛弃不得不去乞讨结果乞讨到了一盆屎然后尼玛你爹被杀你又被人贩子带去解剖这就是你的傻逼一生',
+                '你就是歌姬吧',
                 '你妈死了',
                 '爪巴',
                 '傻逼一个',
@@ -160,7 +161,8 @@ https://share.weiyun.com/VglthxSV
                 '学校是我家，文明去你妈',
                 '学校是我家，文明靠大家',
                 '250',
-                '我屮艸芔茻你妈的'
+                '我屮艸芔茻你妈的',
+                requests.get('https://fun.886.be/api.php?level=max').text
             ]
             send(random.choice(herbalist), gid)
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
