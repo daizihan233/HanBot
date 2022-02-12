@@ -28,9 +28,10 @@ Thanks to all of you!（感谢你们所有人！）<br>
 **注解：任何语言都是从0开始数的，而不是1**<br>
 **&emsp;&emsp;&emsp;Python中-1表示倒数第一个**
 ## **特别鸣谢**
-##### 1.JetBrains
-![jb_beam.png](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
-感谢JetBrains对开源项目的支持
+## 1.JetBrains
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" style="width: 250px; height: 250px" alt="JetBrains">
+
+_感谢JetBrains对开源项目的支持_
 
 ## 黑名单
 #### _厚里屑，fxxk you_
