@@ -27,6 +27,11 @@ P.S. 有任何有关此项目的任何问题请加作者QQ：183713750<br>
 Thanks to all of you!（感谢你们所有人！）<br>
 **注解：任何语言都是从0开始数的，而不是1**<br>
 **&emsp;&emsp;&emsp;Python中-1表示倒数第一个**
+## **特别鸣谢**
+##### 1.JetBrains
+![jb_beam.png](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
+感谢JetBrains对开源项目的支持
+
 ## 黑名单
 #### _厚里屑，fxxk you_
 ##### 1.QQ2098275185
@@ -34,10 +39,22 @@ Thanks to all of you!（感谢你们所有人！）<br>
 哦对了，谢谢你，对祖安语录做出的“卓越”的贡献<br>
 我真想问候你全家
 ![img.png](no_use/img.png)
+## 公告
+[https://shimo.im/docs/KqHXw8XrrwpXqGY9](https://shimo.im/docs/KqHXw8XrrwpXqGY9)
 ## **吃个瓜**
 ### **2022/1/26**
 机器人被腾讯封了一天
 ## **更新日志**
+### **2022/2/12**
+#### **0.前言（作者想说）**
+    0.1 《 最 后 的 挣 扎 》
+#### **1.更新**
+    1.1 RADEME.md文件加了些内容
+#### **2.优化**
+    啥也没有
+#### **3.修复**
+    啥也没有
+****
 ### **2022/2/11**
 #### **0.前言（作者想说）**
     啥也没有

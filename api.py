@@ -56,7 +56,7 @@ def keyword(msg, uid, gid):
              '支持的关键词（“ | ”分割）：\n'
              'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] '
              '| [CQ:face,id=277] | [CQ:face,id=178]\n'
-             '[5] 聊天\n'
+             '[5] 聊天（维护中）\n'
              '（必须@，@尽量置前，不要加回复，尽量不要加表情，直接说内容）\n'
              '使用青云客机器人API\n'
              '[6] 祖安戳一戳 / 祖安我\n'
@@ -349,21 +349,17 @@ https://share.weiyun.com/VglthxSV
             print('request:', re)
 
         else:
-            for i in range(999):
-                msg = str(msg).strip("[CQ:face,id=" + str(i) + "]")
-            a = requests.get("https://api.qingyunke.com/api.php?key=free&appid=0&msg=" + msg.replace("+", "加"))
-            a = json.loads(a.text)
-            print(a)
-            a = a['content'].replace("{br}", "\n").replace("菲菲", "我").replace("{face:1}", "[CQ:face,id=1]")
-            for i in range(999):
-                msg = str(a).replace('{face:' + str(i) + '}', "[CQ:face,id=" + str(i) + "]")
-            print('msg: {0}'.format(msg))
-            print('uid: {0}'.format(uid))
-            print('gid: {0}'.format(gid))
-            re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                              'group_id={0}&'
-                              'message=[CQ:at,qq={1}] '
-                              '{2}'.format(gid, uid, a))
-            re = re.text
-            print('requests_get: {0}'.format(re))
-            print('send: {0}'.format(a))
+            # a = requests.get("https://api.qingyunke.com/api.php?key=free&appid=0&msg=" + msg.replace("+", "加"))
+            # a = json.loads(a.text)
+            # print(a)
+            # a = a['content'].replace("{br}", "\n").replace("菲菲", "我")
+            # print('msg: {0}'.format(msg))
+            # print('uid: {0}'.format(uid))
+            # print('gid: {0}'.format(gid))
+            # re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+            #                   'group_id={0}&'
+            #                   'message=[CQ:at,qq={1}] '
+            #                   '{2}'.format(gid, uid, a))
+            # print('requests_get: {0}'.format(re))
+            # print('send: {0}'.format(a))
+            pass
