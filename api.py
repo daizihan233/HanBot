@@ -6,6 +6,7 @@ from urllib import parse
 import aiohttp
 import asyncio
 
+
 def isexists_dir_create(path):
     if not os.path.exists(path):
         open(path, 'w', encoding='utf-8').close()
@@ -358,6 +359,7 @@ https://share.weiyun.com/VglthxSV
                 '%22%7D%2C%22type%22%3A%22txt%22%7D&ts=1644758917124').text
             import re
             a = re.findall(r'\"content\":\"(.+?)\\r\\n\"', ret)[-1]
+            a = a.strip('\\r').repleace('\\n', '\n')
             if a != 'defaultReply':
                 re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                                   'group_id={0}&'
