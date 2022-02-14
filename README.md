@@ -12,21 +12,30 @@ P.S. 有任何有关此项目的任何问题请加作者QQ：183713750<br>
 &emsp;1.1 setup-windows安装: [GO TO Bilibili!](https://space.bilibili.com/589370259) <br>
 &emsp;1.2 WindowsSetup: [GO TO Bilibili!](https://space.bilibili.com/1511907771) <br>
 &emsp;至于我嘛~自己猜咯，2333
-## **贡献名单**
-#### _感谢这些人对此项目的贡献（按时间顺序排序）_
-##### 0.HanTools
+# **贡献名单专区**
+### _感谢这些人对此项目的贡献（按时间顺序排序）_
+### 0.HanTools
 项目的核心开发者，daizihan233和HanTools233都是他，只不过是两个号。<br>
-~~自己感谢自己的屑~~
-##### 1.suxiaoze
+~~自己感谢自己的屑~
+### 祖安语录
+#### 1. suxiaoze
 丰富了此项目**亿些**的祖安语录
-##### 2.cnstlapy
+#### 2. cnstlapy
 第一个有意向像此项目提交Pull requests的人，丰富了此项目的祖安语录
-##### -1.所有Star、以及其他我没有写上但对此项目作出贡献的人
-尽管可能你们对此项目有贡献，但贡献的不多，或是虽有但没告诉我<br>
-我可能没写上，但，<br>
+#### ???. 所有Star、以及其他我没有写上但对此项目作出贡献的人
 Thanks to all of you!（感谢你们所有人！）<br>
-**注解：任何语言都是从0开始数的，而不是1**<br>
-**&emsp;&emsp;&emsp;Python中-1表示倒数第一个**
+### 默认回复
+_注：除不尽的保留一位小数_
+#### 1. 三星A71观察
+填写 4 条，有效回收 2 条，有效回收率 50%
+#### 2. Millennium Force
+填写 3 条，有效回收 2 条，有效回收率 66.7%
+#### 3. Windows 3.1
+填写 10 条，有效回收 0 条，有效回收率 0%<br>
+~~由于你很勇，所以就写上了~~
+#### 4. suxiaoze
+填写 12 条，有效回收 12 条，有效回收率 100%<br>
+~~牛逼！~~
 ## **特别鸣谢**
 ## 1.JetBrains
 <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" style="width: 250px; height: 250px" alt="JetBrains">

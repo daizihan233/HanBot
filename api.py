@@ -1,5 +1,6 @@
 import os
 import random
+import urllib
 from urllib import parse
 
 import aiohttp
@@ -46,7 +47,7 @@ def keyword(msg, uid, gid):
              '请说：咕咕咕（当然可以是任何数量个咕）\n'
              '[2] 黑名单\n'
              '注意：此程序对空格尤为敏感\n'
-             '注意：您必须有机器人管理员权限才能执行此功能，否则机器人不会理你\n'
+             '注意：您必须有机器人管理员权限才能执行此功能\n'
              '语法1：@机器人【空格】黑名单【空格】@...（直接@）\n'
              '语法2：@机器人【空格】黑名单【空格】...（QQ号）\n'
              '[3] 加群自动同意\n'
@@ -56,9 +57,9 @@ def keyword(msg, uid, gid):
              '支持的关键词（“ | ”分割）：\n'
              'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] '
              '| [CQ:face,id=277] | [CQ:face,id=178]\n'
-             '[5] 聊天（维护中）\n'
+             '[5] 聊天（Beta试验版）\n'
              '（必须@，@尽量置前，不要加回复，尽量不要加表情，直接说内容）\n'
-             '使用青云客机器人API\n'
+             '使用小i机器人API\n'
              '[6] 祖安戳一戳 / 祖安我\n'
              '当你戳一戳机器人或at机器人说“祖安我”的时候他会说一句祖安话\n'
              '[7] 申请管理员\n'
@@ -349,17 +350,40 @@ https://share.weiyun.com/VglthxSV
             print('request:', re)
 
         else:
-            # a = requests.get("https://api.qingyunke.com/api.php?key=free&appid=0&msg=" + msg.replace("+", "加"))
-            # a = json.loads(a.text)
-            # print(a)
-            # a = a['content'].replace("{br}", "\n").replace("菲菲", "我")
-            # print('msg: {0}'.format(msg))
-            # print('uid: {0}'.format(uid))
-            # print('gid: {0}'.format(gid))
-            # re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-            #                   'group_id={0}&'
-            #                   'message=[CQ:at,qq={1}] '
-            #                   '{2}'.format(gid, uid, a))
-            # print('requests_get: {0}'.format(re))
-            # print('send: {0}'.format(a))
-            pass
+            msg = urllib.parse.quote(msg)
+            ret = requests.get(
+                'http://nlp.xiaoi.com/robot/webrobot?&callback=__webrobot_processMsg&data=%7B%22sessionId%22%3A'
+                '%228819ee11968945c2b10da5c81b4d5bbf%22%2C%22robotId%22%3A%22webbot%22%2C%22userId%22%3A'
+                '%22c15603528da245a2ade587e4d061725b%22%2C%22body%22%3A%7B%22content%22%3A%22' + msg +
+                '%22%7D%2C%22type%22%3A%22txt%22%7D&ts=1644758917124').text
+            import re
+            a = re.findall(r'\"content\":\"(.+?)\\r\\n\"', ret)[-1]
+            if a != 'defaultReply':
+                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                  'group_id={0}&'
+                                  'message=[CQ:at,qq={1}] '
+                                  '{2}'.format(gid, uid, a))
+            else:
+                a = [
+                    '额......',
+                    'az',
+                    '我去Cedar Point坐过山车去了，总比你在这聊天刺激多了',
+                    '你需要快车道吗？',
+                    '你的机器人暂时崩溃，请换个问题QAQ',
+                    '对此时，我表示无法表达',
+                    '不会，请换(￣个￣)',
+                    '我不知道 :(',
+                    '我不知道，但是我知道我是机器人',
+                    '额这个，我不会，滚',
+                    '我不会，长大后再学习 :)',
+                    'e，这个事情你可以去问问其他人，不要让我来嘛(ᗒᗨᗕ)',
+                    '机器人系统崩溃(ᗒᗨᗕ)',
+                    '哇，你竟然难倒我了，真厉害(≧▽≦)',
+                    '鬼'
+                ]
+                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                  'group_id={0}&'
+                                  'message=[CQ:at,qq={1}] '
+                                  '{2}'.format(gid, uid, random.choice(a)))
+            print('requests_get: {0}'.format(re))
+            print('send: {0}'.format(a))
