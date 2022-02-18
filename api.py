@@ -331,7 +331,9 @@ https://share.weiyun.com/VglthxSV
                 print('t: {}, msg: {}'.format(t, msg))
                 import re
                 t = int(re.findall(r'\d+', str(t))[0]) + msg
-                open('gugu{}.txt'.format(gid), 'w').close()
+                tmp_file = open('gugu{}.txt'.format(gid), 'w')
+                tmp_file.write('')
+                tmp_file.close()
                 f.write(str(t))
             requests.get('http://127.0.0.1:5700/send_group_msg?'
                          'group_id={0}&'

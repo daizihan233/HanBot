@@ -282,6 +282,19 @@ def post_data():
 https://share.weiyun.com/VglthxSV
     工具支持：腾讯微云''',
                  gid=gid, uid=uid)
+            if gid == 535979960:
+                l = [
+                    '欢迎 :)',
+                    ':)',
+                    'ohhhhhhhhhhhhhhh，有新人欸',
+                    'Hi~',
+                    '你好！',
+                    '你好啊！别潜水哦~',
+                    'hi，这里是setup的小群，一些奇奇怪怪反正别问的问题，不要把群号告诉任何人，谢谢啦~'
+                ]
+                send(msg=random.choice(l),
+                     gid=gid,
+                     uid=uid)
     elif request.get_json().get('notice_type') == 'group_card':
         requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
                      '【改名监测（Beta）】\n'
