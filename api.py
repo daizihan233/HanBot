@@ -359,7 +359,7 @@ https://share.weiyun.com/VglthxSV
                 '%22%7D%2C%22type%22%3A%22txt%22%7D&ts=1644758917124').text
             import re
             a = re.findall(r'\"content\":\"(.+?)\\r\\n\"', ret)[-1]
-            a = a.strip('\\r').repleace('\\n', '\n')
+            a = a.strip('\\r').replace('\\n', '\n')
             if a != 'defaultReply':
                 re = requests.get('http://127.0.0.1:5700/send_group_msg?'
                                   'group_id={0}&'
