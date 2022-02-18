@@ -39,7 +39,7 @@ def send(msg, gid, uid=None):
         asyncio.run(no_at(msg, gid))
 
 
-def keyword(msg, uid, gid):
+def keyword(msg:str, uid, gid):
     import requests
     import json
     if msg == '' or msg == ' ':
@@ -70,6 +70,11 @@ def keyword(msg, uid, gid):
              '让我帮你百度一下 :)\n'
              '百度对您来讲就这么难吗？？？\n'
              '语法：@机器人【空格】百度【空格】...（要搜的东西）\n'
+             '把最后机器人发出来的网址发给你爱提问的朋友 :)\n'
+             '[9] 哔哩哔哩\n'
+             '让我帮你哔哩哔哩一下 :)\n'
+             'B站对您来讲就这么难吗？？？\n'
+             '语法：@机器人【空格】哔哩哔哩【空格】...（要搜的东西）\n'
              '把最后机器人发出来的网址发给你爱提问的朋友 :)\n'
              '========\n'
              'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！\n'
@@ -107,8 +112,21 @@ https://share.weiyun.com/VglthxSV
     工具支持：腾讯微云''',
                  gid=gid, uid=uid)
         elif msg[:3] == '百度 ':
-            url = 'https://baidu.physton.com/?q=' + parse.quote(msg[3:])
-            send(url, gid, uid)
+            msg = msg.split(' ')
+            if len(msg) <= 1:
+                send('www.baiidu.com', uid, gid)
+            else:
+                msg.pop(0)
+                url = 'https://baidu.physton.com/?q=' + parse.quote(''.join(msg))
+                send(url, gid, uid)
+        elif msg[:5] == '哔哩哔哩 ':
+            msg = msg.split(' ')
+            if len(msg) <= 1:
+                send('www.bilibili.com', uid, gid)
+            else:
+                msg.pop(0)
+                url = 'https://www.bilitools.top/t/1/?k=输入的东西' + parse.quote(''.join(msg))
+                send(url, gid, uid)
         elif "祖安我" in msg:
             herbalist = [  # 祖安语录
                 '你刚出生就被你父母抛弃不得不去乞讨结果乞讨到了一盆屎然后尼玛你爹被杀你又被人贩子带去解剖这就是你的傻逼一生',

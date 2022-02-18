@@ -185,13 +185,13 @@ def post_data():
         #                 f.write(str(re.text))
         #             requests.get('http://127.0.0.1:5700/send_group_msg?'
         #                          'group_id={0}&'
-        #                          'message='
-        #                          '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-        #                                            'QQ号：{0}\n'
-        #                                            '答案：{1}\n'
-        #                                            '机器人一次审核通过！'.format(uid, comment)))
+        #                          'message='一次审核通过！'.format(uid, comment)))
         #     else:
-        #         requests.get('http://127.0.0.1:5700/send_group_msg?'
+        #         requests.get('http://127.0.0.1:57
+        #         #                          '{1}'.format(gid, '[Robot][Event] 加群事件\n'
+        #         #                                            'QQ号：{0}\n'
+        #         #                                            '答案：{1}\n'
+        #         #                                            '机器人00/send_group_msg?'
         #                      'group_id={0}&'
         #                      'message='
         #                      '{1}'.format(gid, '各位管理员请注意！！！\n'
