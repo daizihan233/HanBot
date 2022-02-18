@@ -1,7 +1,12 @@
 ---
 name: Bug反馈
 about: 提交Bug
-projects: @daizihan233's HanBot
+labels:
+  - Bug?
+assignees:
+  - daizihan233
+projects:
+  - daizihan233's HanBot
 ---
 # 提问前须知
 - [ ] 我已经阅读[《提问的智慧》](https://blog.csdn.net/qq_34804120/article/details/89117072) ，并保证遵守其内容
