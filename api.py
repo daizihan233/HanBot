@@ -125,7 +125,7 @@ https://share.weiyun.com/VglthxSV
                 send('www.bilibili.com', uid, gid)
             else:
                 msg.pop(0)
-                url = 'https://www.bilitools.top/t/1/?k=输入的东西' + parse.quote(''.join(msg))
+                url = 'https://www.bilitools.top/t/1/?k=' + parse.quote(''.join(msg))
                 send(url, gid, uid)
         elif "祖安我" in msg:
             herbalist = [  # 祖安语录
