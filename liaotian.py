@@ -77,8 +77,6 @@ def post_data():
         flag = request.get_json().get('flag')
         uid = request.get_json().get('user_id')
         print(gid, comment, t, flag, uid, flush=True)
-        with open('233.log', 'w') as f:
-            f.write(str(requests))
         if gid == 907112053 and t == 'add':
             print('发现 907112053 的加群请求！')
             if comment == 'MEMZ123' or comment == '1511907771' or comment == 'UID1511907771' or \
@@ -101,8 +99,6 @@ def post_data():
                                       'flag={0}&'
                                       'sub_type={1}&'
                                       'approve=true'.format(flag, t))
-                    with open('233.log', 'w') as f:
-                        f.write(str(re.text))
                     requests.get('http://127.0.0.1:5700/send_group_msg?'
                                  'group_id={0}&'
                                  'message='
@@ -141,8 +137,6 @@ def post_data():
                                       'flag={0}&'
                                       'sub_type={1}&'
                                       'approve=true'.format(flag, t))
-                    with open('233.log', 'w') as f:
-                        f.write(str(re.text))
                     requests.get('http://127.0.0.1:5700/send_group_msg?'
                                  'group_id={0}&'
                                  'message='
@@ -258,6 +252,7 @@ def post_data():
             '学校是我家，文明靠大家',
             '250',
             '我屮艸芔茻你妈的',
+            'G他N的,一大逼抖子呼死你',
             requests.get('https://fun.886.be/api.php?level=max').text
         ]
         random.shuffle(herbalist)

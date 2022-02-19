@@ -183,6 +183,7 @@ https://share.weiyun.com/VglthxSV
                 '学校是我家，文明靠大家',
                 '250',
                 '我屮艸芔茻你妈的',
+                'G他N的,一大逼抖子呼死你',
                 requests.get('https://fun.886.be/api.php?level=max').text
             ]
             send(random.choice(herbalist), gid)
@@ -259,6 +260,7 @@ https://share.weiyun.com/VglthxSV
 
         elif "黑名单" in msg:
             if ((str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines()):
+                print('admin')
                 if len(str(msg).split(' ')) != 2:
                     send('error: 语法错误！应该至少有2个空格', gid, uid)
                 else:
@@ -287,19 +289,21 @@ https://share.weiyun.com/VglthxSV
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
             else:
+                print('not admin')
+                print(str(msg).split(' '))
                 if len(str(msg).split(' ')) != 3:
                     send('error: 语法错误！您不是机器人的管理员，需要填写理由（将语法更改为@机器人【空格】黑名单【空格】...【空格】您的理由）应该至少有3个空格', gid, uid)
                 else:
                     tmp = str(msg).split(' ')
                     try:
-                        tmp = tmp[-2][len('[CQ:at,qq='):-1]
+                        tmp = tmp[-2]
                         tmp = int(tmp)
                         if tmp < 10000:
                             send('error: 参数错误！QQ号最小应该是10000', gid, uid)
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
                             send('error: 参数错误！无法添加此人', gid, uid)
                         else:
-                            f = str(str(msg).split(' ')[-2])[len('[CQ:at,qq='):-1]
+                            f = str(str(msg).split(' ')[-2])
                             r = str(str(msg).split(' ')[-1])
                             fuck = open('fucklist', 'r').readlines()
                             for i in range(len(fuck)):
