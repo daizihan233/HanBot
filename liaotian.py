@@ -56,7 +56,7 @@ def tencent_api(word):
     from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
     from tencentcloud.nlp.v20190408 import nlp_client, models
     try:
-        cred = credential.Credential("AKIDpUt2uVpsfAPN5WgZCYdQwCBsIRJzSXLs", "HI2WjgMlumPkob7MK1RaS2LN8cpmTs1u")
+        cred = credential.Credential(open('cloud', 'r').read().split(' ')[0], open('cloud', 'r').read().split(' ')[1])
         httpProfile = HttpProfile()
         httpProfile.endpoint = "nlp.tencentcloudapi.com"
 
