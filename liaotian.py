@@ -36,6 +36,49 @@ def send(msg, gid, uid=None):
         asyncio.run(no_at(msg, gid))
 
 
+async def set_group_card(card, gid, uid):
+    async with aiohttp.ClientSession() as session:
+        async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+            await ws.send_json({'action': 'set_group_card', 'params': {
+                'group_id': gid,  # 在这个群里
+                'user_id': uid,  # 把这个人的昵称
+                'card': card  # 设为这个
+            }})
+            data = await ws.receive_json()
+    return data
+
+
+def tencent_api(word):
+    import json
+    from tencentcloud.common import credential
+    from tencentcloud.common.profile.client_profile import ClientProfile
+    from tencentcloud.common.profile.http_profile import HttpProfile
+    from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
+    from tencentcloud.nlp.v20190408 import nlp_client, models
+    try:
+        cred = credential.Credential("AKIDpUt2uVpsfAPN5WgZCYdQwCBsIRJzSXLs", "HI2WjgMlumPkob7MK1RaS2LN8cpmTs1u")
+        httpProfile = HttpProfile()
+        httpProfile.endpoint = "nlp.tencentcloudapi.com"
+
+        clientProfile = ClientProfile()
+        clientProfile.httpProfile = httpProfile
+        client = nlp_client.NlpClient(cred, "ap-guangzhou", clientProfile)
+
+        req = models.SentimentAnalysisRequest()
+        params = {
+            "Text": word,
+            "Flag": 2,
+            "Mode": "3class"
+        }
+        req.from_json_string(json.dumps(params))
+
+        resp = client.SentimentAnalysis(req)
+        return json.loads(resp.to_json_string())
+
+    except TencentCloudSDKException as err:
+        print(err)
+
+
 @app.route('/', methods=["POST", 'WebSocket'])
 def post_data():
     blacklist = [
@@ -68,10 +111,12 @@ def post_data():
                 api.keyword(message, uid, gid)
             elif ("病毒库" == message or "群文件" == message) and gid == 764869658:
                 api.keyword(message, uid, gid)
+            elif uid == 2396349635 and gid == 336578274:
+                api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
         comment = str(request.get_json().get('comment')) \
-            .split('\n')[1][3:] \
+                      .split('\n')[1][3:] \
             .upper()
         t = request.get_json().get('sub_type')
         flag = request.get_json().get('flag')
@@ -291,14 +336,80 @@ https://share.weiyun.com/VglthxSV
                 send(msg=random.choice(l),
                      gid=gid,
                      uid=uid)
-    elif request.get_json().get('notice_type') == 'group_card':
-        requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
-                     '【改名监测（Beta）】\n'
-                     '[GID]: {}\n'
-                     '[UID]: {}\n'
-                     '[NEW]: {}\n'
-                     '[OLD]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
-                                        request.get_json().get('card_new'), request.get_json().get('card_old')))
+    # 如果监测到改名，且不是留空
+    elif request.get_json().get('notice_type') == 'group_card' and request.get_json().get('card_new') != '':
+        # ret = tencent_api(request.get_json().get('card_new'))  # 将改的名字发送至腾讯云进行情感分析
+        # print(ret)
+        # if ret['Sentiment'] == 'positive':  # 如果是正面情绪
+        #     s = '正面 - positive'
+        # elif ret['Sentiment'] == 'negative':  # 如果是负面情绪
+        #     s = '负面 - negative'
+        # else:  # 如果是中性
+        #     s = '中性 - neutral'
+        # #  发送一条消息到我自己的后台
+        # requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
+        #              '【改名监测（Beta%2B）】\n'  # %2B == "+"
+        #              '[群号]: {}\n'
+        #              '[Ｑ号]: {}\n'
+        #              '[新的]: {}\n'
+        #              '[旧的]: {}\n'
+        #              '[状态]: {}\n'
+        #              '[正面]: {}\n'
+        #              '[中性]: {}\n'
+        #              '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+        #                                  request.get_json().get('card_new'), request.get_json().get('card_old'),
+        #                                  s, ret['Positive'], ret['Neutral'], ret['Negative']))
+
+        # 如果是 907112053（群号） 发生了此事件
+        if request.get_json().get('group_id') == 907112053:
+            ret = tencent_api(request.get_json().get('card_new'))  # 将改的名字发送至腾讯云进行情感分析
+            print(ret)
+            if ret['Sentiment'] == 'positive':  # 如果是正面情绪
+                s = '正面 - positive'
+            elif ret['Sentiment'] == 'negative':  # 如果是负面情绪
+                s = '负面 - negative'
+            else:  # 如果是中性
+                s = '中性 - neutral'
+            #  发送一条消息到我自己的后台
+            requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
+                         '【改名监测】\n'
+                         '[群号]: {}\n'
+                         '[Ｑ号]: {}\n'
+                         '[新的]: {}\n'
+                         '[旧的]: {}\n'
+                         '[状态]: {}\n'
+                         '[正面]: {}\n'
+                         '[中性]: {}\n'
+                         '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+                                             request.get_json().get('card_new'), request.get_json().get('card_old'),
+                                             s, ret['Positive'], ret['Neutral'], ret['Negative']))
+            if s == '负面 - negative':  # 且为负面情绪
+                # 则把昵称改回来
+                asyncio.run(set_group_card(request.get_json().get('card_old'),
+                                           907112053,
+                                           request.get_json().get('user_id')))
+                # 并发送一条消息到这个群
+                send('【改名监测】\n'
+                     '[群号]: {}\n'
+                     '[Ｑ号]: {}\n'
+                     '[新的]: {}\n'
+                     '[旧的]: {}\n'
+                     '[状态]: {}\n'
+                     '[正面]: {}\n'
+                     '[中性]: {}\n'
+                     '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+                                         request.get_json().get('card_new'), request.get_json().get('card_old'),
+                                         s, ret['Positive'], ret['Neutral'], ret['Negative'])
+                     , 907112053)
+        else:
+            #  发送一条消息到我自己的后台
+            requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
+                         '[改名监测]\n'
+                         '[群号]: {}\n'
+                         '[Ｑ号]: {}\n'
+                         '[新的]: {}\n'
+                         '[旧的]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+                                             request.get_json().get('card_new'), request.get_json().get('card_old')))
     return 'OK'
 
 
