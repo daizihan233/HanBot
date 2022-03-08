@@ -39,6 +39,7 @@ def send(msg, gid, uid=None):
     else:
         asyncio.run(no_at(msg, gid))
 
+
 def send_114514(msg, gid, uid):
     async def send(msg, gid, uid):
         async with aiohttp.ClientSession() as session:
@@ -51,50 +52,43 @@ def send_114514(msg, gid, uid):
         return data
 
     asyncio.run(send(msg, gid, uid))
+
+
 def keyword(msg: str, uid, gid):
     if msg == '' or msg == ' ':
         send('嘿！这里是菜单\n'
              '[00] help\n'
              '语法：@机器人 help [指令]\n'
              '即可查看相关文档\n'
+             '所有在这个菜单中没有的都可以在此指令中找到\n'
              '[01] 咕咕咕\n'
              '[02] 黑名单\n'
              '[03] 加群自动同意\n'
              '[04] 特定关键词复读\n'
-             '（无需@，一条消息必须只包含关键词）\n'
-             '支持的关键词（“ | ”分割）：\n'
-             'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] '
-             '| [CQ:face,id=277] | [CQ:face,id=178]\n'
              '[05] 聊天\n'
-             '（必须@，@尽量置前，不要加回复，尽量不要加表情，直接说内容）\n'
-             '使用小i机器人API\n'
              '[06] 祖安戳一戳 / 祖安我 / 祖安@...\n'
-             '当你戳一戳机器人或at机器人说“祖安我”、“祖安屑”的时候机器人会对你/另一个人会说一句祖安话\n'
+             '当你戳一戳机器人或at机器人说“祖安我”、“祖安屑”、“祖安@...”的时候机器人会对你/另一个人会说一句祖安话\n'
              '[07] 申请管理员\n'
-             '注：是机器人管理员，不是群管理员\n'
-             '语法：@机器人 申请管理员\n'
+             '算是个申请攻略吧\n'
              '[08] 百度\n'
-             '让我帮你百度一下 :)\n'
-             '百度对您来讲就这么难吗？？？\n'
-             '语法：@机器人【空格】百度【空格】...（要搜的东西）\n'
-             '把最后机器人发出来的网址发给你爱提问的朋友 :)\n'
              '[09] 哔哩哔哩\n'
-             '让我帮你哔哩哔哩一下 :)\n'
-             '[10] 改名监测\n'
-             '（部分群可用）\n'
              '========\n'
-             'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！\n'
+             'https://github.com/daizihan233/HanBot \n'
+             '↑ 这是这个机器人的代码，欢迎Star！\n'
+             'https://www.hantools.top\n'
+             '↑ 自己闲着蛋疼用GitHub Pages、Girdea、lin作出的网站\n'
+             '↑ 爱看不看吧（\n'
              '========\n'
-             '总有人问：“GitHub上不去怎么办？”\n'
-             '请下载：https://gitee.com/docmirror/dev-sidecar\n'
+             'GitHub上不去就下载：https://gitee.com/docmirror/dev-sidecar\n'
              '注意：请仔细阅读文档，否则可能会出现意想不到的问题\n'
              '其它问题请联系作者QQ：183713750\n'
              '========\n'
              '公告：https://shimo.im/docs/KqHXw8XrrwpXqGY9/'
              , gid, uid)
     else:
-        if msg[:3] == 'help':
+        if msg[:4] == 'help':
             command = msg[5:]
+            print(command)
             if command == '咕咕咕':
                 send('\n请说：咕咕咕（当然也可以是任何数量个咕）', gid, uid)
             elif command == '黑名单':
@@ -111,6 +105,22 @@ def keyword(msg: str, uid, gid):
                     send('\n【Warning：本群不适配此功能】\n'
                          '当有人加群时如果答案正确则自动同意，\n'
                          '否则就发消息提示', gid, uid)
+            elif command == '特定关键词复读':
+                send('\n无需@，一条消息必须只包含关键词\n'
+                     '支持的关键词（“ | ”分割）：\n'
+                     'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] | [CQ:face,id=277] | '
+                     '[CQ:face,id=178]\n '
+                     '比如你说“额”，机器人就会说“额”，但你说“额额“、”额啊“是不会复读的', gid, uid)
+            elif command == '聊天':
+                send('\n必须@，@尽量置前，不要加回复，尽量不要加表情，直接说内容\n'
+                     '使用的小i机器人API', gid, uid)
+            elif command == '百度':
+                send('\n让我帮你百度一下 :)\n'
+                     '百度对您来讲就这么难吗？？？\n'
+                     '语法：@机器人【空格】百度【空格】...（要搜的东西）\n'
+                     '把最后机器人发出来的网址发给你爱提问的朋友 :)\n', gid, uid)
+            elif command == '哔哩哔哩':
+                send('参见指令“百度”', gid, uid)
             else:
                 send('未查找到此指令的文档！', gid, uid)
         elif msg == '申请管理员':
