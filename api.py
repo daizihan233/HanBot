@@ -39,7 +39,18 @@ def send(msg, gid, uid=None):
     else:
         asyncio.run(no_at(msg, gid))
 
+def send_114514(msg, gid, uid):
+    async def send(msg, gid, uid):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'send_group_msg', 'params': {
+                    'group_id': gid,  # 往这个群发条消息
+                    'message': uid + msg  # 消息内容
+                }})
+                data = await ws.receive_json()
+        return data
 
+    asyncio.run(send(msg, gid, uid))
 def keyword(msg: str, uid, gid):
     if msg == '' or msg == ' ':
         send('嘿！这里是菜单\n'
@@ -47,14 +58,8 @@ def keyword(msg: str, uid, gid):
              '语法：@机器人 help [指令]\n'
              '即可查看相关文档\n'
              '[01] 咕咕咕\n'
-             '请说：咕咕咕（当然可以是任何数量个咕）\n'
              '[02] 黑名单\n'
-             '注意：此程序对空格尤为敏感\n'
-             '注意：您必须有机器人管理员权限才能执行此功能\n'
-             '语法1：@机器人【空格】黑名单【空格】@...（直接@）\n'
-             '语法2：@机器人【空格】黑名单【空格】...（QQ号）\n'
              '[03] 加群自动同意\n'
-             '（部分群可用）\n'
              '[04] 特定关键词复读\n'
              '（无需@，一条消息必须只包含关键词）\n'
              '支持的关键词（“ | ”分割）：\n'
@@ -76,7 +81,7 @@ def keyword(msg: str, uid, gid):
              '[09] 哔哩哔哩\n'
              '让我帮你哔哩哔哩一下 :)\n'
              '[10] 改名监测\n'
-             '（部分群可用）'
+             '（部分群可用）\n'
              '========\n'
              'https://github.com/daizihan233/HanBot 这是这个机器人的代码，欢迎Star！\n'
              '========\n'
@@ -88,19 +93,50 @@ def keyword(msg: str, uid, gid):
              '公告：https://shimo.im/docs/KqHXw8XrrwpXqGY9/'
              , gid, uid)
     else:
-        if msg == '申请管理员':
-            send('183713750 <<< 加他！\n'
-                 '👆 这个是机器人的开发\n'
-                 '👇 申请攻略：\n'
-                 '👉 详细地说明原因\n'
-                 '👉 保证不会恶意操作\n'
-                 '👉 保证保证不会滥用职权\n'
-                 '👉 已知如果滥用此权限会被撤销\n'
-                 '👉 已知在有前科的时候重新申请通过的概率会降低\n'
-                 '👉 已知申请成功的概率不是100%', gid, uid)
+        if msg[:3] == 'help':
+            command = msg[5:]
+            if command == '咕咕咕':
+                send('\n请说：咕咕咕（当然也可以是任何数量个咕）', gid, uid)
+            elif command == '黑名单':
+                send('\n注意：此程序对空格尤为敏感\n'
+                     '注意：您必须有机器人管理员权限才能执行此功能\n'
+                     'Tips：机器人管理员申请请 @机器人 申请管理员\n'
+                     '语法1：@机器人【空格】黑名单【空格】@...（直接@）\n'
+                     '语法2：@机器人【空格】黑名单【空格】...（QQ号）', gid, uid)
+            elif command == '加群自动同意':
+                if gid == 907112053 or gid == 833645046:
+                    send('\n当有人加群时如果答案正确则自动同意，\n'
+                         '否则就发消息提示', gid, uid)
+                else:
+                    send('\n【Warning：本群不适配此功能】\n'
+                         '当有人加群时如果答案正确则自动同意，\n'
+                         '否则就发消息提示', gid, uid)
+            else:
+                send('未查找到此指令的文档！', gid, uid)
+        elif msg == '申请管理员':
+            if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
+                send('\n啊嘞？发生了一个错误！\n'
+                     '>>> Error: already an administrator\n'
+                     '>>> 错误：已是管理员\n'
+                     '183713750 <<<<< look here!\n'
+                     '如果你觉得这个错误不应该发啥那就加他！\n'
+                     '将这个错误发给他！', gid, uid)
+            else:
+                send('\n183713750 <<< 加他！\n'
+                     '👆 这个是机器人的开发\n'
+                     '👇 申请攻略：\n'
+                     '👉 详细地说明原因\n'
+                     '👉 保证不会恶意操作\n'
+                     '👉 保证保证不会滥用职权\n'
+                     '👉 已知如果滥用此权限会被撤销\n'
+                     '👉 已知在有前科的时候重新申请通过的概率会降低\n'
+                     '👉 已知申请成功的概率不是100%', gid, uid)
         elif ("群文件" == msg or "病毒库" == msg) and gid == 764869658:
             send(msg=
-                 '''\nCN-xzf：https://xzfyyds.lanzoui.com/
+                 '''\n中国青年计算机爱好者联盟 （CEA）
+China Young Computer Enthusiast Alliance
+
+CN-xzf：https://xzfyyds.lanzoui.com/
 OS相关:b02omemwh
 浏览器(不经常更新):b02ok1xof
 病毒库：b02ojc61a
@@ -114,6 +150,7 @@ OS激活相关：b02ojcf0d
 PS：密码均为 666
 群文件
 https://share.weiyun.com/XvQofEc0
+文件分享上传：http://inbox.weiyun.com/UN5lAjrn
 工具支持：腾讯微云''',
                  gid=gid, uid=uid)
         elif msg[:3] == '百度 ':
@@ -132,27 +169,37 @@ https://share.weiyun.com/XvQofEc0
                 msg.pop(0)
                 url = 'https://www.bilitools.top/t/1/?k=' + parse.quote(''.join(msg))
                 send(url, gid, uid)
-        #  (uid == 2396349635 and gid == 336578274) 表示 如果 2396349635（QQ号） 在 336578274（QQ群） 里发了一条消息
         elif "祖安我" in msg or "祖安屑" in msg or (uid == 2396349635 and gid == 336578274):
-            if uid == 2396349635 and gid == 336578274:  # 见上面那条注释
-                # 从这个 API 获取一个祖安话，然后 @他 并发出去
-                send(requests.get('https://fun.886.be/api.php?level=max').text, gid, uid)
-            else:  # 如果是其他人
-                # 从这个 API 获取一个祖安话，然后发出去
-                send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
+            send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
+        elif "祖安[CQ:at,qq=" in msg:
+            msg = msg.split()
+            msg[0] = msg[0].strip('祖安')
+            for i in msg:
+                if '[CQ:at,qq=' in i:
+                    send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, i)
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
             if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 if len(str(msg).split(' ')) != 2:
-                    send('error: 语法错误！应该至少有2个空格', gid, uid)
+                    send('error: 语法错误！应该只有2个空格', gid, uid)
                 else:
                     tmp = str(msg).split(' ')
                     try:
                         tmp = tmp[-1][len('[CQ:at,qq='):-1]
                         tmp = int(tmp)
                         if tmp < 10000:
-                            send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                            send('\n啊嘞？发生一个错误！\n'
+                                 '>>> Error: UID minimum is 10000\n'
+                                 '>>> 错误：QQ号最小为'
+                                 '183713750 <<<<< look here!\n'
+                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '将这个错误发给他！', gid, uid)
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
-                            send('error: 参数错误！无法添加此人', gid, uid)
+                            send('\nctmd！发生一个错误！\n'
+                                 '>>> Error: this uid cannot be added\n'
+                                 '>>> 错误：此人无法添加'
+                                 '183713750 <<<<< 你tmd瞅这里！\n'
+                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '将这个错误发给他！', gid, uid)
                         else:
                             f = str(str(msg).split(' ')[-1])[len('[CQ:at,qq='):-1]
                             fuck = open('fucklist', 'r').readlines()
@@ -181,9 +228,21 @@ https://share.weiyun.com/XvQofEc0
                         tmp = tmp[-2][len('[CQ:at,qq='):-1]
                         tmp = int(tmp)
                         if tmp < 10000:
-                            send('error: 参数错误！QQ号最小应该是10000', gid, uid)
+                            send('\n啊嘞？发生一个错误！\n'
+                                 '>>> Error: UID minimum is 10000\n'
+                                 '>>> 错误：QQ号最小为'
+                                 '183713750 <<<<< look here!\n'
+                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '将这个错误发给他！', gid, uid)
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
-                            send('error: 参数错误！无法添加此人', gid, uid)
+                            send('\nctmd！发生一个错误！\n'
+                                 '>>> Error: this uid cannot be added\n'
+                                 '>>> 错误：此人无法添加'
+                                 '183713750 <<<<< 你tmd瞅这里！\n'
+                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '将这个错误发给他！\n'
+                                 '淦他*的！\n'
+                                 '（恭喜你发现了一个彩蛋）', gid, uid)
                         else:
                             f = str(str(msg).split(' ')[-2])[len('[CQ:at,qq='):-1]
                             r = str(str(msg).split(' ')[-1])
@@ -212,7 +271,7 @@ https://share.weiyun.com/XvQofEc0
             if ((str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines()):
                 print('admin')
                 if len(str(msg).split(' ')) != 2:
-                    send('error: 语法错误！应该至少有2个空格', gid, uid)
+                    send('error: 语法错误！应该只有2个空格', gid, uid)
                 else:
                     tmp = str(msg).split(' ')
                     try:

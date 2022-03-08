@@ -9,6 +9,49 @@ import api
 app = Flask(__name__)
 
 
+def add_group_automatic_consent(gid, uid, comment, right, flag, t):
+    print('发现 {} 的加群请求！'.format(gid))
+    # 将所有元素全部大写
+    for i in range(len(right)):
+        right[i] = right[i].upper()
+    if comment.upper() in right:
+        fuck = open('fucklist', 'r').readlines()
+        for i in range(len(fuck)):
+            fuck[i] = fuck[i].strip('\n')
+        if str(uid) in fuck:
+            requests.get('http://127.0.0.1:5700/send_group_msg?'
+                         'group_id={0}&'
+                         'message='
+                         '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                           '[Robot][Event] 加群事件\n'
+                                           'QQ号：{0}\n'
+                                           '答案：{1}\n'
+                                           '机器人一次审核通过，但此人在黑名单内\n'
+                                           '请管理员尽快进行二次审核！'.format(uid, comment)))
+        else:
+            requests.get('http://127.0.0.1:5700/set_group_add_request?'
+                         'flag={0}&'
+                         'sub_type={1}&'
+                         'approve=true'.format(flag, t))
+            requests.get('http://127.0.0.1:5700/send_group_msg?'
+                         'group_id={0}&'
+                         'message='
+                         '{1}'.format(gid, '[Robot][Event] 加群事件\n'
+                                           'QQ号：{0}\n'
+                                           '答案：{1}\n'
+                                           '机器人一次审核通过！'.format(uid, comment)))
+    else:
+        requests.get('http://127.0.0.1:5700/send_group_msg?'
+                     'group_id={0}&'
+                     'message='
+                     '{1}'.format(gid, '各位管理员请注意！！！\n'
+                                       '[Robot][Event] 加群事件\n'
+                                       'QQ号：{0}\n'
+                                       '答案：{1}\n'
+                                       '机器人一次审核未通过\n'
+                                       '请管理员尽快进行二次审核！'.format(uid, comment)))
+
+
 def send(msg, gid, uid=None):
     async def is_at(msg, gid, uid):
         async with aiohttp.ClientSession() as session:
@@ -82,8 +125,9 @@ def tencent_api(word):
 @app.route('/', methods=["POST", 'WebSocket'])
 def post_data():
     blacklist = [
-        2854196310,
-        3578255926
+        2854196310,  # Q群管家
+        3578255926,  # 机器人
+        2396349635  # 除了能给服务器增加负担P用没有的屑
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
@@ -111,134 +155,18 @@ def post_data():
                 api.keyword(message, uid, gid)
             elif ("病毒库" == message or "群文件" == message) and gid == 764869658:
                 api.keyword(message, uid, gid)
-            elif uid == 2396349635 and gid == 336578274:
-                api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
-        comment = str(request.get_json().get('comment')) \
-                      .split('\n')[1][3:] \
-            .upper()
+        comment = str(request.get_json().get('comment')).split('\n')[1][3:]
         t = request.get_json().get('sub_type')
         flag = request.get_json().get('flag')
         uid = request.get_json().get('user_id')
         print(gid, comment, t, flag, uid, flush=True)
         if gid == 907112053 and t == 'add':
-            print('发现 907112053 的加群请求！')
-            if comment == 'MEMZ123' or comment == '1511907771' or comment == 'UID1511907771' or \
-                    comment == 'WINDOWSSETUP2010':
-                fuck = open('fucklist', 'r').readlines()
-                for i in range(len(fuck)):
-                    fuck[i] = fuck[i].strip('\n')
-                if str(uid) in fuck:
-                    requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                 'group_id={0}&'
-                                 'message='
-                                 '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                   '[Robot][Event] 加群事件\n'
-                                                   'QQ号：{0}\n'
-                                                   '答案：{1}\n'
-                                                   '机器人一次审核通过，但此人在黑名单内\n'
-                                                   '请管理员尽快进行二次审核！'.format(uid, comment)))
-                else:
-                    re = requests.get('http://127.0.0.1:5700/set_group_add_request?'
-                                      'flag={0}&'
-                                      'sub_type={1}&'
-                                      'approve=true'.format(flag, t))
-                    requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                 'group_id={0}&'
-                                 'message='
-                                 '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                   'QQ号：{0}\n'
-                                                   '答案：{1}\n'
-                                                   '机器人一次审核通过！'.format(uid, comment)))
-            else:
-                requests.get('http://127.0.0.1:5700/send_group_msg?'
-                             'group_id={0}&'
-                             'message='
-                             '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                               '[Robot][Event] 加群事件\n'
-                                               'QQ号：{0}\n'
-                                               '答案：{1}\n'
-                                               '机器人一次审核未通过\n'
-                                               '请管理员尽快进行二次审核！'.format(uid, comment)))
+            add_group_automatic_consent(gid, uid, comment, ['MEMZ123', 'Windows2010', '1511907771', 'UID1511907771',
+                                                            'UID:1511907771'], flag, t)
         elif gid == 833645046 and t == 'add':
-            print('发现 833645046 的加群请求！')
-            if comment == '三星':
-                fuck = open('fucklist', 'r').readlines()
-                for i in range(len(fuck)):
-                    fuck[i] = fuck[i].strip('\n')
-                if str(uid) in fuck:
-                    requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                 'group_id={0}&'
-                                 'message='
-                                 '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                                   '[Robot][Event] 加群事件\n'
-                                                   'QQ号：{0}\n'
-                                                   '答案：{1}\n'
-                                                   '机器人一次审核通过，但此人在黑名单内\n'
-                                                   '请管理员尽快进行二次审核！'.format(uid, comment)))
-                else:
-                    re = requests.get('http://127.0.0.1:5700/set_group_add_request?'
-                                      'flag={0}&'
-                                      'sub_type={1}&'
-                                      'approve=true'.format(flag, t))
-                    requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                 'group_id={0}&'
-                                 'message='
-                                 '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-                                                   'QQ号：{0}\n'
-                                                   '答案：{1}\n'
-                                                   '机器人一次审核通过！'.format(uid, comment)))
-            else:
-                requests.get('http://127.0.0.1:5700/send_group_msg?'
-                             'group_id={0}&'
-                             'message='
-                             '{1}'.format(gid, '各位管理员请注意！！！\n'
-                                               '[Robot][Event] 加群事件\n'
-                                               'QQ号：{0}\n'
-                                               '答案：{1}\n'
-                                               '机器人一次审核未通过\n'
-                                               '请管理员尽快进行二次审核！'.format(uid, comment)))
-        # elif gid == 623377914 and t == 'add':
-        #     print('发现 623377914 的加群请求！')
-        #     if comment == 'UID589370259' or comment == '589370259':
-        #         fuck = open('fucklist', 'r').readlines()
-        #         for i in range(len(fuck)):
-        #             fuck[i] = fuck[i].strip('\n')
-        #         if str(uid) in fuck:
-        #             requests.get('http://127.0.0.1:5700/send_group_msg?'
-        #                          'group_id={0}&'
-        #                          'message='
-        #                          '{1}'.format(gid, '各位管理员请注意！！！\n'
-        #                                            '[Robot][Event] 加群事件\n'
-        #                                            'QQ号：{0}\n'
-        #                                            '答案：{1}\n'
-        #                                            '机器人一次审核通过，但此人在黑名单内\n'
-        #                                            '请管理员尽快进行二次审核！'.format(uid, comment)))
-        #         else:
-        #             re = requests.get('http://127.0.0.1:5700/set_group_add_request?'
-        #                               'flag={0}&'
-        #                               'sub_type={1}&'
-        #                               'approve=true'.format(flag, t))
-        #             with open('233.log', 'w') as f:
-        #                 f.write(str(re.text))
-        #             requests.get('http://127.0.0.1:5700/send_group_msg?'
-        #                          'group_id={0}&'
-        #                          'message='一次审核通过！'.format(uid, comment)))
-        #     else:
-        #         requests.get('http://127.0.0.1:57
-        #         #                          '{1}'.format(gid, '[Robot][Event] 加群事件\n'
-        #         #                                            'QQ号：{0}\n'
-        #         #                                            '答案：{1}\n'
-        #         #                                            '机器人00/send_group_msg?'
-        #                      'group_id={0}&'
-        #                      'message='
-        #                      '{1}'.format(gid, '各位管理员请注意！！！\n'
-        #                                        '[Robot][Event] 加群事件\n'
-        #                                        'QQ号：{0}\n'
-        #                                        '答案：{1}\n'
-        #                                        '机器人一次审核未通过\n'
-        #                                        '请管理员尽快进行二次审核！'.format(uid, comment)))
+            add_group_automatic_consent(gid, uid, comment, ['三星'], flag, t)
         else:
             print(gid, t, flush=True)
     elif request.get_json().get('target_id') == 748029973:  # 如果机器人被戳
