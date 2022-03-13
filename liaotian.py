@@ -146,10 +146,10 @@ def post_data():
         else:
             if '咕' in message:
                 api.keyword(message, uid, gid)
-            elif "e" == message or "额" == message or "呃" == message or "。" == message or "w" == message or \
-                    "www" == message or message == "114514" or message == "1145141919810" or \
-                    message == '[CQ:face,id=298]' or message == '[CQ:face,id=178]' or message == '[CQ:face,id=277]' or \
-                    message == '？' or message == '?' or message == '草':
+            elif ("e" == message or "额" == message or "呃" == message or "。" == message or "w" == message or
+                  "www" == message or message == "114514" or message == "1145141919810" or
+                  message == '[CQ:face,id=298]' or message == '[CQ:face,id=178]' or message == '[CQ:face,id=277]' or
+                  message == '？' or message == '?' or message == '草') and gid != 936389498:
                 api.keyword(message, uid, gid)
             elif '吃了:)' == message or '没吃:(' == message:
                 api.keyword(message, uid, gid)
@@ -307,8 +307,17 @@ https://share.weiyun.com/VglthxSV
                                          request.get_json().get('card_new'), request.get_json().get('card_old'),
                                          s, ret['Positive'], ret['Neutral'], ret['Negative'])
                      , 907112053)
+    elif request.get_json().get('notice_type') == 'group_ban':
+        if request.get_json().get('sub_type') == 'ban' and request.get_json().get('group_id') == 473185911:
+            send('【禁言】\n'
+                 '[操作者]: {}\n'
+                 '[被禁言]: {}\n'
+                 '[时　长]: {}秒'.format(request.get_json().get('operator_id'),
+                                     request.get_json().get('user_id'),
+                                     request.get_json().get('duration')),
+                 request.get_json().get('group_id'))
     return 'OK'
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=8000)  # 此处的 host和 port对应上面 yml文件的设置
+    app.run(debug=True, host='127.0.0.1', port=8000, threaded=True)

@@ -72,18 +72,13 @@ def keyword(msg: str, uid, gid):
              '算是个申请攻略吧\n'
              '[08] 百度\n'
              '[09] 哔哩哔哩\n'
-             '========\n'
-             'https://github.com/daizihan233/HanBot \n'
-             '↑ 这是这个机器人的代码，欢迎Star！\n'
-             'https://www.hantools.top\n'
-             '↑ 自己闲着蛋疼用GitHub Pages、Girdea、lin作出的网站\n'
-             '↑ 爱看不看吧（\n'
-             '========\n'
-             'GitHub上不去就下载：https://gitee.com/docmirror/dev-sidecar\n'
-             '注意：请仔细阅读文档，否则可能会出现意想不到的问题\n'
-             '其它问题请联系作者QQ：183713750\n'
-             '========\n'
-             '公告：https://shimo.im/docs/KqHXw8XrrwpXqGY9/'
+             '[10] 前科查询\n'
+             '【功能未开发完善】'
+             '语法：@机器人 前科查询 [QQ号]\n'
+             '为什么你/他/她/它会被加进黑名单？一查就知道！\n'
+             '[11] bb\n'
+             '语法：@机器人 bb\n'
+             '你就可以看见作者的小声bb'
              , gid, uid)
     else:
         if msg[:4] == 'help':
@@ -123,13 +118,32 @@ def keyword(msg: str, uid, gid):
                 send('参见指令“百度”', gid, uid)
             else:
                 send('未查找到此指令的文档！', gid, uid)
+        elif msg[:4] == '前科查询':
+            qq = msg[5:]
+            print(qq)
+            fucker = []
+            with open('fucker.txt', 'r'):
+                pass
+        elif msg == 'bb':
+            send('\n========\n'
+                 'https://github.com/daizihan233/HanBot \n'
+                 '↑ 这是这个机器人的代码，欢迎Star！\n'
+                 'https://www.hantools.top\n'
+                 '↑ 自己闲着蛋疼用GitHub Pages、Girdea、lin作出的网站\n'
+                 '↑ 爱看不看吧（\n'
+                 '========\n'
+                 'GitHub上不去就下载：https://gitee.com/docmirror/dev-sidecar\n'
+                 '注意：请仔细阅读文档，否则可能会出现意想不到的问题\n'
+                 '其它问题请联系作者QQ：183713750\n'
+                 '========\n'
+                 '公告：https://shimo.im/docs/KqHXw8XrrwpXqGY9/', gid, uid)
         elif msg == '申请管理员':
             if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 send('\n啊嘞？发生了一个错误！\n'
                      '>>> Error: already an administrator\n'
                      '>>> 错误：已是管理员\n'
                      '183713750 <<<<< look here!\n'
-                     '如果你觉得这个错误不应该发啥那就加他！\n'
+                     '如果你觉得这个错误不应该发生那就加他！\n'
                      '将这个错误发给他！', gid, uid)
             else:
                 send('\n183713750 <<< 加他！\n'
@@ -201,14 +215,14 @@ https://share.weiyun.com/XvQofEc0
                                  '>>> Error: UID minimum is 10000\n'
                                  '>>> 错误：QQ号最小为'
                                  '183713750 <<<<< look here!\n'
-                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！', gid, uid)
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
                             send('\nctmd！发生一个错误！\n'
                                  '>>> Error: this uid cannot be added\n'
                                  '>>> 错误：此人无法添加'
                                  '183713750 <<<<< 你tmd瞅这里！\n'
-                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！', gid, uid)
                         else:
                             f = str(str(msg).split(' ')[-1])[len('[CQ:at,qq='):-1]
@@ -220,7 +234,7 @@ https://share.weiyun.com/XvQofEc0
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
-                                             '{2}'.format(gid, uid, '{} 已在黑名单'.format(f)))
+                                             '{2}'.format(gid, uid, '{} 已在黑名单'.format(f.strip())))
                             else:
                                 open('fucklist', 'a').write(f + '\n')
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
@@ -242,14 +256,14 @@ https://share.weiyun.com/XvQofEc0
                                  '>>> Error: UID minimum is 10000\n'
                                  '>>> 错误：QQ号最小为'
                                  '183713750 <<<<< look here!\n'
-                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！', gid, uid)
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
                             send('\nctmd！发生一个错误！\n'
                                  '>>> Error: this uid cannot be added\n'
                                  '>>> 错误：此人无法添加'
                                  '183713750 <<<<< 你tmd瞅这里！\n'
-                                 '如果你觉得这个错误不应该发啥那就加他！\n'
+                                 '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！\n'
                                  '淦他*的！\n'
                                  '（恭喜你发现了一个彩蛋）', gid, uid)
@@ -292,9 +306,8 @@ https://share.weiyun.com/XvQofEc0
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
                             send('error: 参数错误！无法添加此人', gid, uid)
                         else:
-                            f = str(str(msg).split(' ')[-1])
+                            f = str(str(msg).split(' ')[-1]) + '\n'
                             fuck = open('fucklist', 'r').readlines()
-                            open('fucklist', 'a').write(f + '\n')
                             if f in fuck:
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
@@ -302,6 +315,7 @@ https://share.weiyun.com/XvQofEc0
                                              '{2}'.format(gid, uid, '{} 已在黑名单\n'
                                                                     '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
                             else:
+                                open('fucklist', 'a').write(f + '\n')
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
