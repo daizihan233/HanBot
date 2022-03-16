@@ -426,7 +426,7 @@ https://share.weiyun.com/XvQofEc0
                                   'message=[CQ:at,qq={1}] '
                                   '{2}'.format(gid, uid, a))
             else:
-                a = [
+                a = [  # 无语时的自动回复
                     '额......',
                     'az',
                     '我去Cedar Point坐过山车去了，总比你在这聊天刺激多了',

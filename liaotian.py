@@ -110,8 +110,7 @@ def tencent_api(word):
         req = models.SentimentAnalysisRequest()
         params = {
             "Text": word,
-            "Flag": 2,
-            "Mode": "3class"
+            "Mode": "2class"
         }
         req.from_json_string(json.dumps(params))
 
@@ -266,14 +265,12 @@ https://share.weiyun.com/VglthxSV
                      uid=uid)
     # 如果监测到改名，且不是留空
     elif request.get_json().get('notice_type') == 'group_card' and request.get_json().get('card_new') != '':
-        ret = tencent_api(request.get_json().get('card_new'))  # 将改的名字发送至腾讯云进行情感分析
+        ret = tencent_api(str(request.get_json().get('card_new')).lower())  # 将改的名字发送至腾讯云进行情感分析
         print(ret)
         if ret['Sentiment'] == 'positive':  # 如果是正面情绪
             s = '正面 - positive'
         elif ret['Sentiment'] == 'negative':  # 如果是负面情绪
             s = '负面 - negative'
-        else:  # 如果是中性
-            s = '中性 - neutral'
         #  发送一条消息到我自己的后台
         requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
                      '【改名监测（Beta%2B）】\n'  # %2B == "+"
@@ -283,16 +280,15 @@ https://share.weiyun.com/VglthxSV
                      '[旧的]: {}\n'
                      '[状态]: {}\n'
                      '[正面]: {}\n'
-                     '[中性]: {}\n'
-                     '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
-                                         request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                         s, ret['Positive'], ret['Neutral'], ret['Negative']))
-        # 如果是 907112053（群号） 发生了此事件
-        if request.get_json().get('group_id') == 907112053:
+                     '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+                                       request.get_json().get('card_new'), request.get_json().get('card_old'),
+                                       s, ret['Positive'], ret['Negative']))
+        if request.get_json().get('group_id') == 907112053 or \
+                request.get_json().get('group_id') == 751210750:
             if s == '负面 - negative':  # 且为负面情绪
                 # 则把昵称改回来
                 asyncio.run(set_group_card(request.get_json().get('card_old'),
-                                           907112053,
+                                           request.get_json().get('group_id'),
                                            request.get_json().get('user_id')))
                 # 并发送一条消息到这个群
                 send('【改名监测（Beta+）】\n'
@@ -302,11 +298,10 @@ https://share.weiyun.com/VglthxSV
                      '[旧的]: {}\n'
                      '[状态]: {}\n'
                      '[正面]: {}\n'
-                     '[中性]: {}\n'
-                     '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
-                                         request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                         s, ret['Positive'], ret['Neutral'], ret['Negative'])
-                     , 907112053)
+                     '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+                                       request.get_json().get('card_new'), request.get_json().get('card_old'),
+                                       s, ret['Positive'], ret['Negative'])
+                     , request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_ban':
         if request.get_json().get('sub_type') == 'ban' and request.get_json().get('group_id') == 473185911:
             send('【禁言】\n'
