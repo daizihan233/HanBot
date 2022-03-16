@@ -110,7 +110,7 @@ def tencent_api(word):
         req = models.SentimentAnalysisRequest()
         params = {
             "Text": word,
-            "Mode": "2class"
+            "Mode": "3class"
         }
         req.from_json_string(json.dumps(params))
 
@@ -271,6 +271,8 @@ https://share.weiyun.com/VglthxSV
             s = '正面 - positive'
         elif ret['Sentiment'] == 'negative':  # 如果是负面情绪
             s = '负面 - negative'
+        else:  # 如果是中性
+            s = '中性 - neutral'
         #  发送一条消息到我自己的后台
         requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
                      '【改名监测（Beta%2B）】\n'  # %2B == "+"
@@ -280,9 +282,10 @@ https://share.weiyun.com/VglthxSV
                      '[旧的]: {}\n'
                      '[状态]: {}\n'
                      '[正面]: {}\n'
-                     '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
-                                       request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                       s, ret['Positive'], ret['Negative']))
+                     '[中性]: {}\n'
+                     '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+                                         request.get_json().get('card_new'), request.get_json().get('card_old'),
+                                         s, ret['Positive'], ret['Neutral'], ret['Negative']))
         if request.get_json().get('group_id') == 907112053 or \
                 request.get_json().get('group_id') == 751210750:
             if s == '负面 - negative':  # 且为负面情绪
@@ -298,9 +301,10 @@ https://share.weiyun.com/VglthxSV
                      '[旧的]: {}\n'
                      '[状态]: {}\n'
                      '[正面]: {}\n'
-                     '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
-                                       request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                       s, ret['Positive'], ret['Negative'])
+                     '[中性]: {}\n'
+                     '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
+                                         request.get_json().get('card_new'), request.get_json().get('card_old'),
+                                         s, ret['Positive'], ret['Neutral'], ret['Negative'])
                      , request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_ban':
         if request.get_json().get('sub_type') == 'ban' and request.get_json().get('group_id') == 473185911:
