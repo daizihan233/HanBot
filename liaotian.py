@@ -1,4 +1,6 @@
+import datetime
 import random
+import time
 
 import requests
 from flask import Flask, request
@@ -123,10 +125,13 @@ def tencent_api(word):
 
 @app.route('/', methods=["POST", 'WebSocket'])
 def post_data():
-    blacklist = [
+    blacklist = [  # 不处理这些人的消息
         2854196310,  # Q群管家
         3578255926,  # 机器人
-        2396349635  # 除了能给服务器增加负担P用没有的屑
+        2396349635,  # 屑
+        391419513,   # 屑
+        3232560455,  # 屑
+        3550391819,  # 屑
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
@@ -142,6 +147,15 @@ def post_data():
             message = str(message)[len('[CQ:at,qq=748029973]'):]
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
+        elif '[CQ:at,qq=2265453790] ' in message:
+            message = str(message)[len('[CQ:at,qq=2265453790] '):]
+            print(message)
+            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
+        elif'[CQ:at,qq=2265453790]' in message:
+            message = str(message)[len('[CQ:at,qq=2265453790]'):]
+            print(message)
+            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
+
         else:
             if '咕' in message:
                 api.keyword(message, uid, gid)
@@ -166,9 +180,11 @@ def post_data():
                                                             'UID:1511907771'], flag, t)
         elif gid == 833645046 and t == 'add':
             add_group_automatic_consent(gid, uid, comment, ['三星'], flag, t)
+        elif gid == 934645530 and t == 'add':
+            add_group_automatic_consent(gid, uid, comment, ['123'], flag, t)
         else:
             print(gid, t, flush=True)
-    elif request.get_json().get('target_id') == 748029973:  # 如果机器人被戳
+    elif request.get_json().get('target_id') == 748029973 or request.get_json().get('target_id') == 2265453790:  # 如果机器人被戳
         herbalist = [  # 祖安语录
             '[CQ:image,file=file:///C:/FromHanTools/liaotian/img/jb.jpg]',
             '你刚出生就被你父母抛弃不得不去乞讨结果乞讨到了一盆屎然后尼玛你爹被杀你又被人贩子带去解剖这就是你的傻逼一生',
@@ -227,8 +243,17 @@ def post_data():
             'G他N的,一大逼抖子呼死你',
             requests.get('https://fun.886.be/api.php?level=max').text
         ]
-        random.shuffle(herbalist)
-        send(random.choice(herbalist), request.get_json().get('group_id'))
+        c = int(open('zu_an_time.txt', 'r').read().split()[0])
+        t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
+        print(c,t)
+        if c < 5:
+            random.shuffle(herbalist)
+            send(random.choice(herbalist), request.get_json().get('group_id'))
+            open('zu_an_time.txt', 'w').write('{} {}'.format(c + 1, time.time()))
+        elif t >= 60*60:
+            random.shuffle(herbalist)
+            send(random.choice(herbalist), request.get_json().get('group_id'))
+            open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
     elif request.get_json().get('notice_type') == 'group_increase':
         gid = request.get_json().get('group_id')
         uid = request.get_json().get('user_id')
@@ -287,7 +312,9 @@ https://share.weiyun.com/VglthxSV
                                          request.get_json().get('card_new'), request.get_json().get('card_old'),
                                          s, ret['Positive'], ret['Neutral'], ret['Negative']))
         if request.get_json().get('group_id') == 907112053 or \
-                request.get_json().get('group_id') == 751210750:
+                request.get_json().get('group_id') == 751210750 or \
+                request.get_json().get('group_id') == 833645046 or \
+                request.get_json().get('group_id') == 744591068:
             if s == '负面 - negative':  # 且为负面情绪
                 # 则把昵称改回来
                 asyncio.run(set_group_card(request.get_json().get('card_old'),

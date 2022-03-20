@@ -1,5 +1,7 @@
+import datetime
 import os
 import random
+import time
 import urllib
 from urllib import parse
 
@@ -58,7 +60,7 @@ def keyword(msg: str, uid, gid):
     if msg == '' or msg == ' ':
         send('嘿！这里是菜单\n'
              '[00] help\n'
-             '语法：@机器人 help [指令]\n'
+             '语法：@机器人 help [指令名称]\n'
              '即可查看相关文档\n'
              '所有在这个菜单中没有的都可以在此指令中找到\n'
              '[01] 咕咕咕\n'
@@ -66,11 +68,11 @@ def keyword(msg: str, uid, gid):
              '[03] 加群自动同意\n'
              '[04] 特定关键词复读\n'
              '[05] 聊天\n'
-             '[06] 祖安戳一戳 / 祖安我 / 祖安@...\n'
+             '[06] 祖安\n'
              '[07] 申请管理员\n'
              '[08] 百度\n'
              '[09] 哔哩哔哩\n'
-             '[11] bb\n'
+             '[10] bb\n'
              '语法：@机器人 bb\n'
              '你就可以看见作者的小声bb'
              , gid, uid)
@@ -110,14 +112,12 @@ def keyword(msg: str, uid, gid):
                      '把最后机器人发出来的网址发给你爱提问的朋友 :)\n', gid, uid)
             elif command == '哔哩哔哩':
                 send('参见指令“百度”', gid, uid)
+            elif command == '祖安':
+                send('\n对机器人说“祖安我”、“祖安屑”就可以让机器人祖安你，想祖安其他人的话就对机器人说“祖安@...”\n'
+                     '还有一种触发方式：在群内戳一戳机器人\n'
+                     '注意：吸取主号的教训，祖安功能每分钟在所有群只能触发两次，否则不会鸟你')
             else:
                 send('未查找到此指令的文档！', gid, uid)
-        elif msg[:4] == '前科查询':
-            qq = msg[5:]
-            print(qq)
-            fucker = []
-            with open('fucker.txt', 'r'):
-                pass
         elif msg == 'bb':
             send('\n========\n'
                  'https://github.com/daizihan233/HanBot \n'
@@ -188,13 +188,31 @@ https://share.weiyun.com/XvQofEc0
                 url = 'https://www.bilitools.top/t/1/?k=' + parse.quote(''.join(msg))
                 send(url, gid, uid)
         elif "祖安我" in msg or "祖安屑" in msg or (uid == 2396349635 and gid == 336578274):
-            send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
+            c = int(open('zu_an_time.txt', 'r').read().split()[0])
+            t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
+            print(c, t)
+            if c < 5:
+                send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
+                open('zu_an_time.txt', 'w').write('{} {}'.format(c+1, time.time()))
+            elif t >= 60*60:
+                send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
+                open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
         elif "祖安[CQ:at,qq=" in msg:
-            msg = msg.split()
-            msg[0] = msg[0].strip('祖安')
-            for i in msg:
-                if '[CQ:at,qq=' in i:
-                    send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, i)
+            c = int(open('zu_an_time.txt', 'r').read().split()[0])
+            t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
+            print(c, t)
+            if c < 5:
+                msg = msg.split()
+                msg[0] = msg[0].strip('祖安')
+                if '[CQ:at,qq=' in msg[0]:
+                    send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
+                open('zu_an_time.txt', 'w').write('{} {}'.format(c + 1, time.time()))
+            elif t >= 60*60:
+                msg = msg.split()
+                msg[0] = msg[0].strip('祖安')
+                if '[CQ:at,qq=' in msg[0]:
+                    send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
+                open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
             if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 if len(str(msg).split(' ')) != 2:
