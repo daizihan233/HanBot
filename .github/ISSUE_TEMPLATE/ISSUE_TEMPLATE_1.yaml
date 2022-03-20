@@ -2,6 +2,7 @@ name: Bug反馈
 description: 在使用机器人的过程中遇到了错误
 title: '[Bug?]: '
 labels: ["Bug?"]
+assignees: ["daizihan233"]
 
 body:
   - type: markdown
@@ -10,11 +11,11 @@ body:
         ## 感谢您愿意花一些时间来填写这个内容！
         ## 以下是一些注意事项，请务必阅读让我能够更容易处理
 
-        ### ❗ | 确定没有相同问题的ISSUE已被提出. (教程: https://forums.go-cqhttp.org/t/topic/141)
+        ### ❗ | 确定没有相同问题的ISSUE已被提出。
         ### ❔ | 截图完整聊天记录，尽量完整，不断章取义
         ### ⚠ | 如果涉及个人信息，请自行打码
 
-        ## 如果您不知道如何有效、精准地表述，我们建议您先阅读《提问的智慧》
+        ## 如果您不知道如何有效、精准地表述，我建议您先阅读《提问的智慧》
         链接: [《提问的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)
         ---
   - type: checkboxes
@@ -25,6 +26,8 @@ body:
         - label: "我已经仔细阅读上述教程和 [\"《提问的智慧》\"](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)。"
           required: true
         - label: "我确定这不是因为操作失误而引起的问题。"
+          required: true
+        - label: "我确定这是一个有意义的Issue，且目前没有解决方案。"
           required: true
   - type: markdown
     attributes:
@@ -40,7 +43,7 @@ body:
       label: 重现步骤
       description: |
         我需要执行哪些操作才能让 bug 出现？
-        简洁清晰的重现步骤能够帮助我们更迅速地定位问题所在。
+        简洁清晰的重现步骤能够帮助我更迅速地定位问题所在。
     validations:
       required: true
 

@@ -1,0 +1,22 @@
+name: 已有功能建议
+description: 对已有功能提一个新的建议
+title: '[Request++]: '
+labels: ["需求"]
+assignees: ["daizihan233"]
+
+body:
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 请确定您做到了一下内容
+      options:
+        - label: "我确定这是一个有意义的Issue，且目前没有此功能。"
+          required: true
+  - type: input
+    id: name
+    attributes:
+      label: 功能名称
+  - type: textarea
+    id: description
+    attributes:
+      label: 描述
