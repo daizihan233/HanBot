@@ -129,9 +129,6 @@ def post_data():
         2854196310,  # Q群管家
         3578255926,  # 机器人
         2396349635,  # 屑
-        391419513,   # 屑
-        3232560455,  # 屑
-        3550391819,  # 屑
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
@@ -139,23 +136,22 @@ def post_data():
         uid = request.get_json().get('sender').get('user_id')  # 获取信息发送者的 QQ号码
         message = request.get_json().get('raw_message')  # 获取原始信息
         print(message)
-        if '[CQ:at,qq=748029973] ' in message:
+        if str(message)[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ':
             message = str(message)[len('[CQ:at,qq=748029973] '):]
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
-        elif '[CQ:at,qq=748029973]' in message:
+        elif str(message)[:len('[CQ:at,qq=748029973]')] == '[CQ:at,qq=748029973]':
             message = str(message)[len('[CQ:at,qq=748029973]'):]
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
-        elif '[CQ:at,qq=2265453790] ' in message:
+        elif str(message)[:len('[CQ:at,qq=2265453790] ')] == '[CQ:at,qq=2265453790] ':
             message = str(message)[len('[CQ:at,qq=2265453790] '):]
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
-        elif'[CQ:at,qq=2265453790]' in message:
+        elif str(message)[:len('[CQ:at,qq=2265453790]')] == '[CQ:at,qq=2265453790]':
             message = str(message)[len('[CQ:at,qq=2265453790]'):]
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
-
         else:
             if '咕' in message:
                 api.keyword(message, uid, gid)
@@ -245,7 +241,7 @@ def post_data():
         ]
         c = int(open('zu_an_time.txt', 'r').read().split()[0])
         t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
-        print(c,t)
+        print(c, t)
         if c < 5:
             random.shuffle(herbalist)
             send(random.choice(herbalist), request.get_json().get('group_id'))
@@ -298,6 +294,14 @@ https://share.weiyun.com/VglthxSV
             s = '负面 - negative'
         else:  # 如果是中性
             s = '中性 - neutral'
+        rs = s
+        if ret['Positive'] + ret['Neutral'] < ret['Negative']:
+            if ret['Positive'] + ret['Neutral'] + 0.1 < ret['Negative']:  # 防止误差
+                rs = '负面 - negative'
+            else:
+                rs = '中性 - neutral'
+        else:
+            rs = '正面 - positive'
         #  发送一条消息到我自己的后台
         requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
                      '【改名监测（Beta%2B）】\n'  # %2B == "+"
@@ -305,17 +309,19 @@ https://share.weiyun.com/VglthxSV
                      '[Ｑ号]: {}\n'
                      '[新的]: {}\n'
                      '[旧的]: {}\n'
-                     '[状态]: {}\n'
+                     '[初判]: {}\n'
+                     '[终判]: {}\n'
                      '[正面]: {}\n'
                      '[中性]: {}\n'
                      '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
                                          request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                         s, ret['Positive'], ret['Neutral'], ret['Negative']))
+                                         s, rs, ret['Positive'], ret['Neutral'], ret['Negative']))
         if request.get_json().get('group_id') == 907112053 or \
                 request.get_json().get('group_id') == 751210750 or \
                 request.get_json().get('group_id') == 833645046 or \
-                request.get_json().get('group_id') == 744591068:
-            if s == '负面 - negative':  # 且为负面情绪
+                request.get_json().get('group_id') == 744591068 or \
+                request.get_json().get('group_id') == 936389498:
+            if rs == '负面 - negative':  # 且为负面情绪
                 # 则把昵称改回来
                 asyncio.run(set_group_card(request.get_json().get('card_old'),
                                            request.get_json().get('group_id'),
@@ -327,11 +333,12 @@ https://share.weiyun.com/VglthxSV
                      '[新的]: {}\n'
                      '[旧的]: {}\n'
                      '[状态]: {}\n'
+                     '[终判]: {}\n'
                      '[正面]: {}\n'
                      '[中性]: {}\n'
                      '[负面]: {}\n'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
                                          request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                         s, ret['Positive'], ret['Neutral'], ret['Negative'])
+                                         s, rs, ret['Positive'], ret['Neutral'], ret['Negative'])
                      , request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_ban':
         if request.get_json().get('sub_type') == 'ban' and request.get_json().get('group_id') == 473185911:

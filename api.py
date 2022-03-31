@@ -72,7 +72,8 @@ def keyword(msg: str, uid, gid):
              '[07] 申请管理员\n'
              '[08] 百度\n'
              '[09] 哔哩哔哩\n'
-             '[10] bb\n'
+             '[10] pi\n'
+             '[11] bb\n'
              '语法：@机器人 bb\n'
              '你就可以看见作者的小声bb'
              , gid, uid)
@@ -96,6 +97,8 @@ def keyword(msg: str, uid, gid):
                     send('\n【Warning：本群不适配此功能】\n'
                          '当有人加群时如果答案正确则自动同意，\n'
                          '否则就发消息提示', gid, uid)
+            elif command == 'pi':
+                send('估算圆周率前6位，感谢 GitHub@123Windows31 提供的代码', gid, uid)
             elif command == '特定关键词复读':
                 send('\n无需@，一条消息必须只包含关键词\n'
                      '支持的关键词（“ | ”分割）：\n'
@@ -173,11 +176,11 @@ https://share.weiyun.com/XvQofEc0
                  gid=gid, uid=uid)
         elif msg[:3] == '百度 ':
             msg = msg.split(' ')
-            if len(msg) <= 1:
+            if len(msg) == 1:
                 send('www.baiidu.com', uid, gid)
             else:
                 msg.pop(0)
-                url = 'https://baidu.physton.com/?q=' + parse.quote(''.join(msg))
+                url = 'https://baidu.physton.com/?q=' + parse.quote(' '.join(msg))
                 send(url, gid, uid)
         elif msg[:5] == '哔哩哔哩 ':
             msg = msg.split(' ')
@@ -187,6 +190,21 @@ https://share.weiyun.com/XvQofEc0
                 msg.pop(0)
                 url = 'https://www.bilitools.top/t/1/?k=' + parse.quote(''.join(msg))
                 send(url, gid, uid)
+        elif msg == 'pi':
+            DARTS = 1000 * 1000
+            hits = 0.0
+            start = time.perf_counter()
+            for i in range(1, DARTS + 1):
+                x, y = random.random(), random.random()
+                dist = pow(x ** 2 + y ** 2, 0.5)
+                if dist <= 1.0:
+                    hits = hits + 1
+            pi = 4 * (hits / DARTS)
+            print("圆周率值是:{}".format(pi))
+            print("运行时间是:{:.5f}s".format(time.perf_counter() - start))
+            send('\n'
+                 '圆周率前6位估算：{}\n'
+                 '本次估算共耗时：{:.5f}s'.format(pi, time.perf_counter() - start), gid, uid)
         elif "祖安我" in msg or "祖安屑" in msg or (uid == 2396349635 and gid == 336578274):
             c = int(open('zu_an_time.txt', 'r').read().split()[0])
             t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
@@ -266,7 +284,7 @@ https://share.weiyun.com/XvQofEc0
                         if tmp < 10000:
                             send('\n啊嘞？发生一个错误！\n'
                                  '>>> Error: UID minimum is 10000\n'
-                                 '>>> 错误：QQ号最小为'
+                                 '>>> 错误：QQ号最小为10000'
                                  '183713750 <<<<< look here!\n'
                                  '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！', gid, uid)
