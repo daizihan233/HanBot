@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import random
 import time
@@ -462,15 +463,15 @@ https://share.weiyun.com/XvQofEc0
                 f'{name}……我的{name}……🤤',
                 # 取自 @IS-4/114514 的消息
                 f'嘿嘿……{name}🤤',
-                # 取自 群友们 的投稿
+                # 取自 某个群 的投稿
                 f'嘿嘿我的{name}，我的西幻风格魔法学徒{name}，这小短袜这手套这炫彩大尾巴我现在就想把他摁在草丛里薅光他的毛嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿'
                 f'嘿嘿嘿嘿嘿🥵🥵🥵🥵🥵🥵🥵🥵🥵',
-                
+
                 f'请您枪毙我吧🤤请您枪毙我吧请您枪毙我吧🤤…请您亲手毙了我吧🤤嘿嘿我的{name}嘿嘿我的{name}你带我去杀侯淑林吧{name}请您亲手肃反'
                 f'我吧🤤{name}，等等，这是我的{name}你不许看这是我的{name}你不许看这是我的{name}你不许看这是我的{name}你不许看这是我的'
                 f'{name}你不许看这是我的{name}你不许看这是我的{name}你不许看等等我从来没拥有过{name}我的{name}🤤{name}我的{name}🤤{name}'
-                f'我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}'
-                
+                f'我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}',
+
                 f'嘿嘿嘿🤤真想把{name}的勋章和军服全脱了🤤把{name}绑在一边让{name}一边哭一边被我雷普🤤再把{name}的6b47头盔和6b45-1m防弹'
                 f'衣扔到一边🤤然后在{name}面前把{name}最讨厌的聚合物弹夹塞进{name}们下面和{name}最爱的ak-12里面🤤 '
             ]

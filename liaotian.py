@@ -178,6 +178,8 @@ def post_data():
             add_group_automatic_consent(gid, uid, comment, ['三星'], flag, t)
         elif gid == 934645530 and t == 'add':
             add_group_automatic_consent(gid, uid, comment, ['123'], flag, t)
+        elif gid == 1042872173 and t == 'add':
+            add_group_automatic_consent(gid, uid, comment, ['2020417'], flag, t)
         else:
             print(gid, t, flush=True)
     elif request.get_json().get('target_id') == 748029973 or request.get_json().get('target_id') == 2265453790:  # 如果机器人被戳
