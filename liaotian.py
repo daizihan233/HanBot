@@ -128,7 +128,9 @@ def post_data():
     blacklist = [  # 不处理这些人的消息
         2854196310,  # Q群管家
         3578255926,  # 机器人
+        2293800985,  # 机器人
         2396349635,  # 屑
+        2609948707,  # 屑
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
