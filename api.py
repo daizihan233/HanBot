@@ -474,6 +474,10 @@ https://share.weiyun.com/XvQofEc0
 
                 f'嘿嘿嘿🤤真想把{name}的勋章和军服全脱了🤤把{name}绑在一边让{name}一边哭一边被我雷普🤤再把{name}的6b47头盔和6b45-1m防弹'
                 f'衣扔到一边🤤然后在{name}面前把{name}最讨厌的聚合物弹夹塞进{name}们下面和{name}最爱的ak-12里面🤤 '
+                
+                f'好像要♡好像要{name}的大几把啊♡'
+                
+                f'{name}{random.choice(["哥哥", "姐姐"])}，给我吃你的几把吧♡'
             ]
             send(random.choice(lis), gid)  # 随机选择模板并发送
         else:
