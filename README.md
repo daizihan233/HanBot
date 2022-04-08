@@ -84,7 +84,8 @@ _**这位道过歉了，看看得了**_<br>
 　　技术差不可笑，可笑的是尽管技术差还要在别前面炫耀一番的人！
 
 # 关于QQ2609948707
-__**您看我对您多好？为了防止黑名单太长了影响阅读，所以给你放到最后了~**__<br>
+_**您看我对您多好？为了防止黑名单太长了影响阅读，所以给你放到最后了~**_<br>
+_**此诗作者 [GitHub@daizihan233](https://github.com/daizihan233) 来自仓库 [https://github.com/daizihan233/HanBot](https://github.com/daizihan233/HanBot)**_ <br>
 不要老脸，阴阳怪气。<br>
 横的要死，您是拽姐？<br>
 骂不过去，直接开摆。<br>
@@ -158,7 +159,7 @@ __**您看我对您多好？为了防止黑名单太长了影响阅读，所以�
 ### 经过
 （见上面诗的释义）
 ### 结果
-最后道歉了<br>
+最后道歉了（大概？）<br>
 ![img.png](no_use/img810.png)
 ### 我想对您说
 其实说到底，就三件事：<br>
@@ -196,3 +197,10 @@ DDoS攻击GitHub，还声称攻击成功？<br>
 ****
 ![img.png](no_use/1919.png)<br>
 《 关 于 猴 子 要 耍 猴 子 这 件 事 》
+****
+![img.png](no_use/img1145141919810.png)<br>
+《 尊 重 他 人 》
+****
+![img.png](no_use/hhhaaaaaaaa.png)<br>
+嗯？？？<br>
+[这个b的网站 http://web.lexiazai.xyz/](http://web.lexiazai.xyz/)

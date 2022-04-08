@@ -166,6 +166,8 @@ def post_data():
                 api.keyword(message, uid, gid)
             elif ("病毒库" == message or "群文件" == message) and gid == 764869658:
                 api.keyword(message, uid, gid)
+            elif message == '色色':
+                api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
         comment = str(request.get_json().get('comment')).split('\n')[1][3:]

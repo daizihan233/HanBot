@@ -1,4 +1,3 @@
-import datetime
 import json
 import os
 import random
@@ -17,7 +16,7 @@ def isexists_dir_create(path):
 
 
 def send(msg, gid, uid=None):
-    async def is_at(msg, gid, uid):
+    async def is_at():
         async with aiohttp.ClientSession() as session:
             async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
                 await ws.send_json({'action': 'send_group_msg', 'params': {
@@ -27,7 +26,7 @@ def send(msg, gid, uid=None):
                 data = await ws.receive_json()
         return data
 
-    async def no_at(msg, gid):
+    async def no_at():
         async with aiohttp.ClientSession() as session:
             async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
                 await ws.send_json({'action': 'send_group_msg', 'params': {
@@ -38,9 +37,9 @@ def send(msg, gid, uid=None):
         return data
 
     if uid is not None:
-        asyncio.run(is_at(msg, gid, uid))
+        asyncio.run(is_at())
     else:
-        asyncio.run(no_at(msg, gid))
+        asyncio.run(no_at())
 
 
 def send_114514(msg, gid, uid):
@@ -75,7 +74,8 @@ def keyword(msg: str, uid, gid):
              '[09] 哔哩哔哩\n'
              '[10] pi\n'
              '[11] 突发恶疾\n'
-             '[12] bb\n'
+             '[12] ?????\n'
+             '[13] bb\n'
              '语法：@机器人 bb\n'
              '你就可以看见作者的小声bb'
              , gid, uid)
@@ -216,8 +216,8 @@ https://share.weiyun.com/XvQofEc0
             print(c, t)
             if c < 5:
                 send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
-                open('zu_an_time.txt', 'w').write('{} {}'.format(c+1, time.time()))
-            elif t >= 60*60:
+                open('zu_an_time.txt', 'w').write('{} {}'.format(c + 1, time.time()))
+            elif t >= 60 * 60:
                 send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
                 open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
         elif "祖安[CQ:at,qq=" in msg:
@@ -230,12 +230,45 @@ https://share.weiyun.com/XvQofEc0
                 if '[CQ:at,qq=' in msg[0]:
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
                 open('zu_an_time.txt', 'w').write('{} {}'.format(c + 1, time.time()))
-            elif t >= 60*60:
+            elif t >= 60 * 60:
                 msg = msg.split()
                 msg[0] = msg[0].strip('祖安')
                 if '[CQ:at,qq=' in msg[0]:
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
                 open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
+        elif msg[:2] == '色色':
+            api_list = [
+                ['https://acg.toubiec.cn/random.php?ret=json', 'imgurl', 0],
+                ['https://www.dmoe.cc/random.php?return=json', 'acgurl', None],
+                ['https://api.vvhan.com/api/acgimg?type=json', 'imgurl', None],
+                ['https://img.xjh.me/random_img.php?return=json', 'img', None],
+                ['https://api.ghser.com/random/api.php', None, None],
+                ['https://api.yimian.xyz/img?type=moe', None, None],
+                ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None],
+                ['https://api.mtyqx.cn/api/random.php?type=json', 'acgurl', None],
+                ['https://img.paulzzh.com/touhou/random?type=json', 'url', None],
+                ['https://api.yimian.xyz/img?type=moe&R18=true', None, None]  # 多少有点离谱
+            ]
+            ret_api = random.choice(api_list)
+            if ret_api[2] is None and ret_api[1] is not None:
+                res = json.loads(
+                    requests.get(
+                        ret_api[0]
+                    ).text
+                )[ret_api[1]]
+            elif ret_api[1] is None:
+                res = requests.get(
+                    ret_api[0]
+                ).text
+            else:
+                res = json.loads(
+                    requests.get(
+                        ret_api[0]
+                    ).text
+                )[ret_api[2]][ret_api[1]]
+            if res[:2] == '//':
+                res = 'https:' + res
+            send(f'[CQ:image,file={res}]', gid)
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
             if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 if len(str(msg).split(' ')) != 2:
@@ -473,10 +506,10 @@ https://share.weiyun.com/XvQofEc0
                 f'我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}',
 
                 f'嘿嘿嘿🤤真想把{name}的勋章和军服全脱了🤤把{name}绑在一边让{name}一边哭一边被我雷普🤤再把{name}的6b47头盔和6b45-1m防弹'
-                f'衣扔到一边🤤然后在{name}面前把{name}最讨厌的聚合物弹夹塞进{name}们下面和{name}最爱的ak-12里面🤤 '
-                
-                f'好像要♡好像要{name}的大几把啊♡'
-                
+                f'衣扔到一边🤤然后在{name}面前把{name}最讨厌的聚合物弹夹塞进{name}们下面和{name}最爱的ak-12里面🤤 ',
+
+                f'好像要♡好像要{name}的大几把啊♡',
+
                 f'{name}{random.choice(["哥哥", "姐姐"])}，给我吃你的几把吧♡'
             ]
             send(random.choice(lis), gid)  # 随机选择模板并发送
