@@ -237,38 +237,84 @@ https://share.weiyun.com/XvQofEc0
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
                 open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
         elif msg[:2] == '色色':
+            tim = time.perf_counter()
             api_list = [
-                ['https://acg.toubiec.cn/random.php?ret=json', 'imgurl', 0],
-                ['https://www.dmoe.cc/random.php?return=json', 'acgurl', None],
-                ['https://api.vvhan.com/api/acgimg?type=json', 'imgurl', None],
-                ['https://img.xjh.me/random_img.php?return=json', 'img', None],
-                ['https://api.ghser.com/random/api.php', None, None],
-                ['https://api.yimian.xyz/img?type=moe', None, None],
-                ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None],
-                ['https://api.mtyqx.cn/api/random.php?type=json', 'acgurl', None],
-                ['https://img.paulzzh.com/touhou/random?type=json', 'url', None],
-                ['https://api.yimian.xyz/img?type=moe&R18=true', None, None]  # 多少有点离谱
+                # [API链接(str), JSON的键(str|None), 列表的下表(int|None), 返回数据是否为二进制流(bool), 是否不使用框架的下载功能(bool)]
+                #                       ①                 ②
+                # 如果①和②都有值则是[②][①]
+                # 如果①没有值②有值则无法进行
+                # 如果①有值②没有值则是[①]
+                # [] # ?x -> ?.??s 《《《 ?x 我给这个API的评分，?.??s则代表了这个API的响应速度
+                #      └ 满分为5x
+                ['https://acg.toubiec.cn/random.php?ret=json', 'imgurl', 0, False, False],  # 5x -> 0.96s
+                ['https://api.sunweihu.com/api/sjbz/api.php?lx=dongman', None, None, True, False],  # 5x -> 0.91s
+                ['https://www.yingciyuan.cn/pc.php', None, None, True, False],  # 4x -> 1.81s
+                ['https://img.xjh.me/random_img.php?return=json', 'img', None, False, False],  # 4x -> 1.41s
+                ['https://api.ghser.com/random/api.php', None, None, True, False],  # 5x -> 0.76s
+                ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 4x -> 1.25s
+                ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None, False, False],  # 5x -> 0.84s
+                ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 4x -> 1.25s
             ]
             ret_api = random.choice(api_list)
-            if ret_api[2] is None and ret_api[1] is not None:
-                res = json.loads(
-                    requests.get(
+            try:
+                if not ret_api[3] and not ret_api[4]:
+                    if ret_api[2] is None and ret_api[1] is not None:
+                        ret = requests.get(
+                            ret_api[0]
+                        )
+                        res = json.loads(
+                            ret.text
+                        )[ret_api[1]]
+                    elif ret_api[1] is None:
+                        res = requests.get(
+                            ret_api[0]
+                        ).text
+                    else:
+                        ret = requests.get(
+                            ret_api[0]
+                        )
+                        res = json.loads(
+                            ret.text
+                        )[ret_api[2]][ret_api[1]]
+                    if res[:2] == '//':
+                        res = 'https:' + res
+                    print(res)
+                elif ret_api[4]:
+                    ret = requests.get(
                         ret_api[0]
-                    ).text
-                )[ret_api[1]]
-            elif ret_api[1] is None:
-                res = requests.get(
-                    ret_api[0]
-                ).text
-            else:
-                res = json.loads(
-                    requests.get(
+                    ).text[ret_api[1]]
+                    res = requests.get(
+                        ret
+                    ).content
+                    with open('temp.jpg', 'wb') as f:
+                        f.write(res)
+                    res = 'file:///' + os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/temp.jpg'
+                else:
+                    res = requests.get(
                         ret_api[0]
-                    ).text
-                )[ret_api[2]][ret_api[1]]
-            if res[:2] == '//':
-                res = 'https:' + res
-            send(f'[CQ:image,file={res}]', gid)
+                    ).content
+                    with open('temp.jpg', 'wb') as f:
+                        f.write(res)
+                    res = 'file:///' + os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/temp.jpg'
+                send(f'[CQ:image,file={res}]', gid)
+            except json.decoder.JSONDecodeError:
+                print(f'API             : {ret_api[0]}')
+                print(f'HTTP Status Code: {ret.status_code}')
+                print(f'JSON            : {ret}')
+                print('ERROR           : json.decoder.JSONDecodeError')
+            print(ret_api)
+            tim_n = time.perf_counter() - tim
+            print(tim_n)
+            if tim_n <= 1:
+                print(f'{ret_api[0]} is very fast! 5x')
+            elif tim_n <= 2:
+                print(f'{ret_api[0]} is fast! 4x')
+            elif tim_n <= 4:
+                print(f'{ret_api[0]} is normal! 3x')
+            elif tim_n <= 10:
+                print(f'{ret_api[0]} is slow! 2x')
+            elif tim_n > 10:
+                print(f'{ret_api[0]} is very slow! 1x')
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
             if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 if len(str(msg).split(' ')) != 2:
