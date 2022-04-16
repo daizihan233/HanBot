@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import random
@@ -74,8 +75,9 @@ def keyword(msg: str, uid, gid):
              '[09] 哔哩哔哩\n'
              '[10] pi\n'
              '[11] 突发恶疾\n'
-             '[12] ?????\n'
-             '[13] bb\n'
+             '[12] 鸡汤\n'
+             '[13] ?????\n'
+             '[14] bb\n'
              '语法：@机器人 bb\n'
              '你就可以看见作者的小声bb'
              , gid, uid)
@@ -102,6 +104,8 @@ def keyword(msg: str, uid, gid):
             elif command == '突发恶疾':
                 send('\n语法：@机器人 突发恶疾 人名\n'
                      '即可获得一条发病文案', gid, uid)
+            elif command == '鸡汤':
+                send('不用@，你可以获得一碗心灵鸡汤', gid, uid)
             elif command == 'pi':
                 send('估算圆周率前6位，感谢 GitHub@123Windows31 提供的代码', gid, uid)
             elif command == '特定关键词复读':
@@ -139,6 +143,22 @@ def keyword(msg: str, uid, gid):
                  '其它问题请联系作者QQ：183713750\n'
                  '========\n'
                  '公告：https://shimo.im/docs/KqHXw8XrrwpXqGY9/', gid, uid)
+        elif msg == 'muteme':
+            # h, m = (datetime.datetime.now().hour, datetime.datetime.now().minute)
+            # if h == 11 and m >= 30:
+            pass  # 他奶奶的施工呢，瞅你妈
+        elif msg == '鸡汤':
+            hit = json.loads(requests.get("https://v1.hitokoto.cn/").text)
+            send(
+                f'{hit["hitokoto"]}\n'
+                f'{"    " * 4 if hit["length"] <= 10 else "    " * 6}——{hit["from"]}',
+                gid
+            )
+        elif msg[:7] == 'addname' and uid == 183713750:
+            tmp = msg.split(" ")
+            tmp.pop(0)
+            open('ok_name.txt', 'a').write(f'{" ".join(tmp)}\n')
+            send('彳亍', gid, uid)
         elif msg == '申请管理员':
             if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 send('\n啊嘞？发生了一个错误！\n'
@@ -251,9 +271,10 @@ https://share.weiyun.com/XvQofEc0
                 ['https://www.yingciyuan.cn/pc.php', None, None, True, False],  # 4x -> 1.81s
                 ['https://img.xjh.me/random_img.php?return=json', 'img', None, False, False],  # 4x -> 1.41s
                 ['https://api.ghser.com/random/api.php', None, None, True, False],  # 5x -> 0.76s
-                ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 4x -> 1.25s
-                ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None, False, False],  # 5x -> 0.84s
-                ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 4x -> 1.25s
+                # ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 1x -> 60s+
+                ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None, False, False],
+                # 5x -> 0.84s
+                # ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 1x -> 60s+
             ]
             ret_api = random.choice(api_list)
             try:
@@ -299,9 +320,12 @@ https://share.weiyun.com/XvQofEc0
                 send(f'[CQ:image,file={res}]', gid)
             except json.decoder.JSONDecodeError:
                 print(f'API             : {ret_api[0]}')
-                print(f'HTTP Status Code: {ret.status_code}')
+                try:
+                    print(f'HTTP Status Code: {ret.status_code}')
+                except NameError:
+                    print('HTTP Status Code: None')
                 print(f'JSON            : {ret}')
-                print('ERROR           : json.decoder.JSONDecodeError')
+                print('ERROR            : json.decoder.JSONDecodeError')
             print(ret_api)
             tim_n = time.perf_counter() - tim
             print(tim_n)
@@ -429,12 +453,12 @@ https://share.weiyun.com/XvQofEc0
                                              '{2}'.format(gid, uid, '{} 已在黑名单\n'
                                                                     '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
                             else:
-                                open('fucklist', 'a').write(f + '\n')
+                                open('fucklist', 'a').write(f)
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
                                              '{2}'.format(gid, uid, '已添加 {} 至黑名单\n'
-                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                                                                    '（如果发现恶意添加请尽快联系HanTools删除）'.format(f.strip('\n'))))
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
             else:
