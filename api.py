@@ -1,60 +1,9 @@
-import datetime
-import json
-import os
 import random
 import time
 import urllib
 from urllib import parse
-
-import aiohttp
-import asyncio
+from func import *
 import requests
-
-
-def isexists_dir_create(path):
-    if not os.path.exists(path):
-        open(path, 'w', encoding='utf-8').close()
-
-
-def send(msg, gid, uid=None):
-    async def is_at():
-        async with aiohttp.ClientSession() as session:
-            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
-                await ws.send_json({'action': 'send_group_msg', 'params': {
-                    'group_id': gid,  # 往这个群发条消息
-                    'message': '[CQ:at,qq=' + str(uid) + ']' + msg  # 消息内容
-                }})
-                data = await ws.receive_json()
-        return data
-
-    async def no_at():
-        async with aiohttp.ClientSession() as session:
-            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
-                await ws.send_json({'action': 'send_group_msg', 'params': {
-                    'group_id': gid,  # 往这个群发条消息
-                    'message': msg  # 消息内容
-                }})
-                data = await ws.receive_json()
-        return data
-
-    if uid is not None:
-        asyncio.run(is_at())
-    else:
-        asyncio.run(no_at())
-
-
-def send_114514(msg, gid, uid):
-    async def send(msg, gid, uid):
-        async with aiohttp.ClientSession() as session:
-            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
-                await ws.send_json({'action': 'send_group_msg', 'params': {
-                    'group_id': gid,  # 往这个群发条消息
-                    'message': uid + msg  # 消息内容
-                }})
-                data = await ws.receive_json()
-        return data
-
-    asyncio.run(send(msg, gid, uid))
 
 
 def keyword(msg: str, uid, gid):
@@ -79,8 +28,8 @@ def keyword(msg: str, uid, gid):
              '[13] ?????\n'
              '[14] bb\n'
              '语法：@机器人 bb\n'
-             '你就可以看见作者的小声bb'
-             , gid, uid)
+             '你就可以看见作者的小声bb',
+             gid, uid)
     else:
         if msg[:4] == 'help':
             command = msg[5:]
@@ -92,15 +41,13 @@ def keyword(msg: str, uid, gid):
                      '注意：您必须有机器人管理员权限才能执行此功能\n'
                      'Tips：机器人管理员申请请 @机器人 申请管理员\n'
                      '语法1：@机器人【空格】黑名单【空格】@...（直接@）\n'
-                     '语法2：@机器人【空格】黑名单【空格】...（QQ号）', gid, uid)
+                     '语法2：@机器人【空格】黑名单【空格】...（QQ号）\n'
+                     '注意：这将影响到加群自动同意，请谨慎操作\n'
+                     '注意：在部分群内已经适配完成加黑自动踢人（需要管理+适配）\n'
+                     '注意：在部分群已修补可绕过黑名单的漏洞（需要管理+适配）', gid, uid)
             elif command == '加群自动同意':
-                if gid == 907112053 or gid == 833645046:
-                    send('\n当有人加群时如果答案正确则自动同意，\n'
-                         '否则就发消息提示', gid, uid)
-                else:
-                    send('\n【Warning：本群不适配此功能】\n'
-                         '当有人加群时如果答案正确则自动同意，\n'
-                         '否则就发消息提示', gid, uid)
+                send('\n当有人加群时如果答案正确则自动同意，\n'
+                     '否则就发消息提示（需要适配）', gid, uid)
             elif command == '突发恶疾':
                 send('\n语法：@机器人 突发恶疾 人名\n'
                      '即可获得一条发病文案', gid, uid)
@@ -178,10 +125,9 @@ def keyword(msg: str, uid, gid):
                      '👉 已知在有前科的时候重新申请通过的概率会降低\n'
                      '👉 已知申请成功的概率不是100%', gid, uid)
         elif ("群文件" == msg or "病毒库" == msg) and gid == 764869658:
-            send(msg=
-                 '''\n中国青年计算机爱好者联盟 （CEA）
-China Young Computer Enthusiast Alliance
-
+            send(msg='''\n中国青年计算机爱好者联盟 （CEA）群文件说明
+China Young Computer Enthusiast Alliance Group File Description
+--------------------------------------------------------
 CN-xzf：https://xzfyyds.lanzoui.com/
 OS相关:b02omemwh
 浏览器(不经常更新):b02ok1xof
@@ -193,8 +139,21 @@ OS激活相关：b02ojcf0d
 技术资料：b02ojnaxc
 其他：b02ojj7kh
 工具支持：蓝奏云 
-PS：密码均为 666
-群文件
+PS：密码均为 CEA
+--------------------------------------------------------
+CN-yxy：https://pan.bilnn.cn/s/
+软件安装包（定期更新）：k3JLIw
+群主自制の软件：peJyCE
+单文件软件：l1JecM
+清华大学计算机系网络课程：m4JWCx
+各类激活工具（定期更新）：xDLkcA
+CMD批处理：8Yw9ib
+注：群主自制の软件每次下载2积分
+      CMD批处理教程每次下载1积分
+    （毕竟是劳动成果，支持一下嘻嘻）
+工具支持：比邻云盘
+--------------------------------------------------------
+群共享文件
 https://share.weiyun.com/XvQofEc0
 文件分享上传：http://inbox.weiyun.com/UN5lAjrn
 工具支持：腾讯微云''',
@@ -277,6 +236,7 @@ https://share.weiyun.com/XvQofEc0
                 # ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 1x -> 60s+
             ]
             ret_api = random.choice(api_list)
+            ret = None
             try:
                 if not ret_api[3] and not ret_api[4]:
                     if ret_api[2] is None and ret_api[1] is not None:
@@ -375,6 +335,7 @@ https://share.weiyun.com/XvQofEc0
                                              '{2}'.format(gid, uid, '{} 已在黑名单'.format(f.strip())))
                             else:
                                 open('fucklist', 'a').write(f + '\n')
+
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
@@ -430,7 +391,7 @@ https://share.weiyun.com/XvQofEc0
 
 
         elif "黑名单" in msg:
-            if ((str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines()):
+            if (str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 print('admin')
                 if len(str(msg).split(' ')) != 2:
                     send('error: 语法错误！应该只有2个空格', gid, uid)
