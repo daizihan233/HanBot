@@ -101,11 +101,49 @@ def keyword(msg: str, uid, gid):
                 f'{"    " * 4 if hit["length"] <= 10 else "    " * 6}——{hit["from"]}',
                 gid
             )
-        elif msg[:7] == 'addname' and uid == 183713750:
+        elif msg[:7] == 'addname':
             tmp = msg.split(" ")
             tmp.pop(0)
             open('ok_name.txt', 'a').write(f'{" ".join(tmp)}\n')
             send('彳亍', gid, uid)
+        elif msg[:6] == 'noname':
+            tmp = msg.split(" ")
+            tmp.pop(0)
+            open('noname.txt', 'a').write(f'{" ".join(tmp)}\n')
+            send('彳亍', gid, uid)
+        elif msg.split()[0] == '来份面包':
+            gl = [
+                744591068,
+                833645046,
+                312411033,
+                310896029
+            ]
+            if gid in gl:
+                msg = msg.split()
+                if len(msg) > 2 or len(msg) < 1:
+                    send('你妈的，参数都错了，你让我咋做？', gid, uid)
+                else:
+                    try:
+                        if len(msg) != 1:
+                            tmp = int(msg[1])
+                    except Exception:
+                        send('你妈的，参数都错了，你让我咋做？', gid, uid)
+                    else:
+                        if len(msg) == 1:
+                            tmp = send('🍞', gid, uid)
+                            if tmp['data'] is None:
+                                print(send('【错误】Sorry，您的订单量太大或太小，请调整参数再试一次，也可能是由于北京的疫情原因，暂时停止了生产（指'
+                                           '风控），您可以稍等一会儿（也可能是几天）后再来购买', gid, uid))
+                        elif len(msg) == 2:
+                            if int(msg[1]) < 1:
+                                send('Sorry，您的订单量太小，请调整参数再试一次', gid, uid)
+                            else:
+                                tmp = send('🍞' * int(msg[1]), gid, uid)
+                                if tmp['data'] is None:
+                                    print(send('【错误】Sorry，您的订单量太大或太小，请调整参数再试一次，也可能是由于北京的疫情原因，暂时停止了生产（指'
+                                               '风控），您可以稍等一会儿（也可能是几天）后再来购买', gid, uid))
+            else:
+                send('鬼，sb', gid, uid)
         elif msg == '申请管理员':
             if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 send('\n啊嘞？发生了一个错误！\n'
@@ -233,7 +271,7 @@ https://share.weiyun.com/XvQofEc0
                 # ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 1x -> 60s+
                 ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None, False, False],
                 # 5x -> 0.84s
-                # ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 1x -> 60s+
+                ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 1x -> 60s+
             ]
             ret_api = random.choice(api_list)
             ret = None

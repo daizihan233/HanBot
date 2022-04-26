@@ -156,3 +156,4 @@ def send(msg, gid, uid=None):
     else:
         tmp = asyncio.run(no_at(msg, gid))
     print(tmp)
+    return tmp
