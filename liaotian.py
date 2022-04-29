@@ -184,7 +184,7 @@ https://share.weiyun.com/XvQofEc0
 工具支持：腾讯微云''',
                  gid=gid, uid=uid)
         elif gid == 535979960:
-            l = [
+            welcome = [
                 '欢迎 :)',
                 ':)',
                 'ohhhhhhhhhhhhhhh，有新人欸',
@@ -193,7 +193,7 @@ https://share.weiyun.com/XvQofEc0
                 '你好啊！别潜水哦~',
                 'hi，这里是setup的小群，一些奇奇怪怪反正别问的问题，不要把群号告诉任何人，谢谢啦~'
             ]
-            send(msg=random.choice(l),
+            send(msg=random.choice(welcome),
                  gid=gid,
                  uid=uid)
         elif gid == 907112053:
@@ -254,7 +254,7 @@ https://share.weiyun.com/XvQofEc0
             'Neutral': 0,
             'Negative': 0
         }
-        if rs == '未定义 - none':
+        if rs == '未知 - none':
             ret = tencent_api(str(request.get_json().get('card_new')).lower())  # 将改的名字发送至腾讯云进行情感分析
             print(ret)
             if ret['Sentiment'] == 'positive':  # 如果是正面情绪

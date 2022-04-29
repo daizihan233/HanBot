@@ -64,7 +64,7 @@ def add_group_automatic_consent(gid, uid, comment, right, flag, t):
                           '[Robot][Event] 加群事件\n'
                           'QQ号：{0}\n'
                           '答案：{1}\n'
-                          '机器人一次审核通过，但此人在黑名单内\n'
+                          '机器人一次未审核通过，因为此人在黑名单内\n'
                           '执行操作：拒绝'.format(uid, comment))
     else:
         if comment.upper() in right:
