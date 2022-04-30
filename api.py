@@ -2,8 +2,8 @@ import random
 import time
 import urllib
 from urllib import parse
+
 from func import *
-import requests
 
 
 def keyword(msg: str, uid, gid):
@@ -516,14 +516,6 @@ https://share.weiyun.com/XvQofEc0
                          'group_id={0}&'
                          'message=鸽子'
                          '{1}'.format(gid, '您可以咕 {0} 天了').format(t))
-        elif gid == 623377914 and ('咕' in msg):
-            msg = str(msg).count('咕')
-            with open('gugu.txt', 'r') as file:
-                gu = int(file.readlines()[0])
-            gu = gu + msg
-            with open('gugu.txt', 'w') as file:
-                file.write(str(gu))
-            send('鸽子 {1}'.format(gid, '您可以咕 {0} 天了').format(gu), gid)
         elif "e" == msg or "额" == msg or "呃" == msg or "。" == msg or "w" == msg or \
                 "www" == msg or msg == "114514" or msg == "1145141919810" or \
                 msg == '[CQ:face,id=298]' or msg == '[CQ:face,id=178]' or msg == '[CQ:face,id=277]' or \
