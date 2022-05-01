@@ -59,7 +59,7 @@ def keyword(msg: str, uid, gid):
                 send('\n无需@，一条消息必须只包含关键词\n'
                      '支持的关键词（“ | ”分割）：\n'
                      'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] | [CQ:face,id=277] | '
-                     '[CQ:face,id=178]\n '
+                     '[CQ:face,id=178] | c | ccc | tcl\n '
                      '比如你说“额”，机器人就会说“额”，但你说“额额“、”额啊“是不会复读的', gid, uid)
             elif command == '聊天':
                 send('\n必须@，@尽量置前，不要加回复，尽量不要加表情，直接说内容\n'
@@ -516,10 +516,29 @@ https://share.weiyun.com/XvQofEc0
                          'group_id={0}&'
                          'message=鸽子'
                          '{1}'.format(gid, '您可以咕 {0} 天了').format(t))
-        elif "e" == msg or "额" == msg or "呃" == msg or "。" == msg or "w" == msg or \
-                "www" == msg or msg == "114514" or msg == "1145141919810" or \
-                msg == '[CQ:face,id=298]' or msg == '[CQ:face,id=178]' or msg == '[CQ:face,id=277]' or \
-                msg == '？' or msg == '?' or msg == '草':
+        # elif "e" == msg or "额" == msg or "呃" == msg or "。" == msg or "w" == msg or \
+        #         "www" == msg or msg == "114514" or msg == "1145141919810" or \
+        #         msg == '[CQ:face,id=298]' or msg == '[CQ:face,id=178]' or msg == '[CQ:face,id=277]' or \
+        #         msg == '？' or msg == '?' or msg == '草' or msg == 'c' or:
+        elif msg in [
+            'e',
+            '额',
+            '呃',
+            '。',
+            'w',
+            'www',
+            '114514',
+            '1145141919810',
+            '[CQ:face,id=298]',
+            '[CQ:face,id=178]',
+            '[CQ:face,id=277]',
+            '？',
+            '?',
+            '草',
+            'c',
+            'ccc',
+            'tcl'
+        ]:
             send(msg, gid)
         elif gid == 623377914 and uid == 2443818489:
             if msg == '吃了:)':

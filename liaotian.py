@@ -1,11 +1,11 @@
 import random
 import re
 import time
-from func import *
-import requests
+
 from flask import Flask, request
-import asyncio
+
 import api
+from func import *
 
 app = Flask(__name__)
 
@@ -44,10 +44,25 @@ def post_data():
         else:
             if '咕' in message:
                 api.keyword(message, uid, gid)
-            elif ("e" == message or "额" == message or "呃" == message or "。" == message or "w" == message or
-                  "www" == message or message == "114514" or message == "1145141919810" or
-                  message == '[CQ:face,id=298]' or message == '[CQ:face,id=178]' or message == '[CQ:face,id=277]' or
-                  message == '？' or message == '?' or message == '草') and gid != 936389498 and gid != 532094038:
+            elif message in [
+                'e',
+                '额',
+                '呃',
+                '。',
+                'w',
+                'www',
+                '114514',
+                '1145141919810',
+                '[CQ:face,id=298]',
+                '[CQ:face,id=178]',
+                '[CQ:face,id=277]',
+                '？',
+                '?',
+                '草',
+                'c',
+                'ccc',
+                'tcl'
+            ] and gid != 936389498 and gid != 532094038:
                 api.keyword(message, uid, gid)
             elif '吃了:)' == message or '没吃:(' == message and gid != 532094038:
                 api.keyword(message, uid, gid)
