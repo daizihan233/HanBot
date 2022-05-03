@@ -10,7 +10,7 @@ from func import *
 app = Flask(__name__)
 
 
-@app.route('/', methods=["POST", 'WebSocket'])
+@app.route('/', methods=["POST"])
 def post_data():
     blacklist = [  # 不处理这些人的消息
         2854196310,  # Q群管家
@@ -79,7 +79,7 @@ def post_data():
         print(gid, comment, t, flag, uid, flush=True)
         if gid == 907112053 and t == 'add':
             add_group_automatic_consent(gid, uid, comment,
-                                        ['MEMZ123', 'WindowsSetup2010', '1511907771', 'UID1511907771',
+                                        ['WindowsSetup2010', '1511907771', 'UID1511907771',
                                          'UID:1511907771', 'MEMZ567'], flag, t)
         elif gid == 833645046 and t == 'add':
             add_group_automatic_consent(gid, uid, comment, ['三星'], flag, t)
