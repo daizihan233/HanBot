@@ -18,6 +18,8 @@ def post_data():
         2293800985,  # 机器人
         2396349635,  # 屑
         2609948707,  # 屑
+        3561922003,  # 屑+机器人
+        1950770034,  # 机器人
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
@@ -61,14 +63,35 @@ def post_data():
                 '草',
                 'c',
                 'ccc',
-                'tcl'
+                'tcl',
+                'Cedar Point',
+                'Blue Streak',
+                'Cedar Creek Mine Ride',
+                'Corkscrew',
+                'GateKeeper',
+                'Gemini',
+                'Iron Dragon',
+                'Magnum XL-200',
+                'Maverick',
+                'Millennium Force',
+                'Raptor',
+                'Rougarou',
+                'Steel Vengeance',
+                'Top Thrill Dragster',
+                'Valravn',
+                'Wilderness Run',
+                'Woodstock Express',
+                'Wicked Twister',
+                'Mako',
+                'Fury 325',
+                'El Toro'
             ] and gid != 936389498 and gid != 532094038:
                 api.keyword(message, uid, gid)
             elif '吃了:)' == message or '没吃:(' == message and gid != 532094038:
                 api.keyword(message, uid, gid)
             elif ("病毒库" == message or "群文件" == message) and gid == 764869658:
                 api.keyword(message, uid, gid)
-            elif message == '色色' or message == '鸡汤' or message == 'muteme' or message.split()[0] == '来份面包':
+            elif message == '图' or message == '鸡汤' or message == 'muteme' or message.split()[0] == '来份面包':
                 api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
@@ -77,7 +100,7 @@ def post_data():
         flag = request.get_json().get('flag')
         uid = request.get_json().get('user_id')
         print(gid, comment, t, flag, uid, flush=True)
-        if gid == 907112053 and t == 'add':
+        if gid == 788328739 and t == 'add':
             add_group_automatic_consent(gid, uid, comment,
                                         ['WindowsSetup2010', '1511907771', 'UID1511907771',
                                          'UID:1511907771', 'MEMZ567'], flag, t)
@@ -211,15 +234,16 @@ https://share.weiyun.com/XvQofEc0
             send(msg=random.choice(welcome),
                  gid=gid,
                  uid=uid)
-        elif gid == 907112053:
-            print('907112053群成员增加！')
+        elif gid == 788328739:
+            print('788328739群成员增加！')
             fuck = open('fucklist', 'r').readlines()
             for i in range(len(fuck)):
                 fuck[i] = fuck[i].strip('\n')
             if str(uid) in fuck:
-                print('Fuck! 哪个傻逼让你进来的？')
-                send('cnmd，谁让你进来的？？？滚！你个死马玩意儿', gid, uid)
-                tick(gid, uid)
+                if request.get_json().get('operator_id') != 183713750:
+                    print('Fuck! 哪个傻逼让你进来的？')
+                    send('cnmd，谁让你进来的？？？滚！你个死马玩意儿', gid, uid)
+                    tick(gid, uid)
         elif gid == 532094038:
             send('''【小鸡词典的鸡窝·群聊使用规范】
 
@@ -293,7 +317,7 @@ https://share.weiyun.com/XvQofEc0
                      '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
                                        request.get_json().get('card_new'), request.get_json().get('card_old'),
                                        s, rs, ret['Positive'], ret['Neutral'], ret['Negative']))
-        if request.get_json().get('group_id') == 907112053 or \
+        if request.get_json().get('group_id') == 788328739 or \
                 request.get_json().get('group_id') == 751210750 or \
                 request.get_json().get('group_id') == 833645046 or \
                 request.get_json().get('group_id') == 744591068 or \

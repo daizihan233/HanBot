@@ -1,6 +1,7 @@
 import random
 import time
 import urllib
+from re import *
 from urllib import parse
 
 from func import *
@@ -116,7 +117,8 @@ def keyword(msg: str, uid, gid):
                 744591068,
                 833645046,
                 312411033,
-                310896029
+                310896029,
+                788328739
             ]
             if gid in gl:
                 msg = msg.split()
@@ -253,7 +255,7 @@ https://share.weiyun.com/XvQofEc0
                 if '[CQ:at,qq=' in msg[0]:
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
                 open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
-        elif msg[:2] == '色色':
+        elif msg == '图':
             tim = time.perf_counter()
             api_list = [
                 # [API链接(str), JSON的键(str|None), 列表的下表(int|None), 返回数据是否为二进制流(bool), 是否不使用框架的下载功能(bool)]
@@ -268,7 +270,7 @@ https://share.weiyun.com/XvQofEc0
                 ['https://www.yingciyuan.cn/pc.php', None, None, True, False],  # 4x -> 1.81s
                 ['https://img.xjh.me/random_img.php?return=json', 'img', None, False, False],  # 4x -> 1.41s
                 ['https://api.ghser.com/random/api.php', None, None, True, False],  # 5x -> 0.76s
-                # ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 1x -> 60s+
+                ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 1x -> 60s+
                 ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None, False, False],
                 # 5x -> 0.84s
                 ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 1x -> 60s+
@@ -356,7 +358,7 @@ https://share.weiyun.com/XvQofEc0
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
                             send('\nctmd！发生一个错误！\n'
                                  '>>> Error: this uid cannot be added\n'
-                                 '>>> 错误：此人无法添加'
+                                 '>>> 错误：此人无法添加\n'
                                  '183713750 <<<<< 你tmd瞅这里！\n'
                                  '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！', gid, uid)
@@ -426,8 +428,6 @@ https://share.weiyun.com/XvQofEc0
                                 send('已发送至后台，等待人工审核', gid, uid)
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
-
-
         elif "黑名单" in msg:
             if (str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines():
                 print('admin')
@@ -537,7 +537,28 @@ https://share.weiyun.com/XvQofEc0
             '草',
             'c',
             'ccc',
-            'tcl'
+            'tcl',
+            'Cedar Point',
+            'Blue Streak',
+            'Cedar Creek Mine Ride',
+            'Corkscrew',
+            'GateKeeper',
+            'Gemini',
+            'Iron Dragon',
+            'Magnum XL-200',
+            'Maverick',
+            'Millennium Force',
+            'Raptor',
+            'Rougarou',
+            'Steel Vengeance',
+            'Top Thrill Dragster',
+            'Valravn',
+            'Wilderness Run',
+            'Woodstock Express',
+            'Wicked Twister',
+            'Mako',
+            'Fury 325',
+            'El Toro'
         ]:
             send(msg, gid)
         elif gid == 623377914 and uid == 2443818489:
@@ -557,6 +578,29 @@ https://share.weiyun.com/XvQofEc0
                               'message=[CQ:at,qq={1}] '
                               '{2}'.format(gid, uid, '您可以去找HanTools（183713750）接入机器人'))
             print('request:', re)
+        elif msg[:2] == '禁言':
+            msg = msg.split()
+            if str(uid) in open('admin.txt', 'r').read().split():
+                if len(msg) == 3:
+                    forbidden_words(gid, ''.join(compile('[0-9]+').findall(msg[1])), int(msg[2]) * 60)
+                    send(f'已尝试将其禁言 {msg[2]} 分钟，请按实际效果为准', gid, uid)
+                elif len(msg) == 2:
+                    forbidden_words(gid, ''.join(compile('[0-9]+').findall(msg[1])))
+                    send('已尝试将其禁言 11 天 4 小时 51 分钟 4 秒，请按实际效果为准', gid, uid)
+                else:
+                    send('error: 参数过多/过少', gid, uid)
+            else:
+                send('error: 没有权限', gid, uid)
+        elif msg[:2] == '解禁':
+            msg = msg.split()
+            if str(uid) in open('admin.txt', 'r').read().split():
+                if len(msg) == 2:
+                    forbidden_words(gid, ''.join(compile('[0-9]+').findall(msg[1])), 0)
+                    send('已尝试将其解除禁言，请按实际效果为准', gid, uid)
+                else:
+                    send('error: 参数过多/过少', gid, uid)
+            else:
+                send('error: 没有权限', gid, uid)
         elif msg[:4] == '突发恶疾':  # 突发恶疾生成器
             name = msg.split()
             print(name)

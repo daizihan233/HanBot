@@ -1,11 +1,11 @@
 import asyncio
 import json
 import os
-import requests
+
 import aiohttp
+import requests
 
 
-# api.py
 def isexists_dir_create(path):
     if not os.path.exists(path):
         open(path, 'w', encoding='utf-8').close()
@@ -25,7 +25,6 @@ def send_114514(msg, gid, uid):
     asyncio.run(s(msg, gid, uid))
 
 
-# liaotian.py
 def tick(gid, uid):
     def t(g, u):
         tmp = requests.get(f'http://127.0.0.1:5700/set_group_kick?group_id={g}&user_id={u}')
@@ -129,7 +128,6 @@ def tencent_api(word):
         print(err)
 
 
-# shared
 def send(msg, gid, uid=None):
     async def is_at(m, g, u):
         async with aiohttp.ClientSession() as session:
@@ -157,3 +155,18 @@ def send(msg, gid, uid=None):
         tmp = asyncio.run(no_at(msg, gid))
     print(tmp)
     return tmp
+
+
+def forbidden_words(gid, uid, tim=11 * 86400 + 4 * 3600 + 51 * 60 + 4):
+    async def fw(g, u, t):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'set_group_ban', 'params': {
+                    'group_id': g,
+                    'user_id': u,
+                    'duration': t
+                }})
+                data = await ws.receive_json()
+        return data
+
+    asyncio.run(fw(gid, uid, tim))
