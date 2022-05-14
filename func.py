@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import re
 
 import aiohttp
 import requests
@@ -157,7 +158,7 @@ def send(msg, gid, uid=None):
     return tmp
 
 
-def forbidden_words(gid, uid, tim=11 * 86400 + 4 * 3600 + 51 * 60 + 4):
+def forbidden_words(gid, uid, tim=11 * 86400 + 4 * 3600 + 51 * 60):
     async def fw(g, u, t):
         async with aiohttp.ClientSession() as session:
             async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
@@ -170,3 +171,7 @@ def forbidden_words(gid, uid, tim=11 * 86400 + 4 * 3600 + 51 * 60 + 4):
         return data
 
     asyncio.run(fw(gid, uid, tim))
+
+
+def get_all_number(s: str, j: str = ''):
+    return j.join(re.compile('[0-9]+').findall(s))

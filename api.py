@@ -1,7 +1,6 @@
 import random
 import time
 import urllib
-from re import *
 from urllib import parse
 
 from func import *
@@ -11,9 +10,6 @@ def keyword(msg: str, uid, gid):
     if msg == '' or msg == ' ':
         send('嘿！这里是菜单\n'
              '[00] help\n'
-             '语法：@机器人 help [指令名称]\n'
-             '即可查看相关文档\n'
-             '所有在这个菜单中没有的都可以在此指令中找到\n'
              '[01] 咕咕咕\n'
              '[02] 黑名单\n'
              '[03] 加群自动同意\n'
@@ -28,8 +24,8 @@ def keyword(msg: str, uid, gid):
              '[12] 鸡汤\n'
              '[13] ?????\n'
              '[14] bb\n'
-             '语法：@机器人 bb\n'
-             '你就可以看见作者的小声bb',
+             '[15] 禁言\n'
+             '[16] 解禁',
              gid, uid)
     else:
         if msg[:4] == 'help':
@@ -49,6 +45,26 @@ def keyword(msg: str, uid, gid):
             elif command == '加群自动同意':
                 send('\n当有人加群时如果答案正确则自动同意，\n'
                      '否则就发消息提示（需要适配）', gid, uid)
+            elif command == '禁言':
+                send('\n注意：这需要群管理\n'
+                     '注意：这需要机器人管理员权限\n'
+                     '注意：此程序对空格尤为敏感\n'
+                     '语法1：@机器人【空格】禁言【空格】@...（直接@）\n'
+                     '语法2：@机器人【空格】禁言【空格】...（QQ号）', gid, uid)
+            elif command == '':
+                send('语法：@机器人 help [指令名称]\n'
+                     '即可查看相关文档\n'
+                     '所有在这个菜单中没有的都可以在此指令中找到', gid, uid)
+            elif command == 'bb':
+                send('语法：@机器人 help [指令名称]\n'
+                     '即可查看相关文档\n'
+                     '所有在这个菜单中没有的都可以在此指令中找到\n', gid, uid)
+            elif command == '解禁':
+                send('\n注意：这需要群管理\n'
+                     '注意：这需要机器人管理员权限\n'
+                     '注意：此程序对空格尤为敏感\n'
+                     '语法1：@机器人【空格】解禁【空格】@...（直接@）\n'
+                     '语法2：@机器人【空格】解禁【空格】...（QQ号）', gid, uid)
             elif command == '突发恶疾':
                 send('\n语法：@机器人 突发恶疾 人名\n'
                      '即可获得一条发病文案', gid, uid)
@@ -340,7 +356,7 @@ https://share.weiyun.com/XvQofEc0
             elif tim_n > 10:
                 print(f'{ret_api[0]} is very slow! 1x')
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
-            if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
+            if str(uid) in open('admin.txt', 'r', encoding='UTF-8').read().split():
                 if len(str(msg).split(' ')) != 2:
                     send('error: 语法错误！应该只有2个空格', gid, uid)
                 else:
@@ -451,6 +467,7 @@ https://share.weiyun.com/XvQofEc0
                                              'message=[CQ:at,qq={1}] '
                                              '{2}'.format(gid, uid, '{} 已在黑名单\n'
                                                                     '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
+                                tick(gid, uid)
                             else:
                                 open('fucklist', 'a').write(f)
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
@@ -582,11 +599,11 @@ https://share.weiyun.com/XvQofEc0
             msg = msg.split()
             if str(uid) in open('admin.txt', 'r').read().split():
                 if len(msg) == 3:
-                    forbidden_words(gid, ''.join(compile('[0-9]+').findall(msg[1])), int(msg[2]) * 60)
+                    forbidden_words(gid, get_all_number(msg[1]), int(msg[2]) * 60)
                     send(f'已尝试将其禁言 {msg[2]} 分钟，请按实际效果为准', gid, uid)
                 elif len(msg) == 2:
-                    forbidden_words(gid, ''.join(compile('[0-9]+').findall(msg[1])))
-                    send('已尝试将其禁言 11 天 4 小时 51 分钟 4 秒，请按实际效果为准', gid, uid)
+                    forbidden_words(gid, get_all_number(msg[1]))
+                    send('已尝试将其禁言 11 天 4 小时 51 分钟，请按实际效果为准', gid, uid)
                 else:
                     send('error: 参数过多/过少', gid, uid)
             else:
@@ -595,7 +612,7 @@ https://share.weiyun.com/XvQofEc0
             msg = msg.split()
             if str(uid) in open('admin.txt', 'r').read().split():
                 if len(msg) == 2:
-                    forbidden_words(gid, ''.join(compile('[0-9]+').findall(msg[1])), 0)
+                    forbidden_words(gid, get_all_number(msg[1]), 0)
                     send('已尝试将其解除禁言，请按实际效果为准', gid, uid)
                 else:
                     send('error: 参数过多/过少', gid, uid)
@@ -648,10 +665,10 @@ https://share.weiyun.com/XvQofEc0
             a = re.findall(r'\"content\":\"(.+?)\\r\\n\"', ret)[-1]
             a = a.replace('\\n', '\n').replace('\\r', '')
             if a != 'defaultReply':
-                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                  'group_id={0}&'
-                                  'message=[CQ:at,qq={1}] '
-                                  '{2}'.format(gid, uid, a))
+                req = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                   'group_id={0}&'
+                                   'message=[CQ:at,qq={1}] '
+                                   '{2}'.format(gid, uid, a))
             else:
                 a = [  # 无语时的自动回复
                     '额......',
@@ -670,9 +687,9 @@ https://share.weiyun.com/XvQofEc0
                     '哇，你竟然难倒我了，真厉害(≧▽≦)',
                     '鬼'
                 ]
-                re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                  'group_id={0}&'
-                                  'message=[CQ:at,qq={1}] '
-                                  '{2}'.format(gid, uid, random.choice(a)))
-            print('requests_get: {0}'.format(re))
+                req = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                   'group_id={0}&'
+                                   'message=[CQ:at,qq={1}] '
+                                   '{2}'.format(gid, uid, random.choice(a)))
+            print('requests_get: {0}'.format(req))
             print('send: {0}'.format(a))

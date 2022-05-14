@@ -1,5 +1,4 @@
 import random
-import re
 import time
 
 from flask import Flask, request
@@ -27,20 +26,13 @@ def post_data():
         uid = request.get_json().get('sender').get('user_id')  # 获取信息发送者的 QQ号码
         message = request.get_json().get('raw_message')  # 获取原始信息
         print(message)
-        if str(message)[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
-            message = str(message)[len('[CQ:at,qq=748029973] '):]
-            print(message)
-            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
-        elif str(message)[:len('[CQ:at,qq=748029973]')] == '[CQ:at,qq=748029973]' and gid != 532094038:
-            message = str(message)[len('[CQ:at,qq=748029973]'):]
-            print(message)
-            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
-        elif str(message)[:len('[CQ:at,qq=2265453790] ')] == '[CQ:at,qq=2265453790] ' and gid != 532094038:
-            message = str(message)[len('[CQ:at,qq=2265453790] '):]
-            print(message)
-            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
-        elif str(message)[:len('[CQ:at,qq=2265453790]')] == '[CQ:at,qq=2265453790]' and gid != 532094038:
-            message = str(message)[len('[CQ:at,qq=2265453790]'):]
+        if message[:len('[CQ:at,qq=748029973]')] == '[CQ:at,qq=748029973]' and message[
+                                                                               :len('[CQ:at,qq=748029973] ')] != '[CQ:at,qq=748029973] ':
+            message.replace('[CQ:at,qq=748029973]', '[CQ:at,qq=748029973] ')
+        if message[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
+            message = message.split(' ')  # 去除换行符
+            message.pop(0)  # 去除第一个元素
+            message = ' '.join(message)  # 将列表转换为字符串
             print(message)
             api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
         else:
@@ -281,8 +273,10 @@ https://share.weiyun.com/XvQofEc0
     # 如果监测到改名，且不是留空
     elif request.get_json().get('notice_type') == 'group_card' and request.get_json().get('card_new') != '':
         rs = '未知 - none'
-        if request.get_json().get('card_new') in open('ok_name.txt', 'r').read().split('\n'):
-            rs = '正面 - positive'
+        for i in open('ok_name.txt', 'r', encoding='UTF-8').read().split('\n'):
+            if re.match(i, request.get_json().get('card_new')) is not None:
+                rs = '正面 - positive'
+                break
         for i in open('noname.txt', 'r', encoding='UTF-8').read().split('\n'):
             if re.match(i, request.get_json().get('card_new')) is not None:
                 rs = '负面 - negative'
@@ -317,11 +311,13 @@ https://share.weiyun.com/XvQofEc0
                      '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
                                        request.get_json().get('card_new'), request.get_json().get('card_old'),
                                        s, rs, ret['Positive'], ret['Neutral'], ret['Negative']))
-        if request.get_json().get('group_id') == 788328739 or \
-                request.get_json().get('group_id') == 751210750 or \
-                request.get_json().get('group_id') == 833645046 or \
-                request.get_json().get('group_id') == 744591068 or \
-                request.get_json().get('group_id') == 936389498:
+        if request.get_json().get('group_id') in [
+            788328739,
+            751210750,
+            833645046,
+            744591068,
+            936389498
+        ]:
             if rs == '负面 - negative':  # 为负面情绪
                 # 则把昵称改回来
                 asyncio.run(set_group_card(request.get_json().get('card_old'),
@@ -337,9 +333,12 @@ https://share.weiyun.com/XvQofEc0
                      '[终判]: {}\n'
                      '[正面]: {}\n'
                      '[中性]: {}\n'
-                     '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
-                                       request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                       s, rs, ret['Positive'], ret['Neutral'], ret['Negative'])
+                     '[负面]: {}'.format(request.get_json().get('group_id'),
+                                       request.get_json().get('user_id'),
+                                       request.get_json().get('card_new'),
+                                       request.get_json().get('card_old'),
+                                       s, rs, ret['Positive'], ret['Neutral'], ret['Negative']
+                                       )
                      , request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_ban':
         if request.get_json().get('sub_type') == 'ban' and request.get_json().get('group_id') == 473185911:
