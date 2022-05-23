@@ -4,6 +4,7 @@ import os
 import re
 
 import aiohttp
+import numpy as np
 import requests
 
 
@@ -175,3 +176,63 @@ def forbidden_words(gid, uid, tim=11 * 86400 + 4 * 3600 + 51 * 60):
 
 def get_all_number(s: str, j: str = ''):
     return j.join(re.compile('[0-9]+').findall(s))
+
+
+def odor_digital_demonstrator(i):
+    yajuu = {
+        0: '1+1+4-5-1**4',
+        1: '1+1+4-5*1**4',
+        2: '1+1+4-5+1**4',
+        3: '1+1-4+5*1**4',
+        4: '1+1+4-5-1+4',
+        5: '1+1+4-5+1*4',
+        6: '1+1+4+5-1-4',
+        7: '1+1+4+5-1*4',
+        8: '1+1+4+5+1-4',
+        9: '1+1*4+5-1**4'
+    }
+
+    def print_yajuu(s, dic):
+        ts = s
+        ans = ''
+        while s >= 10:
+            digi = np.floor(np.log10(s))
+            tmp = s % 10 ** digi
+            ans += '(%s)*(1+1+4+5-1**4)**(%s)+' % (dic[(s - tmp) / 10 ** digi], dic[digi])
+            s -= s - tmp
+        ans += dic[s]
+        print()
+        print(f'{ts} = {ans}')
+        return f'{ts} = {ans}'
+
+    return print_yajuu(i, yajuu)
+
+
+def ssend(msg, uid, gid=None):
+    async def in_gid(m, u, g):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'send_msg', 'params': {
+                    'user_id': u,
+                    'group_id': g,
+                    'message': m
+                }})
+                data = await ws.receive_json()
+        return data
+
+    async def not_in_gid(m, u):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'send_msg', 'params': {
+                    'user_id': u,
+                    'message': m
+                }})
+                data = await ws.receive_json()
+        return data
+
+    if gid is not None:
+        tmp = asyncio.run(in_gid(msg, uid, gid))
+    else:
+        tmp = asyncio.run(not_in_gid(msg, uid))
+    print(tmp)
+    return tmp

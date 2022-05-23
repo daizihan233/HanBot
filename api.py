@@ -4,28 +4,23 @@ import urllib
 from urllib import parse
 
 from func import *
+from var import *
 
 
-def keyword(msg: str, uid, gid):
+def keyword(msg: str, uid, gid, msg_id=None):
     if msg == '' or msg == ' ':
         send('嘿！这里是菜单\n'
-             '[00] help\n'
-             '[01] 咕咕咕\n'
-             '[02] 黑名单\n'
-             '[03] 加群自动同意\n'
-             '[04] 特定关键词复读\n'
-             '[05] 聊天\n'
-             '[06] 祖安\n'
-             '[07] 申请管理员\n'
-             '[08] 百度\n'
-             '[09] 哔哩哔哩\n'
-             '[10] pi\n'
-             '[11] 突发恶疾\n'
-             '[12] 鸡汤\n'
-             '[13] ?????\n'
-             '[14] bb\n'
-             '[15] 禁言\n'
-             '[16] 解禁',
+             'help | 咕咕咕\n'
+             '黑名单 | 加群自动同意\n'
+             '特定关键词复读 | \n'
+             '聊天 | 祖安\n'
+             '申请管理员 | 百度\n'
+             '哔哩哔哩 | pi\n'
+             '突发恶疾 | 鸡汤\n'
+             '????? | bb\n'
+             '禁言 | 解禁\n'
+             '论证 | 清屏\n'
+             '播放音乐（网易云音乐）',
              gid, uid)
     else:
         if msg[:4] == 'help':
@@ -52,19 +47,24 @@ def keyword(msg: str, uid, gid):
                      '语法1：@机器人【空格】禁言【空格】@...（直接@）\n'
                      '语法2：@机器人【空格】禁言【空格】...（QQ号）', gid, uid)
             elif command == '':
-                send('语法：@机器人 help [指令名称]\n'
+                send('\n语法：@机器人 help [指令名称]\n'
                      '即可查看相关文档\n'
                      '所有在这个菜单中没有的都可以在此指令中找到', gid, uid)
             elif command == 'bb':
-                send('语法：@机器人 help [指令名称]\n'
-                     '即可查看相关文档\n'
-                     '所有在这个菜单中没有的都可以在此指令中找到\n', gid, uid)
+                send('看见作者的小声bb', gid, uid)
+            elif command == '论证':
+                send('\n恶臭数字论证器！\n'
+                     '语法：@机器人 论证 [数字]\n'
+                     '代码由 GitHub@123Windows31 提供', gid, uid)
             elif command == '解禁':
                 send('\n注意：这需要群管理\n'
                      '注意：这需要机器人管理员权限\n'
                      '注意：此程序对空格尤为敏感\n'
                      '语法1：@机器人【空格】解禁【空格】@...（直接@）\n'
                      '语法2：@机器人【空格】解禁【空格】...（QQ号）', gid, uid)
+            elif command == '清屏':
+                send('\n注意：这需要机器人管理\n'
+                     '这将发送500个换行符', gid, uid)
             elif command == '突发恶疾':
                 send('\n语法：@机器人 突发恶疾 人名\n'
                      '即可获得一条发病文案', gid, uid)
@@ -72,12 +72,15 @@ def keyword(msg: str, uid, gid):
                 send('不用@，你可以获得一碗心灵鸡汤', gid, uid)
             elif command == 'pi':
                 send('估算圆周率前6位，感谢 GitHub@123Windows31 提供的代码', gid, uid)
+            elif command == '播放音乐':
+                send('\n语法：@机器人【空格】播放音乐【空格】音乐名称\n'
+                     '如果不填音乐名称则返回“推荐新音乐”中的第一个歌曲\n'
+                     '使用的平台：网易云音乐', gid, uid)
             elif command == '特定关键词复读':
-                send('\n无需@，一条消息必须只包含关键词\n'
-                     '支持的关键词（“ | ”分割）：\n'
-                     'e | 额 | 呃 | 。 | w | www | 114514 | 1145141919810 | [CQ:face,id=298] | [CQ:face,id=277] | '
-                     '[CQ:face,id=178] | c | ccc | tcl\n '
-                     '比如你说“额”，机器人就会说“额”，但你说“额额“、”额啊“是不会复读的', gid, uid)
+                send(f'\n无需@，一条消息必须只包含关键词\n'
+                     f'支持的关键词（“ | ”分割）：\n'
+                     f'{" | ".join(repeat)}\n'
+                     f'比如你说“额”，机器人就会说“额”，但你说“额额“、”额啊“是不会复读的', gid, uid)
             elif command == '聊天':
                 send('\n必须@，@尽量置前，不要加回复，尽量不要加表情，直接说内容\n'
                      '使用的小i机器人API', gid, uid)
@@ -108,9 +111,8 @@ def keyword(msg: str, uid, gid):
                  '========\n'
                  '公告：https://shimo.im/docs/KqHXw8XrrwpXqGY9/', gid, uid)
         elif msg == 'muteme':
-            # h, m = (datetime.datetime.now().hour, datetime.datetime.now().minute)
-            # if h == 11 and m >= 30:
-            pass  # 他奶奶的施工呢，瞅你妈
+            forbidden_words(gid, uid)
+            send('ok，歌姬吧', gid, uid)
         elif msg == '鸡汤':
             hit = json.loads(requests.get("https://v1.hitokoto.cn/").text)
             send(
@@ -121,12 +123,16 @@ def keyword(msg: str, uid, gid):
         elif msg[:7] == 'addname':
             tmp = msg.split(" ")
             tmp.pop(0)
-            open('ok_name.txt', 'a').write(f'{" ".join(tmp)}\n')
+            ok_file = open('ok_name.txt', 'a')
+            ok_file.write(f'\n{" ".join(tmp)}')
+            ok_file.close()
             send('彳亍', gid, uid)
         elif msg[:6] == 'noname':
             tmp = msg.split(" ")
             tmp.pop(0)
-            open('noname.txt', 'a').write(f'{" ".join(tmp)}\n')
+            no_file = open('noname.txt', 'a')
+            no_file.write(f'\n{" ".join(tmp)}')
+            no_file.close()
             send('彳亍', gid, uid)
         elif msg.split()[0] == '来份面包':
             gl = [
@@ -143,7 +149,7 @@ def keyword(msg: str, uid, gid):
                 else:
                     try:
                         if len(msg) != 1:
-                            tmp = int(msg[1])
+                            int(msg[1])
                     except Exception:
                         send('你妈的，参数都错了，你让我咋做？', gid, uid)
                     else:
@@ -163,7 +169,8 @@ def keyword(msg: str, uid, gid):
             else:
                 send('鬼，sb', gid, uid)
         elif msg == '申请管理员':
-            if str(uid) + '\n' in open('admin.txt', 'r', encoding='UTF-8').readlines():
+            admin = open('admin.txt', 'r', encoding='UTF-8')
+            if str(uid) + '\n' in admin.readlines():
                 send('\n啊嘞？发生了一个错误！\n'
                      '>>> Error: already an administrator\n'
                      '>>> 错误：已是管理员\n'
@@ -180,6 +187,7 @@ def keyword(msg: str, uid, gid):
                      '👉 已知如果滥用此权限会被撤销\n'
                      '👉 已知在有前科的时候重新申请通过的概率会降低\n'
                      '👉 已知申请成功的概率不是100%', gid, uid)
+            admin.close()
         elif ("群文件" == msg or "病毒库" == msg) and gid == 764869658:
             send(msg='''中国青年计算机爱好者联盟 （CEA）群文件说明
 China Young Computer Enthusiast Alliance Group File Description
@@ -222,6 +230,19 @@ https://share.weiyun.com/XvQofEc0
                 msg.pop(0)
                 url = 'https://baidu.physton.com/?q=' + parse.quote(' '.join(msg))
                 send(url, gid, uid)
+        elif msg[:2] == '论证':
+            # return
+            tmsg: list = msg.split()
+            print(tmsg)
+            if len(tmsg) != 2:
+                send('屑，检查一下你的参数再说罢', gid, uid)
+            else:
+                try:
+                    tmsg[1] = int(tmsg[1])
+                    print(tmsg)
+                    send(odor_digital_demonstrator(tmsg[1]), gid, uid)
+                except:
+                    send('屑，你类型传错辣', gid, uid)
         elif msg[:4] == '哔哩哔哩':
             msg = msg.split(' ')
             if len(msg) <= 1:
@@ -246,51 +267,41 @@ https://share.weiyun.com/XvQofEc0
                  '圆周率前6位估算：{}\n'
                  '本次估算共耗时：{:.5f}s'.format(pi, time.perf_counter() - start), gid, uid)
         elif "祖安我" in msg or "祖安屑" in msg or (uid == 2396349635 and gid == 336578274):
-            c = int(open('zu_an_time.txt', 'r').read().split()[0])
-            t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
+            zu_an_file = open('zu_an_time.txt', 'r')
+            c = int(zu_an_file.read().split()[0])
+            t = time.time() - float(zu_an_file.read().split()[1])
             print(c, t)
+            zu_an_file.close()
+            zu_an_file = open('zu_an_time.txt', 'w')
             if c < 5:
                 send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
-                open('zu_an_time.txt', 'w').write('{} {}'.format(c + 1, time.time()))
+                zu_an_file.write('{} {}'.format(c + 1, time.time()))
             elif t >= 60 * 60:
                 send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
-                open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
+                zu_an_file.write('{} {}'.format(0, time.time()))
+            zu_an_file.close()
         elif "祖安[CQ:at,qq=" in msg:
-            c = int(open('zu_an_time.txt', 'r').read().split()[0])
-            t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
+            zu_an_file = open('zu_an_time.txt', 'r')
+            c = int(zu_an_file.read().split()[0])
+            t = time.time() - float(zu_an_file.read().split()[1])
             print(c, t)
+            zu_an_file.close()
+            zu_an_file = open('zu_an_time.txt', 'w')
             if c < 5:
                 msg = msg.split()
-                msg[0] = msg[0].strip('祖安')
+                msg[0] = msg[0].strip('祖安 ')
                 if '[CQ:at,qq=' in msg[0]:
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
-                open('zu_an_time.txt', 'w').write('{} {}'.format(c + 1, time.time()))
+                zu_an_file.write('{} {}'.format(c + 1, time.time()))
             elif t >= 60 * 60:
                 msg = msg.split()
-                msg[0] = msg[0].strip('祖安')
+                msg[0] = msg[0].strip('祖安 ')
                 if '[CQ:at,qq=' in msg[0]:
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
-                open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
+                zu_an_file.write('{} {}'.format(0, time.time()))
+            zu_an_file.close()
         elif msg == '图':
             tim = time.perf_counter()
-            api_list = [
-                # [API链接(str), JSON的键(str|None), 列表的下表(int|None), 返回数据是否为二进制流(bool), 是否不使用框架的下载功能(bool)]
-                #                       ①                 ②
-                # 如果①和②都有值则是[②][①]
-                # 如果①没有值②有值则无法进行
-                # 如果①有值②没有值则是[①]
-                # [] # ?x -> ?.??s 《《《 ?x 我给这个API的评分，?.??s则代表了这个API的响应速度
-                #      └ 满分为5x
-                ['https://acg.toubiec.cn/random.php?ret=json', 'imgurl', 0, False, False],  # 5x -> 0.96s
-                ['https://api.sunweihu.com/api/sjbz/api.php?lx=dongman', None, None, True, False],  # 5x -> 0.91s
-                ['https://www.yingciyuan.cn/pc.php', None, None, True, False],  # 4x -> 1.81s
-                ['https://img.xjh.me/random_img.php?return=json', 'img', None, False, False],  # 4x -> 1.41s
-                ['https://api.ghser.com/random/api.php', None, None, True, False],  # 5x -> 0.76s
-                ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 1x -> 60s+
-                ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None, False, False],
-                # 5x -> 0.84s
-                ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 1x -> 60s+
-            ]
             ret_api = random.choice(api_list)
             ret = None
             try:
@@ -356,7 +367,8 @@ https://share.weiyun.com/XvQofEc0
             elif tim_n > 10:
                 print(f'{ret_api[0]} is very slow! 1x')
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
-            if str(uid) in open('admin.txt', 'r', encoding='UTF-8').read().split():
+            admin = open('admin.txt', 'r', encoding='UTF-8')
+            if str(uid) in admin.read().split():
                 if len(str(msg).split(' ')) != 2:
                     send('error: 语法错误！应该只有2个空格', gid, uid)
                 else:
@@ -380,24 +392,25 @@ https://share.weiyun.com/XvQofEc0
                                  '将这个错误发给他！', gid, uid)
                         else:
                             f = str(str(msg).split(' ')[-1])[len('[CQ:at,qq='):-1]
-                            fuck = open('fucklist', 'r').readlines()
-                            for i in range(len(fuck)):
-                                fuck[i] = fuck[i].strip('\n')
-
+                            fuck_file = open('fucklist', 'r')
+                            fuck = fuck_file.read().split("\n")
                             if f in fuck:
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
                                              '{2}'.format(gid, uid, '{} 已在黑名单'.format(f.strip())))
                             else:
-                                open('fucklist', 'a').write(f + '\n')
-
+                                fuck_a = open('fucklist', 'a')
+                                fuck_a.write(f + '\n')
+                                fuck_a.close()
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
                                              '{2}'.format(gid, uid, '已添加 {} 至黑名单'.format(f)))
+                            fuck_file.close()
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
+
             else:
                 if len(str(msg).split(' ')) != 3:
                     send('error: 语法错误！您不是机器人的管理员，需要填写理由（将语法更改为@机器人【空格】黑名单【空格】@...【空格】您的理由）应该至少有3个空格', gid, uid)
@@ -425,10 +438,8 @@ https://share.weiyun.com/XvQofEc0
                         else:
                             f = str(str(msg).split(' ')[-2])[len('[CQ:at,qq='):-1]
                             r = str(str(msg).split(' ')[-1])
-                            fuck = open('fucklist', 'r').readlines()
-                            for i in range(len(fuck)):
-                                fuck[i] = fuck[i].strip('\n')
-
+                            fuck_file = open('fucklist', 'r')
+                            fuck = fuck_file.read().split("\n")
                             if f in fuck:
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
@@ -442,10 +453,13 @@ https://share.weiyun.com/XvQofEc0
                                              '[Black]: {}\n'
                                              '[Reason]: {}'.format(gid, uid, f, r))
                                 send('已发送至后台，等待人工审核', gid, uid)
+                            fuck_file.close()
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
+            admin.close()
         elif "黑名单" in msg:
-            if (str(uid) + '\n') in open('admin.txt', 'r', encoding='UTF-8').readlines():
+            admin = open('admin.txt', 'r', encoding='UTF-8')
+            if (str(uid) + '\n') in admin.readlines():
                 print('admin')
                 if len(str(msg).split(' ')) != 2:
                     send('error: 语法错误！应该只有2个空格', gid, uid)
@@ -459,8 +473,9 @@ https://share.weiyun.com/XvQofEc0
                         elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
                             send('error: 参数错误！无法添加此人', gid, uid)
                         else:
-                            f = str(str(msg).split(' ')[-1]) + '\n'
-                            fuck = open('fucklist', 'r').readlines()
+                            f = str(str(msg).split(' ')[-1])
+                            fuck_file = open('fucklist', 'r')
+                            fuck = fuck_file.read().split("\n")
                             if f in fuck:
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
@@ -469,7 +484,8 @@ https://share.weiyun.com/XvQofEc0
                                                                     '（如果发现恶意添加请尽快联系HanTools删除）'.format(f)))
                                 tick(gid, uid)
                             else:
-                                open('fucklist', 'a').write(f)
+                                fuck_a = open('fucklist', 'a')
+                                fuck_a.write(f + '\n')
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
@@ -494,9 +510,8 @@ https://share.weiyun.com/XvQofEc0
                         else:
                             f = str(str(msg).split(' ')[-2])
                             r = str(str(msg).split(' ')[-1])
-                            fuck = open('fucklist', 'r').readlines()
-                            for i in range(len(fuck)):
-                                fuck[i] = fuck[i].strip('\n')
+                            fuck_file = open('fucklist', 'r')
+                            fuck = fuck_file.read().split("\n")
 
                             if f in fuck:
                                 requests.get('http://127.0.0.1:5700/send_group_msg?'
@@ -514,7 +529,7 @@ https://share.weiyun.com/XvQofEc0
                                 send('已发送至后台，等待人工审核', gid, uid)
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
-
+            admin.close()
         elif '咕' in msg:
             msg = str(msg).count('咕')
             isexists_dir_create('gugu{}.txt'.format(gid))
@@ -529,6 +544,8 @@ https://share.weiyun.com/XvQofEc0
                 tmp_file.write('')
                 tmp_file.close()
                 f.write(str(t))
+            if msg >= 200:
+                requests.get('http://127.0.0.1:5700/delete_msg?message_id={}'.format(msg_id))
             requests.get('http://127.0.0.1:5700/send_group_msg?'
                          'group_id={0}&'
                          'message=鸽子'
@@ -537,46 +554,7 @@ https://share.weiyun.com/XvQofEc0
         #         "www" == msg or msg == "114514" or msg == "1145141919810" or \
         #         msg == '[CQ:face,id=298]' or msg == '[CQ:face,id=178]' or msg == '[CQ:face,id=277]' or \
         #         msg == '？' or msg == '?' or msg == '草' or msg == 'c' or:
-        elif msg in [
-            'e',
-            '额',
-            '呃',
-            '。',
-            'w',
-            'www',
-            '114514',
-            '1145141919810',
-            '[CQ:face,id=298]',
-            '[CQ:face,id=178]',
-            '[CQ:face,id=277]',
-            '？',
-            '?',
-            '草',
-            'c',
-            'ccc',
-            'tcl',
-            'Cedar Point',
-            'Blue Streak',
-            'Cedar Creek Mine Ride',
-            'Corkscrew',
-            'GateKeeper',
-            'Gemini',
-            'Iron Dragon',
-            'Magnum XL-200',
-            'Maverick',
-            'Millennium Force',
-            'Raptor',
-            'Rougarou',
-            'Steel Vengeance',
-            'Top Thrill Dragster',
-            'Valravn',
-            'Wilderness Run',
-            'Woodstock Express',
-            'Wicked Twister',
-            'Mako',
-            'Fury 325',
-            'El Toro'
-        ]:
+        elif msg in repeat:
             send(msg, gid)
         elif gid == 623377914 and uid == 2443818489:
             if msg == '吃了:)':
@@ -597,7 +575,8 @@ https://share.weiyun.com/XvQofEc0
             print('request:', re)
         elif msg[:2] == '禁言':
             msg = msg.split()
-            if str(uid) in open('admin.txt', 'r').read().split():
+            admin = open('admin.txt', 'r')
+            if str(uid) in admin.read().split():
                 if len(msg) == 3:
                     forbidden_words(gid, get_all_number(msg[1]), int(msg[2]) * 60)
                     send(f'已尝试将其禁言 {msg[2]} 分钟，请按实际效果为准', gid, uid)
@@ -608,9 +587,11 @@ https://share.weiyun.com/XvQofEc0
                     send('error: 参数过多/过少', gid, uid)
             else:
                 send('error: 没有权限', gid, uid)
+            admin.close()
         elif msg[:2] == '解禁':
             msg = msg.split()
-            if str(uid) in open('admin.txt', 'r').read().split():
+            admin = open('admin.txt', 'r')
+            if str(uid) in admin.read().split():
                 if len(msg) == 2:
                     forbidden_words(gid, get_all_number(msg[1]), 0)
                     send('已尝试将其解除禁言，请按实际效果为准', gid, uid)
@@ -618,42 +599,42 @@ https://share.weiyun.com/XvQofEc0
                     send('error: 参数过多/过少', gid, uid)
             else:
                 send('error: 没有权限', gid, uid)
-        elif msg[:4] == '突发恶疾':  # 突发恶疾生成器
+            admin.close()
+        elif msg[:4] == '播放音乐':
+            msg = msg.split()
+            msg.pop(0)
+            tm = ' '.join(msg)
+            if len(msg) == 0:
+                tm = ''
+            if tm != '':
+                ret = requests.get(f'http://music.cyrilstudio.top/search?keywords={tm}').text
+                ret = json.loads(ret)
+                if ret['code'] == 200:
+                    send(f'[CQ:music,type=163,id={ret["result"]["songs"][0]["id"]}]', gid)
+                else:
+                    send(f'\nerror: 没有找到相关音乐/API错误\n'
+                         f'HTTP状态码：{ret["code"]}', gid, uid)
+            else:
+                send(
+                    f'[CQ:music,type=163,id={json.loads(requests.get("http://music.cyrilstudio.top/personalized/newsong").text)["result"][0]["id"]}]',
+                    gid)
+
+        elif msg == '清屏':
+            admin = open('admin.txt', 'r')
+            if str(uid) in admin.read().split():
+                send('\n' * 500, gid)
+            else:
+                send('error: 没有权限', gid, uid)
+            admin.close()
+        elif msg[:5] == '突发恶疾 ':  # 突发恶疾生成器
             name = msg.split()
             print(name)
             name.pop(0)
             name = ' '.join(name)  # 获取人名
             print(name)
-            lis = [  # 模板
-                # 取自 @IS-4/114514 的消息
-                f'{name}？{name}……{name}！{name}你带我走吧{name}😭你带我走吧😭{name}你带我走吧等等……{name}……{name}？{name}嘿嘿嘿……🤤🤤我的'
-                f'{name}🤤{name}嘿嘿嘿……我的{name}🤤🤤，{name}……嘿嘿嘿……我的{name}🤤等等……{name}？{name}！不对，我不曾拥有{name}……{name}你'
-                f'带我走吧{name}😭你带我走吧{name}😭你带我走吧😭等等……{name}？{name}……🤤🤤嘿嘿嘿嘿我的{name}🤤{name}是我的，你们不许看😭我鲨了你！',
-                # 取自 Bilibili@闹闹 的动态（643333801201631252）
-                f'我好喜欢{name}呀🥰🥰🥰{name}来PUA我吧🤤呜呜呜😭😭😭不是{name}的错，是我自愿的😭😭😭',
-                # 取自 Bilibili@闹闹 的动态（643333801201631252）下用户 UID298283272 的评论
-                f'我好喜欢{name}呀🥰🥰🥰{name}来rua我吧🤤呜呜呜😭😭😭不是{name}的错，是我自愿的😭😭😭',
-                # 取自 @IS-4/114514 的消息
-                f'{name}……我的{name}……🤤',
-                # 取自 @IS-4/114514 的消息
-                f'嘿嘿……{name}🤤',
-                # 取自 某个群 的投稿
-                f'嘿嘿我的{name}，我的西幻风格魔法学徒{name}，这小短袜这手套这炫彩大尾巴我现在就想把他摁在草丛里薅光他的毛嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿'
-                f'嘿嘿嘿嘿嘿🥵🥵🥵🥵🥵🥵🥵🥵🥵',
-
-                f'请您枪毙我吧🤤请您枪毙我吧请您枪毙我吧🤤…请您亲手毙了我吧🤤嘿嘿我的{name}嘿嘿我的{name}你带我去杀侯淑林吧{name}请您亲手肃反'
-                f'我吧🤤{name}，等等，这是我的{name}你不许看这是我的{name}你不许看这是我的{name}你不许看这是我的{name}你不许看这是我的'
-                f'{name}你不许看这是我的{name}你不许看这是我的{name}你不许看等等我从来没拥有过{name}我的{name}🤤{name}我的{name}🤤{name}'
-                f'我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}🤤{name}我的{name}',
-
-                f'嘿嘿嘿🤤真想把{name}的勋章和军服全脱了🤤把{name}绑在一边让{name}一边哭一边被我雷普🤤再把{name}的6b47头盔和6b45-1m防弹'
-                f'衣扔到一边🤤然后在{name}面前把{name}最讨厌的聚合物弹夹塞进{name}们下面和{name}最爱的ak-12里面🤤 ',
-
-                f'好像要♡好像要{name}的大几把啊♡',
-
-                f'{name}{random.choice(["哥哥", "姐姐"])}，给我吃你的几把吧♡'
-            ]
-            send(random.choice(lis), gid)  # 随机选择模板并发送
+            if name == '':
+                name = '你'
+            send(random.choice(lis).format(name=name), gid)  # 随机选择模板并发送
         else:
             msg = urllib.parse.quote(msg)
             ret = requests.get(
@@ -673,8 +654,6 @@ https://share.weiyun.com/XvQofEc0
                 a = [  # 无语时的自动回复
                     '额......',
                     'az',
-                    '我去Cedar Point坐过山车去了，总比你在这聊天刺激多了',
-                    '你需要快车道吗？',
                     '你的机器人暂时崩溃，请换个问题QAQ',
                     '对此时，我表示无法表达',
                     '不会，请换(￣个￣)',

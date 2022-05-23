@@ -5,6 +5,7 @@ from flask import Flask, request
 
 import api
 from func import *
+from var import *
 
 app = Flask(__name__)
 
@@ -19,65 +20,31 @@ def post_data():
         2609948707,  # 屑
         3561922003,  # 屑+机器人
         1950770034,  # 机器人
+        2749234809,  # 机器人
+        3547783949,  # 机器人
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
         gid = request.get_json().get('group_id')  # 获取群号
         uid = request.get_json().get('sender').get('user_id')  # 获取信息发送者的 QQ号码
         message = request.get_json().get('raw_message')  # 获取原始信息
+        msg_id = request.get_json().get('message_id')  # 获取消息id
         print(message)
-        if message[:len('[CQ:at,qq=748029973]')] == '[CQ:at,qq=748029973]' and message[
-                                                                               :len('[CQ:at,qq=748029973] ')] != '[CQ:at,qq=748029973] ':
-            message.replace('[CQ:at,qq=748029973]', '[CQ:at,qq=748029973] ')
-        if message[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
-            message = message.split(' ')  # 去除换行符
-            message.pop(0)  # 去除第一个元素
-            message = ' '.join(message)  # 将列表转换为字符串
+        if str(message)[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
+            message = str(message)[len('[CQ:at,qq=748029973] '):]
+            message = message.lstrip(' ')
             print(message)
-            api.keyword(message, uid, gid)  # 将 Q号和原始信息传到我们的后台
+            api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
+        elif str(message)[:len('[CQ:at,qq=748029973]')] == '[CQ:at,qq=748029973]' and gid != 532094038:
+            message = str(message)[len('[CQ:at,qq=748029973]'):]
+            message = message.lstrip(' ')
+            print(message)
+            api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
+
         else:
             if '咕' in message:
                 api.keyword(message, uid, gid)
-            elif message in [
-                'e',
-                '额',
-                '呃',
-                '。',
-                'w',
-                'www',
-                '114514',
-                '1145141919810',
-                '[CQ:face,id=298]',
-                '[CQ:face,id=178]',
-                '[CQ:face,id=277]',
-                '？',
-                '?',
-                '草',
-                'c',
-                'ccc',
-                'tcl',
-                'Cedar Point',
-                'Blue Streak',
-                'Cedar Creek Mine Ride',
-                'Corkscrew',
-                'GateKeeper',
-                'Gemini',
-                'Iron Dragon',
-                'Magnum XL-200',
-                'Maverick',
-                'Millennium Force',
-                'Raptor',
-                'Rougarou',
-                'Steel Vengeance',
-                'Top Thrill Dragster',
-                'Valravn',
-                'Wilderness Run',
-                'Woodstock Express',
-                'Wicked Twister',
-                'Mako',
-                'Fury 325',
-                'El Toro'
-            ] and gid != 936389498 and gid != 532094038:
+            elif message in repeat and gid != 936389498 and gid != 532094038:
                 api.keyword(message, uid, gid)
             elif '吃了:)' == message or '没吃:(' == message and gid != 532094038:
                 api.keyword(message, uid, gid)
@@ -106,76 +73,21 @@ def post_data():
             print(gid, t, flush=True)
     elif (request.get_json().get('target_id') == 748029973 or request.get_json().get(
             'target_id') == 2265453790) and request.get_json().get('group_id') != 532094038:  # 如果机器人被戳
-        herbalist = [  # 祖安语录
-            '[CQ:image,file=file:///C:/FromHanTools/liaotian/img/jb.jpg]',
-            '你刚出生就被你父母抛弃不得不去乞讨结果乞讨到了一盆屎然后尼玛你爹被杀你又被人贩子带去解剖这就是你的傻逼一生',
-            '你就是歌姬吧',
-            '你妈死了',
-            '爪巴',
-            '傻逼一个',
-            '114514',
-            '1919810',
-            '1145141919810',
-            '1919810114514',
-            '1145141919810HOM',
-            '和你聊天真开心,送你一朵玫瑰花',
-            '先辈送福,新年快乐',
-            'nmd再戳我一下试试！',
-            '滚',
-            '哎wcnmlgbd鬼！',
-            'fuck you',
-            '哎我cnmd谁tmd叫你m的让你sb戳我的？！！！',
-            'gun，傻逼',
-            '你礼貌吗？',
-            '脑残',
-            '操你妈',
-            '艹',
-            '我日你先人',
-            '我他娘的谢谢你啊',
-            '我********************',
-            '你是sadbee，是不是',
-            '你是来吃屎的吧',
-            '一路走好，SB',
-            '你是啥玩意',
-            '你妈补天',
-            'TMD',
-            'CAO',
-            '大雨治水',
-            '你没妈',
-            '你没妈',
-            '马牛逼刚吃屎，你个马怂逼',
-            'SB',
-            '你死的好惨啊',
-            '孝出强大',
-            '宁真是个大孝子啊',
-            '你好骚啊',
-            '骚年，你爷爷在这',
-            '试试就逝世',
-            '全场目光向我看齐，我宣布一件事：你是傻逼',
-            '傻逼一号SB的你准备趋势',
-            '我操你妈',
-            '我不是人，但你绝对是狗',
-            '人家走到女生面前是夸好帅，而你走过去，会被骂变态',
-            '你好甩啊',  # 甩在南京话里指250
-            '去你妈',
-            '学校是我家，文明去你妈',
-            '学校是我家，文明靠大家',
-            '250',
-            '我屮艸芔茻你妈的',
-            'G他N的,一大逼抖子呼死你',
-            requests.get('https://fun.886.be/api.php?level=max').text
-        ]
-        c = int(open('zu_an_time.txt', 'r').read().split()[0])
-        t = time.time() - float(open('zu_an_time.txt', 'r').read().split()[1])
+        tmp_file = open('zu_an_time.txt', 'r')
+        c = int(tmp_file.read().split()[0])
+        t = time.time() - float(tmp_file.read().split()[1])
+        tmp_file.close()
         print(c, t)
+        tmp_file = open('zu_an_time.txt', 'w')
         if c < 5:
             random.shuffle(herbalist)
             send(random.choice(herbalist), request.get_json().get('group_id'))
-            open('zu_an_time.txt', 'w').write('{} {}'.format(c + 1, time.time()))
+            tmp_file.write('{} {}'.format(c + 1, time.time()))
         elif t >= 60 * 60:
             random.shuffle(herbalist)
             send(random.choice(herbalist), request.get_json().get('group_id'))
-            open('zu_an_time.txt', 'w').write('{} {}'.format(0, time.time()))
+            tmp_file.write('{} {}'.format(0, time.time()))
+        tmp_file.close()
     elif request.get_json().get('notice_type') == 'group_increase':
         gid = request.get_json().get('group_id')
         uid = request.get_json().get('user_id')
@@ -228,59 +140,38 @@ https://share.weiyun.com/XvQofEc0
                  uid=uid)
         elif gid == 788328739:
             print('788328739群成员增加！')
-            fuck = open('fucklist', 'r').readlines()
+            fuck_file = open('fucklist', 'r')
+            fuck = fuck_file.readlines()
+            fuck_file.close()
+            admin_file = open('admin.txt', 'r', encoding='UTF-8')
             for i in range(len(fuck)):
                 fuck[i] = fuck[i].strip('\n')
             if str(uid) in fuck:
-                if request.get_json().get('operator_id') != 183713750:
+                if not (str(request.get_json().get('operator_id')) in admin_file.read().split()):
                     print('Fuck! 哪个傻逼让你进来的？')
                     send('cnmd，谁让你进来的？？？滚！你个死马玩意儿', gid, uid)
                     tick(gid, uid)
+            admin_file.close()
         elif gid == 532094038:
-            send('''【小鸡词典的鸡窝·群聊使用规范】
-
-1、复读是本群活跃的基石。若有任何可以复读的短语、长短句出现却无人复读，请立刻带头开始复读。 
-
-2、复读不能被打断，如果您发现有一场复读活动被打断，请尽快通过文字、图片谴责打断者，并重新开始复读或发起一轮新的复读。
-
-3、本群是小鸡词典核心用户交流群，包括数位百级水逼，数十位活跃群友和大部分潜水员，不存在所谓产品鸡和咕咕鸡。如果有产品鸡或咕咕鸡出现，未发红包时请忽视Ta。 
-
-4、虽然本群是鸡典核心用户群，但在有人向产品鸡反馈bug前，绝对不能讨论小鸡词典。
-
-5、任何看似安全的链接、二维码都不应随意点击、扫描，如果你在不得已的情况下进入，务必在看见金发跳舞男人时迅速退出应用并锁屏。
-
-6、【闪图】并不能在电脑QQ上正常查看。
-
-7、话题突然中断是非常正常的现象。
-
-8、当你参与“他们”的任何话题时，不要违反1~7条规则。
-
-9、色图是本群生产力。色图是本群生产力。色图是本群生产力。
-
-10、所有群员都有义务发展生产力。
-
-11、当你在其他任何群聊中存下新的色图时，不要违反第10条规则。
-
-12、请自备一张【未参与讨论声明】图片。
-
-13、如果你发现产品鸡的口吻有所改变，请不要担心，账号被鸡典老板暂时征用了，你可以叫他黄z…*?&%$——黄狗。
-
-114、某24岁学生相关的图文出现是非常正常的现象。 
-
-514、XP是自由的，但请留存至少一位医生的通讯方式。
-
-希望您在本群与他人愉快交流，友善合作。''', gid)
+            send('[CQ:image,file=file:///C:/FromHanTools/liaotian/img/jiki.jpg]', gid)
     # 如果监测到改名，且不是留空
     elif request.get_json().get('notice_type') == 'group_card' and request.get_json().get('card_new') != '':
         rs = '未知 - none'
-        for i in open('ok_name.txt', 'r', encoding='UTF-8').read().split('\n'):
+        rule = '无'
+        ok_file = open('ok_name.txt', 'r', encoding='UTF-8')
+        for i in ok_file.read().split('\n'):
             if re.match(i, request.get_json().get('card_new')) is not None:
                 rs = '正面 - positive'
+                rule = f'白：{i}'
                 break
-        for i in open('noname.txt', 'r', encoding='UTF-8').read().split('\n'):
+        ok_file.close()
+        no_file = open('noname.txt', 'r', encoding='UTF-8')
+        for i in no_file.read().split('\n'):
             if re.match(i, request.get_json().get('card_new')) is not None:
                 rs = '负面 - negative'
+                rule = f'黑：{i}'
                 break
+        no_file.close()
         s = '未知 - none'
         ret = {
             'Positive': 0,
@@ -298,25 +189,24 @@ https://share.weiyun.com/XvQofEc0
                 s = '中性 - neutral'
             rs = s
         #  发送一条消息到我自己的后台
-        requests.get('http://127.0.0.1:5700/send_private_msg?user_id=183713750&message='
-                     '【改名监测（Beta%2B）】\n'  # %2B == "+"
-                     '[群号]: {}\n'
-                     '[Ｑ号]: {}\n'
-                     '[新的]: {}\n'
-                     '[旧的]: {}\n'
-                     '[初判]: {}\n'
-                     '[终判]: {}\n'
-                     '[正面]: {}\n'
-                     '[中性]: {}\n'
-                     '[负面]: {}'.format(request.get_json().get('group_id'), request.get_json().get('user_id'),
-                                       request.get_json().get('card_new'), request.get_json().get('card_old'),
-                                       s, rs, ret['Positive'], ret['Neutral'], ret['Negative']))
+        ssend(f'【改名监测（Beta+）】\n'
+              f'[群号]: {request.get_json().get("group_id")}\n'
+              f'[Ｑ号]: {request.get_json().get("user_id")}\n'
+              f'[新的]: {request.get_json().get("card_new")}\n'
+              f'[旧的]: {request.get_json().get("card_old")}\n'
+              f'[规则]: {rule}\n'
+              f'[初判]: {s}\n'
+              f'[终判]: {rs}\n'
+              f'[正面]: {ret["Positive"]}\n'
+              f'[中性]: {ret["Neutral"]}\n'
+              f'[负面]: {ret["Negative"]}', 183713750)
         if request.get_json().get('group_id') in [
             788328739,
             751210750,
             833645046,
             744591068,
-            936389498
+            936389498,
+            902202817
         ]:
             if rs == '负面 - negative':  # 为负面情绪
                 # 则把昵称改回来
@@ -324,21 +214,17 @@ https://share.weiyun.com/XvQofEc0
                                            request.get_json().get('group_id'),
                                            request.get_json().get('user_id')))
                 # 并发送一条消息到这个群
-                send('【改名监测（Beta+）】\n'
-                     '[群号]: {}\n'
-                     '[Ｑ号]: {}\n'
-                     '[新的]: {}\n'
-                     '[旧的]: {}\n'
-                     '[状态]: {}\n'
-                     '[终判]: {}\n'
-                     '[正面]: {}\n'
-                     '[中性]: {}\n'
-                     '[负面]: {}'.format(request.get_json().get('group_id'),
-                                       request.get_json().get('user_id'),
-                                       request.get_json().get('card_new'),
-                                       request.get_json().get('card_old'),
-                                       s, rs, ret['Positive'], ret['Neutral'], ret['Negative']
-                                       )
+                send(f'【改名监测（Beta%2B）】\n'  # %2B == "+"
+                     f'[群号]: {request.get_json().get("group_id")}\n'
+                     f'[Ｑ号]: {request.get_json().get("user_id")}\n'
+                     f'[新的]: {request.get_json().get("card_new")}\n'
+                     f'[旧的]: {request.get_json().get("card_old")}\n'
+                     f'[规则]: {rule}\n'
+                     f'[初判]: {s}\n'
+                     f'[终判]: {rs}\n'
+                     f'[正面]: {ret["Positive"]}\n'
+                     f'[中性]: {ret["Neutral"]}\n'
+                     f'[负面]: {ret["Negative"]}'
                      , request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_ban':
         if request.get_json().get('sub_type') == 'ban' and request.get_json().get('group_id') == 473185911:
