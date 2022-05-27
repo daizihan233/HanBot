@@ -85,28 +85,7 @@ repeat = [
     '草',
     'c',
     'ccc',
-    'tcl',
-    'Cedar Point',
-    'Blue Streak',
-    'Cedar Creek Mine Ride',
-    'Corkscrew',
-    'GateKeeper',
-    'Gemini',
-    'Iron Dragon',
-    'Magnum XL-200',
-    'Maverick',
-    'Millennium Force',
-    'Raptor',
-    'Rougarou',
-    'Steel Vengeance',
-    'Top Thrill Dragster',
-    'Valravn',
-    'Wilderness Run',
-    'Woodstock Express',
-    'Wicked Twister',
-    'Mako',
-    'Fury 325',
-    'El Toro'
+    'tcl'
 ]
 
 # 涩图API
