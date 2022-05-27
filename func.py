@@ -236,3 +236,9 @@ def ssend(msg, uid, gid=None):
         tmp = asyncio.run(not_in_gid(msg, uid))
     print(tmp)
     return tmp
+
+
+def get_bread():
+    with open('bread.txt', 'r', encoding='utf-8') as f:
+        bread = f.read()
+    return int(bread)

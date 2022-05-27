@@ -1,6 +1,7 @@
 import random
 import time
 
+import setproctitle
 from flask import Flask, request
 
 import api
@@ -206,7 +207,8 @@ https://share.weiyun.com/XvQofEc0
             833645046,
             744591068,
             936389498,
-            902202817
+            902202817,
+            535979960
         ]:
             if rs == '负面 - negative':  # 为负面情绪
                 # 则把昵称改回来
@@ -224,8 +226,8 @@ https://share.weiyun.com/XvQofEc0
                      f'[终判]: {rs}\n'
                      f'[正面]: {ret["Positive"]}\n'
                      f'[中性]: {ret["Neutral"]}\n'
-                     f'[负面]: {ret["Negative"]}'
-                     , request.get_json().get('group_id'))
+                     f'[负面]: {ret["Negative"]}',
+                     request.get_json().get('group_id'))
     elif request.get_json().get('notice_type') == 'group_ban':
         if request.get_json().get('sub_type') == 'ban' and request.get_json().get('group_id') == 473185911:
             send('【禁言】\n'
@@ -239,4 +241,6 @@ https://share.weiyun.com/XvQofEc0
 
 
 if __name__ == '__main__':
+    proc_title = "liaotian-bot / liaotian.py"
+    setproctitle.setproctitle(proc_title)
     app.run(debug=True, host='127.0.0.1', port=8000, threaded=True)

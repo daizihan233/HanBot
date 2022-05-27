@@ -154,20 +154,32 @@ def keyword(msg: str, uid, gid, msg_id=None):
                         send('你妈的，参数都错了，你让我咋做？', gid, uid)
                     else:
                         if len(msg) == 1:
-                            tmp = send('🍞', gid, uid)
-                            if tmp['data'] is None:
-                                print(send('【错误】Sorry，您的订单量太大或太小，请调整参数再试一次，也可能是由于北京的疫情原因，暂时停止了生产（指'
-                                           '风控），您可以稍等一会儿（也可能是几天）后再来购买', gid, uid))
-                        elif len(msg) == 2:
-                            if int(msg[1]) < 1:
-                                send('Sorry，您的订单量太小，请调整参数再试一次', gid, uid)
-                            else:
-                                tmp = send('🍞' * int(msg[1]), gid, uid)
-                                if tmp['data'] is None:
-                                    print(send('【错误】Sorry，您的订单量太大或太小，请调整参数再试一次，也可能是由于北京的疫情原因，暂时停止了生产（指'
-                                               '风控），您可以稍等一会儿（也可能是几天）后再来购买', gid, uid))
+                            msg.append('1')
+                        if get_bread() >= int(msg[1]):
+                            if len(msg) == 2:
+                                if int(msg[1]) < 1:
+                                    send('【错误】Sorry，您的订单量太小，请调整参数再试一次', gid, uid)
+                                else:
+                                    tmp = send('🍞' * int(msg[1]), gid, uid)
+                                    with open('bread.txt', 'r', encoding='utf-8') as f:
+                                        bread = int(f.read())
+                                    with open('bread.txt', 'w', encoding='utf-8') as f:
+                                        f.write(str(bread - int(msg[1])))
+                                    if tmp['data'] is None:
+                                        tmp = send(f'🍞*{int(msg[1])}', gid, uid)
+                                        with open('bread.txt', 'r', encoding='utf-8') as f:
+                                            bread = int(f.read())
+                                        with open('bread.txt', 'w', encoding='utf-8') as f:
+                                            f.write(str(bread - int(msg[1])))
+                                        if tmp['data'] is None:
+                                            print(send('【错误】Sorry，您的订单量太大或太小，请调整参数再试一次，也可能是由于北京的疫情原因，暂时停止了生产（指'
+                                                       '风控），您可以稍等一会儿（也可能是几天）后再来购买', gid, uid))
+                        else:
+                            send(f'【错误】Sorry，您的订单量太大，库存仅有 {get_bread()} 份面包，请等一会儿', gid, uid)
             else:
                 send('鬼，sb', gid, uid)
+        elif msg == '面包库存':
+            send(f'面包库存：{get_bread()}', gid, uid)
         elif msg == '申请管理员':
             admin = open('admin.txt', 'r', encoding='UTF-8')
             if str(uid) + '\n' in admin.readlines():
@@ -241,7 +253,7 @@ https://share.weiyun.com/XvQofEc0
                     tmsg[1] = int(tmsg[1])
                     print(tmsg)
                     send(odor_digital_demonstrator(tmsg[1]), gid, uid)
-                except:
+                except Exception:
                     send('屑，你类型传错辣', gid, uid)
         elif msg[:4] == '哔哩哔哩':
             msg = msg.split(' ')

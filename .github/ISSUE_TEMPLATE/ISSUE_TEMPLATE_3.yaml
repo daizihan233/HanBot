@@ -8,7 +8,7 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: 请确定您做到了一下内容
+      label: 请确定您做到了以下内容
       options:
         - label: "我确定这是一个有意义的Issue，且目前没有此功能。"
           required: true
