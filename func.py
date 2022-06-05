@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import json
 import os
 import re
@@ -6,6 +7,7 @@ import re
 import aiohttp
 import numpy as np
 import requests
+from chinese_calendar import is_workday
 
 
 def isexists_dir_create(path):
@@ -242,3 +244,46 @@ def get_bread():
     with open('bread.txt', 'r', encoding='utf-8') as f:
         bread = f.read()
     return int(bread)
+
+
+def get_bread_mode():
+    """
+    0: 停工
+    1: 工厂模式
+    2: 现做模式
+    """
+    with open('mode_bread.txt', 'r', encoding='utf-8') as f:
+        bread_mode = f.read()
+    return int(bread_mode)
+
+
+def set_bread_mode(mode: int):
+    with open('mode_bread.txt', 'w', encoding='utf-8') as f:
+        f.write(str(mode))
+
+
+def add_bread(num):
+    n = str(get_bread() + num)
+    with open('bread.txt', 'w', encoding='utf-8') as f:
+        f.write(n)
+    del n
+
+
+def is_workday_now():
+    return is_workday(  # 是工作日吗？
+        datetime.datetime(  # 哪一天？
+            datetime.datetime.now().year,  # 今天是哪一年？
+            datetime.datetime.now().month,  # 今天是哪一月？
+            datetime.datetime.now().day  # 今天是哪一天？
+        )
+    )
+
+
+# 正则匹配
+def re_match(pattern, string):
+    return re.match(pattern, string) is not None
+
+
+def get_hit():
+    hit = json.loads(requests.get("https://v1.hitokoto.cn/").text)
+    return hit["hitokoto"], hit["from"]

@@ -85,28 +85,7 @@ repeat = [
     '草',
     'c',
     'ccc',
-    'tcl',
-    'Cedar Point',
-    'Blue Streak',
-    'Cedar Creek Mine Ride',
-    'Corkscrew',
-    'GateKeeper',
-    'Gemini',
-    'Iron Dragon',
-    'Magnum XL-200',
-    'Maverick',
-    'Millennium Force',
-    'Raptor',
-    'Rougarou',
-    'Steel Vengeance',
-    'Top Thrill Dragster',
-    'Valravn',
-    'Wilderness Run',
-    'Woodstock Express',
-    'Wicked Twister',
-    'Mako',
-    'Fury 325',
-    'El Toro'
+    'tcl'
 ]
 
 # 涩图API
@@ -119,18 +98,14 @@ api_list = [
     #                       ①                 ②
     # 如果①和②都有值则是[②][①]
     # 如果①没有值②有值则无法进行
-    # 如果①有值②没有值则是[①]
+    # 如果①有值②没有值则是[①]】
     # [] # ?x -> ?.??s 《《《 ?x 我给这个API的评分，?.??s则代表了这个API的响应速度
     #      └ 满分为5x
     ['https://acg.toubiec.cn/random.php?ret=json', 'imgurl', 0, False, False],  # 5x -> 0.96s
     ['https://api.sunweihu.com/api/sjbz/api.php?lx=dongman', None, None, True, False],  # 5x -> 0.91s
-    ['https://www.yingciyuan.cn/pc.php', None, None, True, False],  # 4x -> 1.81s
-    ['https://img.xjh.me/random_img.php?return=json', 'img', None, False, False],  # 4x -> 1.41s
-    ['https://api.ghser.com/random/api.php', None, None, True, False],  # 5x -> 0.76s
-    ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 1x -> 60s+
-    ['https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json', 'imgurl', None, False, False],
-    # 5x -> 0.84s
-    ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False]  # 1x -> 60s+
+    ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False],  # 1x -> 60s+
+    ['https://api.ixiaowai.cn/api/api.php', None, None, True, False],
+    ['https://www.acy.moe/api/r18', None, None, True, False]  # 试试就逝世
 ]
 
 # 突发恶疾
@@ -143,14 +118,19 @@ lis = [  # 模板
     '{name}？{name}……{name}！{name}你带我走吧{name}😭你带我走吧😭{name}你带我走吧等等……{name}……{name}？{name}嘿嘿嘿……🤤🤤我的'
     '{name}🤤{name}嘿嘿嘿……我的{name}🤤🤤，{name}……嘿嘿嘿……我的{name}🤤等等……{name}？{name}！不对，我不曾拥有{name}……{name}你'
     '带我走吧{name}😭你带我走吧{name}😭你带我走吧😭等等……{name}？{name}……🤤🤤嘿嘿嘿嘿我的{name}🤤{name}是我的，你们不许看😭我鲨了你！',
+
     # 取自 Bilibili@闹闹 的动态（643333801201631252）
     '我好喜欢{name}呀🥰🥰🥰{name}来PUA我吧🤤呜呜呜😭😭😭不是{name}的错，是我自愿的😭😭😭',
+
     # 取自 Bilibili@闹闹 的动态（643333801201631252）下用户 UID298283272 的评论
     '我好喜欢{name}呀🥰🥰🥰{name}来rua我吧🤤呜呜呜😭😭😭不是{name}的错，是我自愿的😭😭😭',
+
     # 取自 @IS-4/114514 的消息
     '{name}……我的{name}……🤤',
+
     # 取自 @IS-4/114514 的消息
     '嘿嘿……{name}🤤',
+
     # 取自 某个群 的投稿
     '嘿嘿我的{name}，我的西幻风格魔法学徒{name}，这小短袜这手套这炫彩大尾巴我现在就想把他摁在草丛里薅光他的毛嘿嘿嘿嘿嘿嘿嘿嘿嘿嘿'
     '嘿嘿嘿嘿嘿🥵🥵🥵🥵🥵🥵🥵🥵🥵',
@@ -167,3 +147,8 @@ lis = [  # 模板
 
     '{name}{random.choice(["哥哥", "姐姐"])}，给我吃你的几把吧♡'
 ]
+
+"""
+这个你不用知道他在匹配什么呢……
+"""
+re_die = "([CQ:at,qq=748029973])* *我*.*想(死|自杀|s) *(…|？|。|！)*"

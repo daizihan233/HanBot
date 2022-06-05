@@ -3,8 +3,8 @@ import time
 
 
 def calculate_waiting_time(nt: datetime.datetime) -> int:
-    ret_time = datetime.datetime(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day, 6,
-                                 30, 0) - nt
+    ret_time = datetime.datetime(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day, 0,
+                                 0, 0) - nt
     ret_time = ret_time.seconds
     ret_time = ret_time / 60
     ret_time = round(ret_time)
@@ -16,5 +16,6 @@ while True:
     if now_time.hour == 0 and now_time.minute == 0:  # 如果到时间了
         with open('bread.txt', 'w') as bread:
             bread.write('0')
+            print('清除成功')
     else:
         time.sleep(calculate_waiting_time(now_time))

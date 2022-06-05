@@ -23,6 +23,7 @@ def post_data():
         1950770034,  # 机器人
         2749234809,  # 机器人
         3547783949,  # 机器人
+        80000000,  # 匿名消息
     ]
     if request.get_json().get('message_type') == 'group' and not (
             request.get_json().get('sender').get('user_id') in blacklist):  # 如果是群聊信息
@@ -51,7 +52,13 @@ def post_data():
                 api.keyword(message, uid, gid)
             elif ("病毒库" == message or "群文件" == message) and gid == 764869658:
                 api.keyword(message, uid, gid)
-            elif message == '图' or message == '鸡汤' or message == 'muteme' or message.split()[0] == '来份面包':
+            elif re_match(re_die, message):
+                api.keyword(message, uid, gid)
+            elif message == '图' or message == '鸡汤' or message == 'muteme' or message.split(' ')[0] in [
+                '来份面包',
+                '给你面包',
+                '面包库存'
+            ] or message == '心理疏导':
                 api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
@@ -75,8 +82,10 @@ def post_data():
     elif (request.get_json().get('target_id') == 748029973 or request.get_json().get(
             'target_id') == 2265453790) and request.get_json().get('group_id') != 532094038:  # 如果机器人被戳
         tmp_file = open('zu_an_time.txt', 'r')
-        c = int(tmp_file.read().split()[0])
-        t = time.time() - float(tmp_file.read().split()[1])
+        zu_an_time = tmp_file.read().split(' ')
+        c = int(zu_an_time[0])
+        print(zu_an_time)
+        t = time.time() - float(zu_an_time[1])
         tmp_file.close()
         print(c, t)
         tmp_file = open('zu_an_time.txt', 'w')
@@ -148,7 +157,7 @@ https://share.weiyun.com/XvQofEc0
             for i in range(len(fuck)):
                 fuck[i] = fuck[i].strip('\n')
             if str(uid) in fuck:
-                if not (str(request.get_json().get('operator_id')) in admin_file.read().split()):
+                if not (str(request.get_json().get('operator_id')) in admin_file.read().split('\n')):
                     print('Fuck! 哪个傻逼让你进来的？')
                     send('cnmd，谁让你进来的？？？滚！你个死马玩意儿', gid, uid)
                     tick(gid, uid)
@@ -216,7 +225,7 @@ https://share.weiyun.com/XvQofEc0
                                            request.get_json().get('group_id'),
                                            request.get_json().get('user_id')))
                 # 并发送一条消息到这个群
-                send(f'【改名监测（Beta%2B）】\n'  # %2B == "+"
+                send(f'【改名监测（Beta+）】\n'
                      f'[群号]: {request.get_json().get("group_id")}\n'
                      f'[Ｑ号]: {request.get_json().get("user_id")}\n'
                      f'[新的]: {request.get_json().get("card_new")}\n'

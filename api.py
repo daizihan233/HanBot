@@ -12,7 +12,7 @@ def keyword(msg: str, uid, gid, msg_id=None):
         send('嘿！这里是菜单\n'
              'help | 咕咕咕\n'
              '黑名单 | 加群自动同意\n'
-             '特定关键词复读 | \n'
+             '特定关键词复读 | 来份面包\n'
              '聊天 | 祖安\n'
              '申请管理员 | 百度\n'
              '哔哩哔哩 | pi\n'
@@ -20,7 +20,9 @@ def keyword(msg: str, uid, gid, msg_id=None):
              '????? | bb\n'
              '禁言 | 解禁\n'
              '论证 | 清屏\n'
-             '播放音乐（网易云音乐）',
+             '播放音乐 | 面包库存\n'
+             '给你面包',
+
              gid, uid)
     else:
         if msg[:4] == 'help':
@@ -123,10 +125,42 @@ def keyword(msg: str, uid, gid, msg_id=None):
         elif msg[:7] == 'addname':
             tmp = msg.split(" ")
             tmp.pop(0)
-            ok_file = open('ok_name.txt', 'a')
+            ok_file = open('ok_name.txt', 'a', encoding='UTF-8')
             ok_file.write(f'\n{" ".join(tmp)}')
             ok_file.close()
             send('彳亍', gid, uid)
+        elif msg[:4] == '给你面包':
+            c = msg.count('🍞')
+            flag = False
+            if c == 0:
+                c = int(get_all_number(msg))
+                flag = True
+            if get_bread() < 300 and get_bread() + c <= 300:
+                add_bread(c)
+                send(f'听我说谢谢你（库存+{c}，现在库存为{get_bread()}）', gid, uid)
+            else:
+                send('库存满了或者装不下（', gid, uid)
+            if c > 50 and flag == False:
+                requests.get('http://127.0.0.1:5700/delete_msg?message_id={}'.format(msg_id))
+        elif msg[:7] == '切换面包厂模式':
+            tmsg = msg.split(' ')
+            if len(tmsg) == 1:
+                if get_bread_mode() == 0:
+                    set_bread_mode(1)
+                    send('已将 停工 切换为 工厂模式', gid, uid)
+                elif get_bread_mode() == 1:
+                    set_bread_mode(2)
+                    send('已将 工厂模式 切换为 现做模式', gid, uid)
+                elif get_bread_mode() == 2:
+                    set_bread_mode(1)
+                    send('已将 现做模式 切换为 工厂模式', gid, uid)
+            elif len(tmsg) == 2:
+                if tmsg[1] == '停工':
+                    set_bread_mode(0)
+                elif tmsg[1] == '工厂模式':
+                    set_bread_mode(1)
+                elif tmsg[1] == '现做模式':
+                    set_bread_mode(2)
         elif msg[:6] == 'noname':
             tmp = msg.split(" ")
             tmp.pop(0)
@@ -134,50 +168,48 @@ def keyword(msg: str, uid, gid, msg_id=None):
             no_file.write(f'\n{" ".join(tmp)}')
             no_file.close()
             send('彳亍', gid, uid)
-        elif msg.split()[0] == '来份面包':
-            gl = [
-                744591068,
-                833645046,
-                312411033,
-                310896029,
-                788328739
-            ]
-            if gid in gl:
-                msg = msg.split()
-                if len(msg) > 2 or len(msg) < 1:
+        elif msg.split(' ')[0] == '来份面包':
+            msg = msg.split(' ')
+            if len(msg) > 2 or len(msg) < 1:
+                send('你妈的，参数都错了，你让我咋做？', gid, uid)
+            else:
+                try:
+                    if len(msg) != 1:
+                        int(msg[1])
+                except Exception:
                     send('你妈的，参数都错了，你让我咋做？', gid, uid)
                 else:
-                    try:
-                        if len(msg) != 1:
-                            int(msg[1])
-                    except Exception:
-                        send('你妈的，参数都错了，你让我咋做？', gid, uid)
-                    else:
-                        if len(msg) == 1:
-                            msg.append('1')
-                        if get_bread() >= int(msg[1]):
-                            if len(msg) == 2:
-                                if int(msg[1]) < 1:
-                                    send('【错误】Sorry，您的订单量太小，请调整参数再试一次', gid, uid)
-                                else:
+                    if len(msg) == 1:
+                        msg.append('1')
+                    if get_bread() >= int(msg[1]):
+                        if len(msg) == 2:
+                            if int(msg[1]) < 1:
+                                send('【错误】Sorry，您的订单量太小，请调整参数再试一次', gid, uid)
+                            else:
+                                if int(msg[1]) <= 100:
                                     tmp = send('🍞' * int(msg[1]), gid, uid)
-                                    with open('bread.txt', 'r', encoding='utf-8') as f:
-                                        bread = int(f.read())
-                                    with open('bread.txt', 'w', encoding='utf-8') as f:
-                                        f.write(str(bread - int(msg[1])))
                                     if tmp['data'] is None:
                                         tmp = send(f'🍞*{int(msg[1])}', gid, uid)
-                                        with open('bread.txt', 'r', encoding='utf-8') as f:
-                                            bread = int(f.read())
+                                        n = str(get_bread() - int(msg[1]))
                                         with open('bread.txt', 'w', encoding='utf-8') as f:
-                                            f.write(str(bread - int(msg[1])))
+                                            f.write(n)
+                                        del n
                                         if tmp['data'] is None:
                                             print(send('【错误】Sorry，您的订单量太大或太小，请调整参数再试一次，也可能是由于北京的疫情原因，暂时停止了生产（指'
                                                        '风控），您可以稍等一会儿（也可能是几天）后再来购买', gid, uid))
-                        else:
-                            send(f'【错误】Sorry，您的订单量太大，库存仅有 {get_bread()} 份面包，请等一会儿', gid, uid)
-            else:
-                send('鬼，sb', gid, uid)
+                                    else:
+                                        n = str(get_bread() - int(msg[1]))
+                                        with open('bread.txt', 'w', encoding='utf-8') as f:
+                                            f.write(n)
+                                        del n
+                                else:
+                                    tmp = send(f'🍞*{int(msg[1])}', gid, uid)
+                                    n = str(get_bread() - int(msg[1]))
+                                    with open('bread.txt', 'w', encoding='utf-8') as f:
+                                        f.write(n)
+                                    del n
+                    else:
+                        send(f'【错误】Sorry，您的订单量太大，库存仅有 {get_bread()} 份面包，请等一会儿', gid, uid)
         elif msg == '面包库存':
             send(f'面包库存：{get_bread()}', gid, uid)
         elif msg == '申请管理员':
@@ -244,7 +276,7 @@ https://share.weiyun.com/XvQofEc0
                 send(url, gid, uid)
         elif msg[:2] == '论证':
             # return
-            tmsg: list = msg.split()
+            tmsg: list = msg.split(' ')
             print(tmsg)
             if len(tmsg) != 2:
                 send('屑，检查一下你的参数再说罢', gid, uid)
@@ -280,8 +312,10 @@ https://share.weiyun.com/XvQofEc0
                  '本次估算共耗时：{:.5f}s'.format(pi, time.perf_counter() - start), gid, uid)
         elif "祖安我" in msg or "祖安屑" in msg or (uid == 2396349635 and gid == 336578274):
             zu_an_file = open('zu_an_time.txt', 'r')
-            c = int(zu_an_file.read().split()[0])
-            t = time.time() - float(zu_an_file.read().split()[1])
+            zu_an_time = zu_an_file.read().split(' ')
+            c = int(zu_an_time[0])
+            print(zu_an_time)
+            t = time.time() - float(zu_an_time[1])
             print(c, t)
             zu_an_file.close()
             zu_an_file = open('zu_an_time.txt', 'w')
@@ -294,24 +328,88 @@ https://share.weiyun.com/XvQofEc0
             zu_an_file.close()
         elif "祖安[CQ:at,qq=" in msg:
             zu_an_file = open('zu_an_time.txt', 'r')
-            c = int(zu_an_file.read().split()[0])
-            t = time.time() - float(zu_an_file.read().split()[1])
+            zu_an_time = zu_an_file.read().split(' ')
+            c = int(zu_an_time[0])
+            print(zu_an_time)
+            t = time.time() - float(zu_an_time[1])
             print(c, t)
             zu_an_file.close()
             zu_an_file = open('zu_an_time.txt', 'w')
             if c < 5:
-                msg = msg.split()
+                msg = msg.split(' ')
                 msg[0] = msg[0].strip('祖安 ')
                 if '[CQ:at,qq=' in msg[0]:
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
                 zu_an_file.write('{} {}'.format(c + 1, time.time()))
             elif t >= 60 * 60:
-                msg = msg.split()
+                msg = msg.split(' ')
                 msg[0] = msg[0].strip('祖安 ')
                 if '[CQ:at,qq=' in msg[0]:
                     send_114514(requests.get('https://fun.886.be/api.php?level=max').text, gid, msg[0])
                 zu_an_file.write('{} {}'.format(0, time.time()))
             zu_an_file.close()
+        elif re_match(re_die, msg):
+            hit = get_hit()
+            send(f'\n'
+                 f'您看起来对世界很失望？\n'
+                 f'oh，我的朋友，别伤心了\n'
+                 f'如果可以改变结果那就努力让它好起来。\n'
+                 f'如果不能改变结果那为何不以摆烂终结？\n'
+                 f'好好活着，就是对人生最好的答卷\n'
+                 f'我知道，你可能被所有人嘲笑过\n'
+                 f'我知道，你可能被所有人践踏过\n'
+                 f'我知道，你可能被所有人欺骗过\n'
+                 f'我知道，你可能没别人口中那样幸福\n'
+                 f'不过没有关系，我也是这样\n'
+                 f'如果你还想不开，那就试试找一个只有自己一个人的地方\n'
+                 f'然后坐下来，细细品尝一块美味的蛋糕\n'
+                 f'或许能让你尝到人生的新滋味\n'
+                 f'{hit[0]} ——{hit[1]}\n'
+                 f'希望你能快乐地，向你的人生递交一份满意的答卷\n'
+                 f'你不孤单，还有我们！\n'
+                 f'如果你需要心理疏导，可以发送“心理疏导”', gid, uid)
+        elif msg == '心理疏导':
+            send('''心理咨询热线汇总：
+1，【全国24小时心理危机干预热线】
+电话：400-161-9995
+2，【学生专线】
+400-161-9995  按1
+3，【抑郁专线】
+400-161-9995  按2
+4，【生命热线】
+400-161-9995  按3
+5，【中国心理危机与自杀干预中心救助热线】
+电话：010-62715275
+6，【北京危机干预中心】
+电话：010-82951332
+7，【上海市危机干预中心】
+电话：021-64383562
+8，【广州市心理危机干预中心热线】
+电话：020-81899120
+9，【南京自杀干预中心救助热线】
+ 电话：16896123（24小时）
+10，【杭州心理研究与干预中心救助热线】
+电话：（0571）85029595（24小时）
+11，【武汉市精神卫生中心咨询热线】
+电话：（027）85844666（8：00-21：00）
+（027）51826188
+18，【深圳心理危机干预热线（康宁医院）】
+电话：（0755）25629459
+19，【天津市心理危机干预热线】
+电话：（022）88188858
+20，【四川省心理危机干预中心热线】
+电话：（028）87577510/87528604
+21，【重庆市心理危机干预中心热线】
+电话：（023）66644499
+22，【青岛市心理危机干预中心自杀干预热线】
+电话：86669120
+（8：30－11：00，13：30－16：00）
+23，【石家庄心理危机干预热线】
+电话：（0311）6799116
+24，【长春市心理援助热线】
+电话:（0431）86985000（24小时）
+（0431）86985333（8:00-16:00）
+25，【南京生命求助热线】电话（025）86528082''', gid)
         elif msg == '图':
             tim = time.perf_counter()
             ret_api = random.choice(api_list)
@@ -380,7 +478,7 @@ https://share.weiyun.com/XvQofEc0
                 print(f'{ret_api[0]} is very slow! 1x')
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg):
             admin = open('admin.txt', 'r', encoding='UTF-8')
-            if str(uid) in admin.read().split():
+            if str(uid) in admin.read().split('\n'):
                 if len(str(msg).split(' ')) != 2:
                     send('error: 语法错误！应该只有2个空格', gid, uid)
                 else:
@@ -586,9 +684,9 @@ https://share.weiyun.com/XvQofEc0
                               '{2}'.format(gid, uid, '您可以去找HanTools（183713750）接入机器人'))
             print('request:', re)
         elif msg[:2] == '禁言':
-            msg = msg.split()
+            msg = msg.split(' ')
             admin = open('admin.txt', 'r')
-            if str(uid) in admin.read().split():
+            if str(uid) in admin.read().split('\n'):
                 if len(msg) == 3:
                     forbidden_words(gid, get_all_number(msg[1]), int(msg[2]) * 60)
                     send(f'已尝试将其禁言 {msg[2]} 分钟，请按实际效果为准', gid, uid)
@@ -601,9 +699,9 @@ https://share.weiyun.com/XvQofEc0
                 send('error: 没有权限', gid, uid)
             admin.close()
         elif msg[:2] == '解禁':
-            msg = msg.split()
+            msg = msg.split(' ')
             admin = open('admin.txt', 'r')
-            if str(uid) in admin.read().split():
+            if str(uid) in admin.read().split('\n'):
                 if len(msg) == 2:
                     forbidden_words(gid, get_all_number(msg[1]), 0)
                     send('已尝试将其解除禁言，请按实际效果为准', gid, uid)
@@ -613,7 +711,7 @@ https://share.weiyun.com/XvQofEc0
                 send('error: 没有权限', gid, uid)
             admin.close()
         elif msg[:4] == '播放音乐':
-            msg = msg.split()
+            msg = msg.split(' ')
             msg.pop(0)
             tm = ' '.join(msg)
             if len(msg) == 0:
@@ -633,13 +731,13 @@ https://share.weiyun.com/XvQofEc0
 
         elif msg == '清屏':
             admin = open('admin.txt', 'r')
-            if str(uid) in admin.read().split():
+            if str(uid) in admin.read().split('\n'):
                 send('\n' * 500, gid)
             else:
                 send('error: 没有权限', gid, uid)
             admin.close()
         elif msg[:5] == '突发恶疾 ':  # 突发恶疾生成器
-            name = msg.split()
+            name = msg.split(' ')
             print(name)
             name.pop(0)
             name = ' '.join(name)  # 获取人名

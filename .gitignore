@@ -125,3 +125,5 @@ dmypy.json
 
 # no use
 test.py
+.idea/
+.gitignore
