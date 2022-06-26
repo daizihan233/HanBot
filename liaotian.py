@@ -23,6 +23,12 @@ def post_data():
         1950770034,  # 机器人
         2749234809,  # 机器人
         3547783949,  # 机器人
+        2425669802,  # 机器人
+        2810482259,  # 机器人
+        3563191526,  # 机器人
+        3563191526,  # 寄器人
+        3604629098,  # 寄器人
+        2286003479,  # 机器人
         80000000,  # 匿名消息
     ]
     if request.get_json().get('message_type') == 'group' and not (
@@ -34,17 +40,27 @@ def post_data():
         print(message)
         if str(message)[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
             message = str(message)[len('[CQ:at,qq=748029973] '):]
-            message = message.lstrip(' ')
+            message = message.lstrip(' ').rstrip(' ')
             print(message)
             api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
         elif str(message)[:len('[CQ:at,qq=748029973]')] == '[CQ:at,qq=748029973]' and gid != 532094038:
             message = str(message)[len('[CQ:at,qq=748029973]'):]
-            message = message.lstrip(' ')
+            message = message.lstrip(' ').rstrip(' ')
+            print(message)
+            api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
+        elif str(message)[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
+            message = str(message)[len('[CQ:at,qq=2265453790] '):]
+            message = message.lstrip(' ').rstrip(' ')
+            print(message)
+            api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
+        elif str(message)[:len('[CQ:at,qq=2265453790]')] == '[CQ:at,qq=2265453790]' and gid != 532094038:
+            message = str(message)[len('[CQ:at,qq=2265453790]'):]
+            message = message.lstrip(' ').rstrip(' ')
             print(message)
             api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
 
         else:
-            if '咕' in message:
+            if '咕' in message and gid != 532094038:
                 api.keyword(message, uid, gid)
             elif message in repeat and gid != 936389498 and gid != 532094038:
                 api.keyword(message, uid, gid)
@@ -52,13 +68,21 @@ def post_data():
                 api.keyword(message, uid, gid)
             elif ("病毒库" == message or "群文件" == message) and gid == 764869658:
                 api.keyword(message, uid, gid)
-            elif re_match(re_die, message):
+            elif re_match(re_die, message) and gid != 532094038:
                 api.keyword(message, uid, gid)
-            elif message == '图' or message == '鸡汤' or message == 'muteme' or message.split(' ')[0] in [
+            elif message == '鸡汤' or message == 'muteme' or message.split(' ')[0] in [
                 '来份面包',
                 '给你面包',
                 '面包库存'
-            ] or message == '心理疏导':
+            ] or message == '心理疏导' and gid != 532094038:
+                api.keyword(message, uid, gid)
+            elif message == '图':
+                api.keyword(message, uid, gid)
+            elif gid == 532094038 and message in [
+                '查询哈奶啤含金量',
+                '查询哈奶啤粉丝数',
+                '鸡典正统是？'
+            ]:
                 api.keyword(message, uid, gid)
     elif request.get_json().get('request_type') == 'group':
         gid = request.get_json().get('group_id')
@@ -81,14 +105,14 @@ def post_data():
             print(gid, t, flush=True)
     elif (request.get_json().get('target_id') == 748029973 or request.get_json().get(
             'target_id') == 2265453790) and request.get_json().get('group_id') != 532094038:  # 如果机器人被戳
-        tmp_file = open('zu_an_time.txt', 'r')
+        tmp_file = open('zu_an_time.txt', 'r', encoding='UFT-8')
         zu_an_time = tmp_file.read().split(' ')
         c = int(zu_an_time[0])
         print(zu_an_time)
         t = time.time() - float(zu_an_time[1])
         tmp_file.close()
         print(c, t)
-        tmp_file = open('zu_an_time.txt', 'w')
+        tmp_file = open('zu_an_time.txt', 'w', encoding='UFT-8')
         if c < 5:
             random.shuffle(herbalist)
             send(random.choice(herbalist), request.get_json().get('group_id'))

@@ -103,7 +103,7 @@ api_list = [
     #      └ 满分为5x
     ['https://acg.toubiec.cn/random.php?ret=json', 'imgurl', 0, False, False],  # 5x -> 0.96s
     ['https://api.sunweihu.com/api/sjbz/api.php?lx=dongman', None, None, True, False],  # 5x -> 0.91s
-    ['https://api.yimian.xyz/img?type=moe&R18=true', None, None, True, False],  # 1x -> 60s+
+    ['https://api.yimian.xyz/img?type=moe', None, None, True, False],  # 1x -> 60s+
     ['https://api.ixiaowai.cn/api/api.php', None, None, True, False],
     ['https://www.acy.moe/api/r18', None, None, True, False]  # 试试就逝世
 ]
