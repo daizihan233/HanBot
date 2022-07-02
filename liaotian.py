@@ -29,6 +29,8 @@ def post_data():
         3563191526,  # 寄器人
         3604629098,  # 寄器人
         2286003479,  # 机器人
+        3594648576,  # 机器人
+        3573523379,  # 机器人
         80000000,  # 匿名消息
     ]
     if request.get_json().get('message_type') == 'group' and not (
@@ -40,22 +42,22 @@ def post_data():
         print(message)
         if str(message)[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
             message = str(message)[len('[CQ:at,qq=748029973] '):]
-            message = message.lstrip(' ').rstrip(' ')
+            message = message.lstrip(' ').rstrip(' ').replace('   ', ' ').replace('  ', ' ')
             print(message)
             api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
         elif str(message)[:len('[CQ:at,qq=748029973]')] == '[CQ:at,qq=748029973]' and gid != 532094038:
             message = str(message)[len('[CQ:at,qq=748029973]'):]
-            message = message.lstrip(' ').rstrip(' ')
+            message = message.lstrip(' ').rstrip(' ').replace('   ', ' ').replace('  ', ' ')
             print(message)
             api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
         elif str(message)[:len('[CQ:at,qq=748029973] ')] == '[CQ:at,qq=748029973] ' and gid != 532094038:
             message = str(message)[len('[CQ:at,qq=2265453790] '):]
-            message = message.lstrip(' ').rstrip(' ')
+            message = message.lstrip(' ').rstrip(' ').replace('   ', ' ').replace('  ', ' ')
             print(message)
             api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
         elif str(message)[:len('[CQ:at,qq=2265453790]')] == '[CQ:at,qq=2265453790]' and gid != 532094038:
             message = str(message)[len('[CQ:at,qq=2265453790]'):]
-            message = message.lstrip(' ').rstrip(' ')
+            message = message.lstrip(' ').rstrip(' ').replace('   ', ' ').replace('  ', ' ')
             print(message)
             api.keyword(message, uid, gid, msg_id)  # 将 Q号和原始信息传到我们的后台
 
@@ -195,16 +197,18 @@ https://share.weiyun.com/XvQofEc0
         ok_file = open('ok_name.txt', 'r', encoding='UTF-8')
         for i in ok_file.read().split('\n'):
             if re.match(i, request.get_json().get('card_new')) is not None:
-                rs = '正面 - positive'
-                rule = f'白：{i}'
-                break
+                if match_group(i, request.get_json().get('card_new')) == request.get_json().get('card_new'):
+                    rs = '正面 - positive'
+                    rule = f'白：{i}'
+                    break
         ok_file.close()
         no_file = open('noname.txt', 'r', encoding='UTF-8')
         for i in no_file.read().split('\n'):
             if re.match(i, request.get_json().get('card_new')) is not None:
-                rs = '负面 - negative'
-                rule = f'黑：{i}'
-                break
+                if match_group(i, request.get_json().get('card_new')) == request.get_json().get('card_new'):
+                    rs = '负面 - negative'
+                    rule = f'黑：{i}'
+                    break
         no_file.close()
         s = '未知 - none'
         ret = {

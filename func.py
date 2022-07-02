@@ -177,7 +177,7 @@ def forbidden_words(gid, uid, tim=11 * 86400 + 4 * 3600 + 51 * 60):
 
 
 def get_all_number(s: str, j: str = ''):
-    return j.join(re.compile('[0-9]+').findall(s))
+    return j.join(re.compile('\\d+').findall(s))
 
 
 def odor_digital_demonstrator(i):
@@ -287,3 +287,49 @@ def re_match(pattern, string):
 def get_hit():
     hit = json.loads(requests.get("https://v1.hitokoto.cn/").text)
     return hit["hitokoto"], hit["from"]
+
+
+def get_bili(uid):
+    headers = {
+        'Connection': 'keep-alive',
+        'sec-ch-ua': '" Not;A Brand";v="99", "Microsoft Edge";v="97", "Chromium";v="97"',
+        'DNT': '1',
+        'sec-ch-ua-mobile': '?0',
+        'Client-Version': '2.6.11b',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.62',
+        'Client': 'web',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Accept': 'application/json, text/plain, */*',
+        'sec-ch-ua-platform': '"Windows"',
+        'Sec-Fetch-Site': 'same-site',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Dest': 'empty',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,nl;q=0.5',
+    }
+    followers = json.loads(requests.get(f'https://api.bilibili.com/x/relation/stat?vmid={uid}').text)['data'][
+        "follower"]
+    temp = json.loads(requests.get(f'https://api.bilibili.com/x/space/upstat?mid={uid}', headers=headers, cookies={
+        'SESSDATA': '1eafea96,1671373904,d5f6b*61'
+    }).text)
+    print(temp)
+    if temp['code'] == 0:
+        likes = temp['data']['likes']
+        archive = temp['data']['archive']['view']
+        msg = 'Good! 程序完美运行！'
+    else:
+        likes = 0
+        archive = 0
+        msg = f'Fuck! 程序发生未知错误：{temp["code"]}'
+    if temp['code'] == -412:
+        msg = '如果你看见这条消息证明请求被叔叔拦截了 :)'
+    return {
+        'f': followers,
+        'l': likes,
+        'a': archive,
+        'm': msg
+    }
+
+
+def match_group(p: str, s: str):
+    return re.compile(p).match(s).group()

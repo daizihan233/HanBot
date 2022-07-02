@@ -8,13 +8,13 @@ from func import *
 def running():
     while True:
         if 8 <= datetime.datetime.now().hour:
-            if get_bread() < 300:
+            if get_bread() < 1024:
                 bread = random.randint(1, 5) if is_workday_now() else random.randint(50, 100)
                 tim = random.randint(60, 120)
                 logger.info(f'{tim} 秒 之后，将完成 {bread} 份 面包的制作')
                 time.sleep(tim)
-                if get_bread() + bread > 300:
-                    actual_bread = 300 - get_bread()
+                if get_bread() + bread > 1024:
+                    actual_bread = 1024 - get_bread()
                 else:
                     actual_bread = bread
                 with open('bread.txt', 'r', encoding='utf-8') as f:
