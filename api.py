@@ -10,18 +10,18 @@ from var import *
 def keyword(msg: str, uid, gid, msg_id=None):
     if msg == '' or msg == ' ':
         send('嘿！这里是菜单\n'
-             'help | 咕咕咕\n'
-             '黑名单 | 加群自动同意\n'
+             'help        | 咕咕咕\n'
+             '黑名单       | 加群自动同意\n'
              '特定关键词复读 | 来份面包\n'
-             '聊天 | 祖安\n'
-             '申请管理员 | 百度\n'
-             '哔哩哔哩 | pi\n'
-             '突发恶疾 | 鸡汤\n'
-             '????? | bb\n'
-             '禁言 | 解禁\n'
-             '论证 | 清屏\n'
-             '播放音乐 | 面包库存\n'
-             '给你面包',
+             '聊天         | 祖安\n'
+             '申请管理员    | 百度\n'
+             '哔哩哔哩      | pi\n'
+             '突发恶疾      | 鸡汤\n'
+             '?????       | bb\n'
+             '禁言         | 解禁\n'
+             '论证         | 清屏\n'
+             '播放音乐      | 面包库存\n'
+             '给你面包      | 删黑',
 
              gid, uid)
     else:
@@ -135,7 +135,7 @@ def keyword(msg: str, uid, gid, msg_id=None):
             if c == 0:
                 c = int(get_all_number(msg))
                 flag = True
-            if get_bread() < 300 and get_bread() + c <= 300:
+            if get_bread() < 1024 and get_bread() + c <= 1024:
                 add_bread(c)
                 send(f'听我说谢谢你（库存+{c}，现在库存为{get_bread()}）', gid, uid)
             else:
@@ -203,7 +203,7 @@ def keyword(msg: str, uid, gid, msg_id=None):
                                             f.write(n)
                                         del n
                                 else:
-                                    tmp = send(f'🍞*{int(msg[1])}', gid, uid)
+                                    send(f'🍞*{int(msg[1])}', gid, uid)
                                     n = str(get_bread() - int(msg[1]))
                                     with open('bread.txt', 'w', encoding='utf-8') as f:
                                         f.write(n)
@@ -311,14 +311,14 @@ https://share.weiyun.com/XvQofEc0
                  '圆周率前6位估算：{}\n'
                  '本次估算共耗时：{:.5f}s'.format(pi, time.perf_counter() - start), gid, uid)
         elif "祖安我" in msg or "祖安屑" in msg or (uid == 2396349635 and gid == 336578274):
-            zu_an_file = open('zu_an_time.txt', 'r')
+            zu_an_file = open('zu_an_time.txt', 'r', encoding='UFT-8')
             zu_an_time = zu_an_file.read().split(' ')
             c = int(zu_an_time[0])
             print(zu_an_time)
             t = time.time() - float(zu_an_time[1])
             print(c, t)
             zu_an_file.close()
-            zu_an_file = open('zu_an_time.txt', 'w')
+            zu_an_file = open('zu_an_time.txt', 'w', encoding='UFT-8')
             if c < 5:
                 send(requests.get('https://fun.886.be/api.php?level=max').text, gid)
                 zu_an_file.write('{} {}'.format(c + 1, time.time()))
@@ -327,14 +327,14 @@ https://share.weiyun.com/XvQofEc0
                 zu_an_file.write('{} {}'.format(0, time.time()))
             zu_an_file.close()
         elif "祖安[CQ:at,qq=" in msg:
-            zu_an_file = open('zu_an_time.txt', 'r')
+            zu_an_file = open('zu_an_time.txt', 'r', encoding='UFT-8')
             zu_an_time = zu_an_file.read().split(' ')
             c = int(zu_an_time[0])
             print(zu_an_time)
             t = time.time() - float(zu_an_time[1])
             print(c, t)
             zu_an_file.close()
-            zu_an_file = open('zu_an_time.txt', 'w')
+            zu_an_file = open('zu_an_time.txt', 'w', encoding='UFT-8')
             if c < 5:
                 msg = msg.split(' ')
                 msg[0] = msg[0].strip('祖安 ')
@@ -368,6 +368,17 @@ https://share.weiyun.com/XvQofEc0
                  f'希望你能快乐地，向你的人生递交一份满意的答卷\n'
                  f'你不孤单，还有我们！\n'
                  f'如果你需要心理疏导，可以发送“心理疏导”', gid, uid)
+        elif msg == '鸡典正统是？':
+            send('哈奶啤！', gid)
+        elif msg == '查询哈奶啤粉丝数':
+            send(f'我们最最最最最可爱的哈奶啤达成{round(get_bili(400507605)["f"] / 10000, 1)}w'
+                 f'粉丝了，与此同时鸡典官号只有{round(get_bili(261453718)["f"] / 10000, 1)}w粉丝，哈哈😄，黄狗不如哈奶啤一根'
+                 f'（如果你发现值为0时，那就证明请求被叔叔拦截了）', gid)
+        elif msg == '查询哈奶啤含金量':
+            b = get_bili(400507605)
+            send(f'累计播放量：{b["a"]}\n'
+                 f'累计点赞量：{b["l"]}\n'
+                 f'{b["m"]}', gid)
         elif msg == '心理疏导':
             send('''心理咨询热线汇总：
 1，【全国24小时心理危机干预热线】
@@ -454,6 +465,9 @@ https://share.weiyun.com/XvQofEc0
                     with open('temp.jpg', 'wb') as f:
                         f.write(res)
                     res = 'file:///' + os.path.dirname(os.path.abspath(__file__)).replace('\\', '/') + '/temp.jpg'
+                if 'R18' in ret_api[0].upper():
+                    res = 'file:///' + os.path.dirname(os.path.abspath(__file__)).replace('\\',
+                                                                                          '/') + '/img/swindle.gif'
                 send(f'[CQ:image,file={res}]', gid)
             except json.decoder.JSONDecodeError:
                 print(f'API             : {ret_api[0]}')
@@ -493,7 +507,7 @@ https://share.weiyun.com/XvQofEc0
                                  '183713750 <<<<< look here!\n'
                                  '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！', gid, uid)
-                        elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
+                        elif tmp == 183713750 or tmp == 748029973 or tmp == 2265453790 or tmp == uid or tmp in admin:
                             send('\nctmd！发生一个错误！\n'
                                  '>>> Error: this uid cannot be added\n'
                                  '>>> 错误：此人无法添加\n'
@@ -517,6 +531,7 @@ https://share.weiyun.com/XvQofEc0
                                              'group_id={0}&'
                                              'message=[CQ:at,qq={1}] '
                                              '{2}'.format(gid, uid, '已添加 {} 至黑名单'.format(f)))
+                                tick(gid, f)
                             fuck_file.close()
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
@@ -536,7 +551,7 @@ https://share.weiyun.com/XvQofEc0
                                  '183713750 <<<<< look here!\n'
                                  '如果你觉得这个错误不应该发生那就加他！\n'
                                  '将这个错误发给他！', gid, uid)
-                        elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
+                        elif tmp == 183713750 or tmp == 748029973 or tmp == 2265453790 or tmp == uid or tmp == admin:
                             send('\nctmd！发生一个错误！\n'
                                  '>>> Error: this uid cannot be added\n'
                                  '>>> 错误：此人无法添加'
@@ -615,7 +630,7 @@ https://share.weiyun.com/XvQofEc0
                         tmp = int(tmp)
                         if tmp < 10000:
                             send('error: 参数错误！QQ号最小应该是10000', gid, uid)
-                        elif tmp == 183713750 or tmp == 748029973 or tmp == uid:
+                        elif tmp == 183713750 or tmp == 748029973 or tmp == 2265453790 or tmp == 2265453790 or tmp == uid:
                             send('error: 参数错误！无法添加此人', gid, uid)
                         else:
                             f = str(str(msg).split(' ')[-2])
@@ -640,6 +655,25 @@ https://share.weiyun.com/XvQofEc0
                     except:
                         send('error: 类型错误！QQ应该是int类型，但程序无法将其转为int', gid, uid)
             admin.close()
+        elif msg[:3] == '删黑 ':
+            admin = open('admin.txt', 'r')
+            if str(uid) in admin.read().split('\n'):
+                lst = open('C:/FromHanTools/liaotian/fucklist', 'r').read().rstrip('\n').lstrip('\n').split('\n')
+                while True:
+                    try:
+                        lst.remove('')
+                    except Exception as e:
+                        print(e)
+                        break
+                t = list(map(int, lst))
+                if uid in t:
+                    t.remove(uid)
+                    open('C:/FromHanTools/liaotian/fucklist', 'w').write('\n'.join(list(map(str, t))) + '\n')
+                    send('OK!', gid, uid)
+                else:
+                    send('你妈，此人不存在', gid, uid)
+            else:
+                send('没权限你bb啥', gid, uid)
         elif '咕' in msg:
             msg = str(msg).count('咕')
             isexists_dir_create('gugu{}.txt'.format(gid))
@@ -666,23 +700,50 @@ https://share.weiyun.com/XvQofEc0
         #         msg == '？' or msg == '?' or msg == '草' or msg == 'c' or:
         elif msg in repeat:
             send(msg, gid)
-        elif gid == 623377914 and uid == 2443818489:
-            if msg == '吃了:)':
-                requests.get('http://127.0.0.1:5700/send_group_msg?'
-                             'group_id={0}&'
-                             'message='
-                             '{1}'.format(gid, ':)'))
-            elif msg == '没吃:(':
-                requests.get('http://127.0.0.1:5700/send_group_msg?'
-                             'group_id={0}&'
-                             'message='
-                             '{1}'.format(gid, ':('))
-        elif msg == '粉丝监测':
-            re = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                              'group_id={0}&'
-                              'message=[CQ:at,qq={1}] '
-                              '{2}'.format(gid, uid, '您可以去找HanTools（183713750）接入机器人'))
-            print('request:', re)
+        elif msg.lower().strip(' ') == 'windows2000的留言':
+            """ 汉吐司备忘录 """
+            # 请勿利用此信息骚扰他人！！！
+            # 请勿利用此信息骚扰他人！！！
+            # 请勿利用此信息骚扰他人！！！
+            # Windows 2000 账号1 : 2548452533
+            # Windows 2000 账号2 : 2533898108
+            # 2kBot QQ账号       : 2810482259
+            # 2kBot 开源项目地址   : https://github.com/Abjust/2kbot/
+            # 请勿利用此信息骚扰他人！！！
+            # 请勿利用此信息骚扰他人！！！
+            # 请勿利用此信息骚扰他人！！！
+            """ 你来到了一个神奇的地方！ """
+            # 要来听故事吗？
+            # Windows 2000是一个17岁的学生，因病休学
+            # HanTools是本屎山项目的开发者，一个小学生（非不理智xxs，蟹蟹
+            #                                       ↑ 求生欲极强（？）
+            # Setup是哔哩哔哩UID为1511907771的UP主，同我一样，是一位小学生UP主
+            # 这个群啊，最近刀子太多了，大家因学业问题抑郁，因能力问题自责
+            # 我们能干的是什么？没有。
+            # 我们看起来并没有能力去解决这件事，这就是现实
+            # 这既是起因，也是经过，又是结果……
+            # 这件事非人为决定，我们无法改变，这是现实
+            # 写不下去了，文笔太差，下次Commit再写罢 #
+            """ Windows 2000 在群中最后（大概？）的“终末之诗” """
+            """
+            光明入侵，恶浊思绪
+            明媚倒影，执意歪曲
+            宣讲道义，西凑东拼，忍俊不禁
+            昭告我的死期
+            在绝症终末期，重复孤独的空虚
+            """
+            send('''Windows 2000对Setup群的留言
+对我而言，我曾一直觉得Setup群是个适合我的地方，我的直觉也的确没有错，Setup群确实是个好地方，我在里面学到了不少东西，并且跟群友相谈甚欢。但是，因为群里包括群主在内的不少人和我一样，都饱受抑郁症或者精神心理疾病的困扰，以至于我在面对他们慢慢开始伤害自己的时候，或者说甚至打算终结自己的时候，却显得格外无能。我的一句“赶紧去看医生吧”，此刻显得苍白无力，我理解他们第一次求助，羞于启齿不敢告诉家里人。我不是不能理解群友们的心情，或者自身的悲惨经历。但是对我而言，我真的一时间难以接受这么多负面倾诉。我不是心理咨询师，我对心理学的掌握也有限，其实说是在，我自己也是个病人，我是个双相情感障碍患者，我也是第一次面对这种情况。每次遇到这种情况，我总是想着怎么逃避现实，仿佛精神分裂般，总是觉得事情没有发生，一切都是梦境罢了。我也希望是这样，但是发生的事情终归是发生了，我不可能凭主观意识去改变。
+有时候我深感愧疚，不为什么，就为病情。不说世界上的人，就群友来说，群里比我惨的大有人在，有些没事，有些是抑郁症，像我这样得双相情感障碍的基本没有。我会自行反思，自己是不是太矫情、懦弱了，是不是抗压能力太差了呢？我怀疑过自己是假抑郁，认为自己不过是在博同情、骗流量。没错，就连我自己都不相信我自己了，那还有谁会相信这么拙劣的谎言？我感觉自己什么都是装出来的，我没有一样是真的，我只是在不懂装懂，我只是在夸大自己的苦楚和不幸，丝毫没有考虑别人的感受。我就是个精致的利己主义者，自私自利，只考虑自己的感受，特别不要脸。
+我知道如果我离开，那就更加坚定我就是只顾自己的人，但是有时候我真的接受不了现实，我真的很想逃离现实，跟社会隔离开来，我不知道为什么我一直想这样，我也控制不了我自己，唉，现实就是那么残酷又无情，或许别人的痛苦是真正的不幸，我得病只是我活该，是我应有的惩罚，如果真是这么说，我也认罪认罚了。说实话，来了群之后，我的事情就特别的多，我不断地给群里的人制造麻烦，做过的错事实在是太多了，实在是不可饶恕。
+对不起，Setup群的各位群友们，我觉得我应该就我给你们制造的麻烦，以及我对你们的欺骗谢罪，我可能真的值得离开，如果我离开了，希望你们不要挂念我，我就是个罪人，没什么值得纪念的地方。
+——Windows 2000
+
+我们会永远记住你的，你的存在为世界增添了一份色彩，加油！Windows 2000！
+——HanTools对Windows 2000留言的回复
+
+这条留言将永远合法地封存在HanBot的代码中（已征求编写者的意见，遵照原文，仅对格式进行了修改），同样也是对那些患有精神疾病的人一个提醒：你的存在为世界增添了一份色彩！不要气馁，你还有大把时间，好好挥洒你的青春吧，就现在！
+''', gid)
         elif msg[:2] == '禁言':
             msg = msg.split(' ')
             admin = open('admin.txt', 'r')
@@ -746,39 +807,78 @@ https://share.weiyun.com/XvQofEc0
                 name = '你'
             send(random.choice(lis).format(name=name), gid)  # 随机选择模板并发送
         else:
-            msg = urllib.parse.quote(msg)
-            ret = requests.get(
-                'http://nlp.xiaoi.com/robot/webrobot?&callback=__webrobot_processMsg&data=%7B%22sessionId%22%3A'
-                '%228819ee11968945c2b10da5c81b4d5bbf%22%2C%22robotId%22%3A%22webbot%22%2C%22userId%22%3A'
-                '%22c15603528da245a2ade587e4d061725b%22%2C%22body%22%3A%7B%22content%22%3A%22' + msg +
-                '%22%7D%2C%22type%22%3A%22txt%22%7D&ts=1644758917124').text
-            import re
-            a = re.findall(r'\"content\":\"(.+?)\\r\\n\"', ret)[-1]
-            a = a.replace('\\n', '\n').replace('\\r', '')
-            if a != 'defaultReply':
-                req = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                   'group_id={0}&'
-                                   'message=[CQ:at,qq={1}] '
-                                   '{2}'.format(gid, uid, a))
+            if msg[:6] == '聊天 学习 ':
+                li = msg.split(' ')
+                li.pop(0)
+                li.pop(0)
+                if len(li) != 2:
+                    send('你他妈就没感觉哪不对吗？', gid, uid)
+                else:
+                    requests.post('http://www.tuling123.com/v1/kb/import', data=json.dumps({
+                        "apikey": "3c0f165bea4b4636a939a89a723cf41d",
+                        "data": {
+                            "list": [
+                                {"question": li[0], "answer": li[1]}
+                            ]}
+                    }), headers={
+                        "Content-Type": "application/json"
+                    })
             else:
-                a = [  # 无语时的自动回复
-                    '额......',
-                    'az',
-                    '你的机器人暂时崩溃，请换个问题QAQ',
-                    '对此时，我表示无法表达',
-                    '不会，请换(￣个￣)',
-                    '我不知道 :(',
-                    '我不知道，但是我知道我是机器人',
-                    '额这个，我不会，滚',
-                    '我不会，长大后再学习 :)',
-                    'e，这个事情你可以去问问其他人，不要让我来嘛(ᗒᗨᗕ)',
-                    '机器人系统崩溃(ᗒᗨᗕ)',
-                    '哇，你竟然难倒我了，真厉害(≧▽≦)',
-                    '鬼'
-                ]
-                req = requests.get('http://127.0.0.1:5700/send_group_msg?'
-                                   'group_id={0}&'
-                                   'message=[CQ:at,qq={1}] '
-                                   '{2}'.format(gid, uid, random.choice(a)))
-            print('requests_get: {0}'.format(req))
-            print('send: {0}'.format(a))
+                ret = requests.post('http://openapi.turingapi.com/openapi/api/v2', data=json.dumps({
+                    "perception": {
+                        "inputText": {
+                            "text": msg
+                        }
+                    },
+                    "userInfo": {
+                        "apiKey": "3c0f165bea4b4636a939a89a723cf41d",
+                        "userId": str(uid),
+                        "groupId": str(gid)
+                    }
+                }), headers={
+                    "Content-Type": "application/json"
+                })
+                ret = json.loads(ret.text)
+                if ret['intent']['code'] == 10004:
+                    res = ''
+                    for i in ret['results']:
+                        res += i['values'][i['resultType']]
+                    send(res, gid, uid)
+                else:
+                    print(json.dumps(ret, indent=4))
+                    msg = urllib.parse.quote(msg)
+                    ret = requests.get(
+                        'http://nlp.xiaoi.com/robot/webrobot?&callback=__webrobot_processMsg&data=%7B%22sessionId%22%3A'
+                        '%228819ee11968945c2b10da5c81b4d5bbf%22%2C%22robotId%22%3A%22webbot%22%2C%22userId%22%3A'
+                        '%22c15603528da245a2ade587e4d061725b%22%2C%22body%22%3A%7B%22content%22%3A%22' + msg +
+                        '%22%7D%2C%22type%22%3A%22txt%22%7D&ts=1644758917124').text
+                    import re
+                    a = re.findall(r'\"content\":\"(.+?)\\r\\n\"', ret)[-1]
+                    a = a.replace('\\n', '\n').replace('\\r', '')
+                    if a != 'defaultReply':
+                        req = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                           'group_id={0}&'
+                                           'message=[CQ:at,qq={1}] '
+                                           '{2}'.format(gid, uid, a))
+                    else:
+                        a = [  # 无语时的自动回复
+                            '额......',
+                            'az',
+                            '你的机器人暂时崩溃，请换个问题QAQ',
+                            '对此时，我表示无法表达',
+                            '不会，请换(￣个￣)',
+                            '我不知道 :(',
+                            '我不知道，但是我知道我是机器人',
+                            '额这个，我不会，滚',
+                            '我不会，长大后再学习 :)',
+                            'e，这个事情你可以去问问其他人，不要让我来嘛(ᗒᗨᗕ)',
+                            '机器人系统崩溃(ᗒᗨᗕ)',
+                            '哇，你竟然难倒我了，真厉害(≧▽≦)',
+                            '鬼'
+                        ]
+                        req = requests.get('http://127.0.0.1:5700/send_group_msg?'
+                                           'group_id={0}&'
+                                           'message=[CQ:at,qq={1}] '
+                                           '{2}'.format(gid, uid, random.choice(a)))
+                    print('requests_get: {0}'.format(req))
+                    print('send: {0}'.format(a))
