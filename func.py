@@ -1,13 +1,21 @@
 import asyncio
 import datetime
+import fcntl
 import json
 import os
+import random
 import re
+import time
 
 import aiohttp
+import imagehash
 import numpy as np
+import redis
 import requests
+from PIL import Image
 from chinese_calendar import is_workday
+
+from richc import console
 
 
 def isexists_dir_create(path):
@@ -35,7 +43,7 @@ def tick(gid, uid):
         data = tmp.text
         return json.loads(data)
 
-    print(t(gid, uid))
+    console.print(t(gid, uid))
 
 
 def donot_processing_plus_group(flag, t, reason):
@@ -54,7 +62,7 @@ def donot_processing_plus_group(flag, t, reason):
 
 
 def add_group_automatic_consent(gid, uid, comment, right, flag, t):
-    print('发现 {} 的加群请求！'.format(gid))
+    console.print('发现 {} 的加群请求！'.format(gid))
     # 将所有元素全部大写，方便检测
     for i in range(len(right)):
         right[i] = right[i].upper()
@@ -129,7 +137,7 @@ def tencent_api(word):
         return json.loads(resp.to_json_string())
 
     except TencentCloudSDKException as err:
-        print(err)
+        console.print(err)
 
 
 def send(msg, gid, uid=None):
@@ -157,7 +165,7 @@ def send(msg, gid, uid=None):
         tmp = asyncio.run(is_at(msg, gid, uid))
     else:
         tmp = asyncio.run(no_at(msg, gid))
-    print(tmp)
+    console.print(tmp)
     return tmp
 
 
@@ -203,11 +211,15 @@ def odor_digital_demonstrator(i):
             ans += '(%s)*(1+1+4+5-1**4)**(%s)+' % (dic[(s - tmp) / 10 ** digi], dic[digi])
             s -= s - tmp
         ans += dic[s]
-        print()
-        print(f'{ts} = {ans}')
+        console.print()
+        console.print(f'{ts} = {ans}')
         return f'{ts} = {ans}'
 
     return print_yajuu(i, yajuu)
+
+
+def is_fucker(uid):
+    return str(uid) in safe_file_read('fucklist').split('\n')
 
 
 def ssend(msg, uid, gid=None):
@@ -236,12 +248,13 @@ def ssend(msg, uid, gid=None):
         tmp = asyncio.run(in_gid(msg, uid, gid))
     else:
         tmp = asyncio.run(not_in_gid(msg, uid))
-    print(tmp)
+    console.print(tmp)
     return tmp
 
 
 def get_bread():
     with open('bread.txt', 'r', encoding='utf-8') as f:
+        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         bread = f.read()
     return int(bread)
 
@@ -265,7 +278,9 @@ def set_bread_mode(mode: int):
 def add_bread(num):
     n = str(get_bread() + num)
     with open('bread.txt', 'w', encoding='utf-8') as f:
+        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         f.write(n)
+        fcntl.flock(f, fcntl.LOCK_UN)
     del n
 
 
@@ -312,7 +327,7 @@ def get_bili(uid):
     temp = json.loads(requests.get(f'https://api.bilibili.com/x/space/upstat?mid={uid}', headers=headers, cookies={
         'SESSDATA': '1eafea96,1671373904,d5f6b*61'
     }).text)
-    print(temp)
+    console.print(temp)
     if temp['code'] == 0:
         likes = temp['data']['likes']
         archive = temp['data']['archive']['view']
@@ -332,4 +347,259 @@ def get_bili(uid):
 
 
 def match_group(p: str, s: str):
-    return re.compile(p).match(s).group()
+    t = re.compile(p).match(s)
+    if t is not None:
+        return t.group()
+    else:
+        return ''
+
+
+def all_prohibitions(gid, t):
+    async def st(gi, ti):
+        async def start(g):
+            async with aiohttp.ClientSession() as session:
+                async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                    await ws.send_json({'action': 'set_group_whole_ban', 'params': {
+                        'group_id': g,
+                        'enable': True  # 消息内容
+                    }})
+                    data = await ws.receive_json()
+            return data
+
+        async def closed(g):
+            async with aiohttp.ClientSession() as session:
+                async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                    await ws.send_json({'action': 'set_group_whole_ban', 'params': {
+                        'group_id': g,
+                        'enable': False  # 消息内容
+                    }})
+                    data = await ws.receive_json()
+            return data
+
+        await start(gi)
+        time.sleep(ti)
+        await closed(gi)
+
+    asyncio.run(st(gid, t))
+
+
+def is_admin(uid):
+    return str(uid) in safe_file_read("admin.txt").split('\n')
+
+
+def is_match(p: str, s: str, t) -> bool:
+    return match_group(p, s) == t if re_match(p, s) is not None else False
+
+
+def send_ws(node: str, jsn: dict) -> dict:
+    async def f(n, j):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': n, 'params': j})
+                data = await ws.receive_json()
+        return data
+
+    return asyncio.run(f(node, jsn))
+
+
+def sensitive_words(s: str, st: str):
+    return st in s
+
+
+def del_msg(msg_id):
+    async def d(mi):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'delete_msg', 'params': {
+                    'message_id': mi
+                }})
+
+    asyncio.run(d(msg_id))
+
+
+def safe_file_read(filename: str, encode: str = "UTF-8"):
+    with open(filename, 'r', encoding=encode) as f:
+        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+        tmp = f.read()
+    return tmp
+
+
+def safe_file_write(filename: str, s, mode: str = "w", encode: str = "UTF-8"):
+    if 'b' not in mode:
+        with open(filename, mode, encoding=encode) as f:
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            f.write(s)
+    else:
+        with open(filename, mode) as f:
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            f.write(s)
+
+
+def get_lock_level():
+    return safe_file_read('lock')
+
+
+def add_grouper(flag, typ, stat: bool = True):
+    async def y(f, t, s):
+        async with aiohttp.ClientSession() as session:
+            async with session.ws_connect('ws://127.0.0.1:6700/api') as ws:
+                await ws.send_json({'action': 'set_group_add_request', 'params': {
+                    'flag': f,
+                    'sub_type': t,
+                    'approve': s
+                }})
+
+    asyncio.run(y(flag, typ, stat))
+
+
+def get_lock_detailed(level: int):
+    return '''1. 强·不允许入群
+封锁整个入群通道，禁止任何人入群、邀请
+（尽管由最高苏维埃特批也不彳亍，一般用于很严重的事件）''' if level == 1 else '''2. 不允许入群
+封锁除特批外的其他入群通道，通过群成员邀请进入的一律拦截
+（特批的判定是由机器人管理员邀请进群的一律视为特批）''' if level == 2 else '''3. 弱·不允许入群·普通
+封锁普通入群通道，邀请由管理员审核并放行''' if level == 3 else '''4. 弱·不允许入群
+封锁普通群成员邀请入群通道''' if level == 4 else '''5. 黑名单拦截
+拦截所有黑名单人员''' if level == 5 else '''6. 监视模式
+监视入群事件，黑名单人员不放行，除特批外''' if level == 6 else '''7. 放行模式
+不进行任何监视与处理'''
+
+
+def sf(g):
+    t_s_ret = send_ws('get_group_member_list', {
+        "group_id": g
+    })['data']
+    for i in t_s_ret:
+        if is_fucker(i):
+            tick(g, i)
+
+
+def quick_operation(context, operation):
+    send_ws(".handle_quick_operation", {
+        "context": context,
+        "operation": operation
+    })
+
+
+def modify_list_at_file(filename: str, s):
+    t = safe_file_read(filename).split('\n')
+    if str(s) not in t:
+        t.append(s)
+    else:
+        t.remove(s)
+    t = list(map(str, t))
+    safe_file_write(filename, '\n'.join(t))
+    return True if str(s) in t else False
+
+
+def match_and_replace(mat: str, text: str, retext: str):
+    mt = re.match(mat, text)
+    if mt is not None:
+        if mt.group(1) is not None:
+            return re.sub(mat, retext.format(mt.group(1)), text)
+    else:
+        return text
+    return re.sub(mat, retext, text)
+
+
+def match_list(p, s):
+    return re.compile(p).findall(s)
+
+
+def tencent_image_api(url, biz):
+    import json
+    from tencentcloud.common import credential
+    from tencentcloud.common.profile.client_profile import ClientProfile
+    from tencentcloud.common.profile.http_profile import HttpProfile
+    from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
+    from tencentcloud.ims.v20201229 import ims_client, models
+    try:
+        # 实例化一个认证对象，入参需要传入腾讯云账户secretId，secretKey,此处还需注意密钥对的保密
+        # 密钥可前往https://console.cloud.tencent.com/cam/capi网站进行获取
+        cred = credential.Credential(open('cloud', 'r').read().split(' ')[0], open('cloud', 'r').read().split(' ')[1])
+        # 实例化一个http选项，可选的，没有特殊需求可以跳过
+        httpProfile = HttpProfile()
+        httpProfile.endpoint = "ims.tencentcloudapi.com"
+
+        # 实例化一个client选项，可选的，没有特殊需求可以跳过
+        clientProfile = ClientProfile()
+        clientProfile.httpProfile = httpProfile
+        # 实例化要请求产品的client对象,clientProfile是可选的
+        client = ims_client.ImsClient(cred, "ap-beijing", clientProfile)
+
+        # 实例化一个请求对象,每个接口都会对应一个request对象
+        req = models.ImageModerationRequest()
+        params = {
+            "BizType": biz,
+            "FileUrl": url
+        }
+        req.from_json_string(json.dumps(params))
+
+        # 返回的resp是一个ImageModerationResponse的实例，与请求对象对应
+        resp = client.ImageModeration(req)
+        console.print(resp.to_json_string())
+        # 输出json格式的字符串回包
+        t = json.loads(resp.to_json_string())
+        return t['Suggestion'], t['Label'], t['RequestId']
+    except TencentCloudSDKException as err:
+        console.print(err)
+        return 'Pass'
+
+
+def img_safe(msg, msg_id, biz, gid):
+    mlist = match_list(r'\[CQ:image,.*]', msg)
+    for im in mlist:
+        im = im.strip('[]')
+        im = im.split(',')[1:]
+        imurl = None
+        fl = False
+        for imtl in im:
+            if imtl[:4] == 'url=':
+                imurl = imtl[4:]
+            if imtl[:9] == 'subType=0':
+                fl = True
+        if fl and imurl is not None:
+            console.print('检测到图片：', imurl)
+            safe_file_write('tmp114.png', requests.get(imurl).content, 'wb')
+            dh = str(imagehash.dhash(Image.open('tmp114.png')))
+            # 检查Redis中是否存在该图片的hash值
+            p = redis.ConnectionPool(host='43.155.62.167', port=6379, decode_responses=True)
+            r = redis.Redis(connection_pool=p)
+            if r.hexists('imh', dh):
+                console.print('该图片已存在，获取Redis中的信息')
+                dhu = r.hget('imh', dh)
+                dhu = dhu.split(',')
+                console.print('Redis中的信息-dhu：', dhu)
+                console.print('Redis中的信息-dh：', dh)
+                ta = (dhu[0], "(From Redis, it's UNKNOW)", dhu[1])
+            else:
+                ta = tencent_image_api(imurl, biz)
+                r.hset('imh', dh, f'{ta[0]},{ta[2]},{imurl}')
+                r.hset('imh', ta[2], f'{dh}')
+                console.print(ta)
+            if ta[0] == 'Block':  # 确定
+                del_msg(msg_id)  # 撤回
+                send(f'图片ID：{ta[2]}\n'
+                     f'一眼丁真，鉴定为：{ta[1]}', gid)  # ta[1] == 消息类别
+            elif ta[0] == 'Review':  # 疑似
+                send(f'[CQ:reply,id={msg_id}]\n'
+                     f'图片ID：{ta[2]}\n'
+                     f'#NSFW Not Safe For Work 警告\n'
+                     f'此消息疑似含有 {ta[1]} 内容\n'
+                     f'建议由人工识别过后再做出处理', gid)
+
+
+def is_debug():
+    return True if safe_file_read('isd.on') == '1' else False
+
+
+def is_member(gid: int, uid: int) -> bool:
+    d = send_ws('get_group_member_info', {
+        "group_id": gid,
+        "user_id": uid,
+        "no_cache": random.choice([True, False])
+    })
+    try:
+        return True if d['data']['role'] == 'member' else False
+    except TypeError:
+        console.print(d)
