@@ -35,6 +35,7 @@ def post_data():
         3594648576,  # 机器人
         3573523379,  # 机器人
         2142127814,  # 机器人
+        3458479839,  # 机器人
         80000000,  # 匿名消息
     ]
     # console.print(request.get_json())
@@ -57,15 +58,17 @@ def post_data():
                     func.img_safe(message, msg_id, 'yihuv1', gid)
         if uid in [
             # 3358907393
+            1643873779
         ]:
             if func.is_member(gid, uid):
                 func.del_msg(msg_id)
         elif str(gid) in func.safe_file_read('del_msg_grp').split('\n'):
-            if func.is_member(gid, uid):
+            if func.is_member(gid, uid) and (not func.is_admin(uid)):
                 with open('mgc.txt', 'r', encoding="UTF-8") as f:
                     fl = (f.read().split('\n'))
                     for t in fl:
                         if t in message:
+                            console.print(f"{uid} 在 {msg_id} （{message}） 中触发敏感词： {t}")
                             func.del_msg(msg_id)
                             break
         robot_qq_id = [
@@ -95,7 +98,7 @@ def post_data():
                 378235245
             ]) or (
                     ("病毒库" == message or "群文件" == message) and gid == 764869658) or (
-                    func.re_match(var.re_die, message)) or (
+                    func.re_match(var.re_die, message) and gid != 747458571) or (
                     message == '鸡汤' or message == 'muteme' or message.split(' ')[0] in [
                 '来份面包',
                 '给你面包',
@@ -170,7 +173,13 @@ def post_data():
         tmp_file.close()
     elif request.get_json().get('notice_type') == 'group_recall':
         gid = request.get_json().get("group_id")
-        if str(gid) in open('delmsgstat', 'r', encoding='UTF-8').read().split('\n'):
+        flag = False
+        f_l = []
+        for i in open('delmsgstat', 'r', encoding='UTF-8').read().split('\n'):
+            if i.split(' ')[0] == str(gid):
+                flag = True
+                f_l = i.split(' ')
+        if flag:
             op_id = request.get_json().get("operator_id")
             op_name = func.send_ws(
                 "get_group_member_info",
@@ -188,24 +197,61 @@ def post_data():
                     "no_cache": True
                 }
             )["data"]["group_name"]
+            msg_id = request.get_json().get("message_id")
             msg = func.send_ws(
                 "get_msg", {
-                    "message_id": request.get_json().get("message_id")
+                    "message_id": msg_id
                 })
             uid = request.get_json().get("user_id")
             u_name = msg["data"]["sender"]["nickname"]
-            # if uid != 748029973 and op_id != 748029973:
-            st = f'发生时间：{func.datetime.datetime.fromtimestamp(request.get_json().get("time")).strftime("%Y-%m-%d %H:%M:%S")}\n' \
-                 f'群聊名称/ID：{g_name}（{gid}）\n' \
-                 f'操作者昵称/ID：{op_name}（{op_id}）\n' \
-                 f'执行者昵称/ID：{u_name}（{uid}）\n' \
-                 f'是否为主动撤回：{"是" if op_id == uid else "否"}\n' \
-                 f'消息内容：{msg["data"]["message"]}'
-
-            for i in func.safe_file_read('delmsgcallback').split('\n'):
-                func.send(st, int(i))
-                console.print('发送给：', i)
-            console.print(st)
+            if uid != 2265453790 and op_id != 2265453790:
+                st = f'发生时间：{func.datetime.datetime.fromtimestamp(request.get_json().get("time")).strftime("%Y-%m-%d %H:%M:%S")}\n' \
+                     f'群聊名称/ID：{g_name}（{gid}）\n' \
+                     f'操作者昵称/ID：{op_name}（{op_id}）\n' \
+                     f'执行者昵称/ID：{u_name}（{uid}）\n' \
+                     f'是否为主动撤回：{"是" if op_id == uid else "否"}\n' \
+                     f'他说：'
+                st = [
+                    {
+                        "type": "node",
+                        "data": {
+                            "name": "机器人 - Bot提醒您：",
+                            "uin": "2265453790",
+                            "content": st,
+                            "time": str(time.time())
+                        }
+                    },
+                    {
+                        "type": "node",
+                        "data": {
+                            "id": str(msg_id)
+                        }
+                    }
+                ]
+                if len(f_l) == 1:
+                    console.print('模式：直接转发')
+                    for i in func.safe_file_read('delmsgcallback').split('\n'):
+                        print(i)
+                        func.send_ws('send_group_forward_msg',
+                                     {
+                                         'group_id': int(i),
+                                         'messages': st
+                                     }
+                                     )
+                        console.print('发送给：', i)
+                    console.print(st)
+                else:
+                    console.print('模式：定向转发')
+                    f_l.pop(0)
+                    for i in f_l:
+                        func.send_ws('send_group_forward_msg',
+                                     {
+                                         'group_id': int(i),
+                                         'messages': st
+                                     }
+                                     )
+                        console.print('发送给：', i)
+                    console.print(st)
     elif request.get_json().get('notice_type') == 'group_increase':
         gid = request.get_json().get('group_id')
         uid = request.get_json().get('user_id')
@@ -452,4 +498,4 @@ https://share.weiyun.com/XvQofEc0
 if __name__ == '__main__':
     proc_title = "liaotian-bot / liaotian.py"
     setproctitle.setproctitle(proc_title)
-    app.run(debug=True, host='127.0.0.1', port=8000, threaded=True)
+    app.run(host='127.0.0.1', port=8000, threaded=True)

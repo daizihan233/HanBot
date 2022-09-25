@@ -130,6 +130,12 @@ def keyword(msg: str, uid, gid, msg_id):
             ok_file.write(f'\n{" ".join(tmp)}')
             ok_file.close()
             func.send('彳亍', gid, uid)
+        elif msg[:4] == '定向转发':
+            # del_lst = func.safe_file_read('delmsgcallback').split('\n')
+            # for i in range(len(del_lst)):
+            #     t = del_lst[i].split(' ')
+            #     if t ==
+            ...
         elif msg[:4] == '给你面包':
             c = msg.count('🍞')
             flag = False
@@ -670,21 +676,18 @@ https://share.weiyun.com/XvQofEc0
                 if not ret_api[3] and not ret_api[4]:
                     if ret_api[2] is None and ret_api[1] is not None:
                         ret = requests.get(
-                            ret_api[0],
-                            verify=False
+                            ret_api[0]
                         )
                         res = func.json.loads(
                             ret.text
                         )[ret_api[1]]
                     elif ret_api[1] is None:
                         res = requests.get(
-                            ret_api[0],
-                            verify=False
+                            ret_api[0]
                         ).text
                     else:
                         ret = requests.get(
-                            ret_api[0],
-                            verify=False
+                            ret_api[0]
                         )
                         res = func.json.loads(
                             ret.text
@@ -694,12 +697,10 @@ https://share.weiyun.com/XvQofEc0
                     console.print(res)
                 elif ret_api[4]:
                     ret = requests.get(
-                        ret_api[0],
-                        verify=False
+                        ret_api[0]
                     ).text[ret_api[1]]
                     res = requests.get(
-                        ret,
-                        verify=False
+                        ret
                     ).content
                     with open('temp.jpg', 'wb') as f:
                         f.write(res)
@@ -707,8 +708,7 @@ https://share.weiyun.com/XvQofEc0
                                                                                                     '/') + '/temp.jpg'
                 else:
                     res = requests.get(
-                        ret_api[0],
-                        verify=False
+                        ret_api[0]
                     ).content
                     with open('temp.jpg', 'wb') as f:
                         f.write(res)
@@ -744,8 +744,7 @@ https://share.weiyun.com/XvQofEc0
             func.forbidden_words(gid, uid, t)
             func.send(f'{f"宁被禁言 {t} s" if t > 0 else "无  事  发  生"}', gid, uid)
         elif ("黑名单" in msg) and ("[CQ:at,qq=" in msg) and gid != 747458571:
-            admin = open('admin.txt', 'r', encoding='UTF-8')
-            if str(uid) in admin.read().split('\n'):
+            if func.is_admin(uid):
                 if len(str(msg).split(' ')) != 2:
                     func.send('error: 语法错误！应该只有2个空格', gid, uid)
                 else:

@@ -603,3 +603,22 @@ def is_member(gid: int, uid: int) -> bool:
         return True if d['data']['role'] == 'member' else False
     except TypeError:
         console.print(d)
+
+
+def is_bot(uid) -> bool:
+    p = redis.ConnectionPool(host='43.155.62.167', port=6379, decode_responses=True)
+    r = redis.Redis(connection_pool=p)
+    dhu = r.hget('isbot', uid)
+    if dhu is None:
+        s_bot(uid, [1, time.time()])
+        return False
+
+
+def f_bot(uid) -> bool:
+    ...
+
+
+def s_bot(uid, v):
+    p = redis.ConnectionPool(host='43.155.62.167', port=6379, decode_responses=True)
+    r = redis.Redis(connection_pool=p)
+    r.hset('isbot', str(uid), str(v))

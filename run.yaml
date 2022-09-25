@@ -1,0 +1,32 @@
+run: # 这项里的东西均无异议，以后可能有用
+  run-file: "liaotian.py"
+  api-file: "api.py"
+  var-file: "var.py"
+  rich-file: "richc.py"
+  add-bread: "add_bread.py"
+  del-bread: "del_bread.py"
+
+file: # 指定使用的文件
+  # 敏感词列表文件
+  sensitive-words: "mgc.txt"
+  # 敏感词撤回群聊列表
+  del-msg-grp: "del_msg_grp"
+  # 撤回事件监听
+  del-msg-stat: "delmsgstat"  # 监听群聊
+  del-msg-callback: "delmsgcallback"  # 回调群聊
+  # 昵称黑/白名单
+  # 禁止 > 允许 > 其他
+  prohibited-nickname: "nomame.txt"  # 被禁止的昵称（正则表达式）
+  allowed-nicknames: "ok_name.txt"  # 被允许的昵称（正则表达式）
+  # 管理员/黑名单列表
+  admin: "admin.txt"  # 管理员名单
+  fucklist: "fucklist"  # 黑名单
+  # 禁止使用：祖安
+  zuan-grp: "no_gan.txt"  # 禁止这些群使用
+  # 冷却时间/计时相关
+  # 祖安：冷却时间
+  zuan-time: "zu_an_time.txt"
+  # 改名监测：恶意短时间大规模更名判断
+  rename-time: "rename.txt"
+  # 以下文件至今没有用到
+  bread-mode: "mode_bread.txt"
